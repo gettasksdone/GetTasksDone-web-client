@@ -13,7 +13,8 @@ RUN code-server --install-extension Dart-Code.dart-code \
                 --install-extension alexisvt.flutter-snippets
 
 # Configuring the working directory and user to use
-ARG USER=root
+ARG USER=developer
+RUN useradd -ms /bin/bash developer
 USER $USER
 WORKDIR /home/$USER
 
