@@ -10,6 +10,6 @@
     },
     "workspaceMount": "source=${localWorkspaceFolder},target=/home/developer/workspace,type=bind",
     "workspaceFolder": "/home/developer/workspace",
-    "forwardPorts": [1200],
+    "forwardPorts": [80],
     "runArgs": ["-p", "1200:80", "--name", "gtdwebclientdev"]
 }
