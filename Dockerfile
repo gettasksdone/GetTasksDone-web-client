@@ -5,6 +5,7 @@ RUN apt install -y clang cmake ninja-build pkg-config libgtk-3-dev
 RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
 RUN apt install -y ./google-chrome-stable_current_amd64.deb
 RUN rm google-chrome-stable_current_amd64.deb
+RUN apt install -y nginx
 
 ARG USER=developer
 ARG USER_UID=2000
