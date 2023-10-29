@@ -27,6 +27,6 @@ ENV PATH $PATH:/home/$USER/flutter/bin
 
 RUN yes | flutter doctor -v
 
-SHELL ["/bin/bash", "-c"]
-
 EXPOSE 80
+
+SHELL ["/bin/bash", "-c"]
