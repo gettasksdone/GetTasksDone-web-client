@@ -26,3 +26,5 @@ ENV PATH $PATH:/home/$USER/flutter/bin
 
 # Verify the status licenses
 RUN yes | flutter doctor -v
+
+WORKDIR /home/$USER/workspace
