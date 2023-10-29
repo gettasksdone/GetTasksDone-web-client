@@ -1,7 +1,7 @@
 #!/bin/bash
 
-cd $0
+cd $1
 
-flutter build web
+/home/developer/flutter/bin/flutter build web
 
 cp -a build/web/. /var/www/html
