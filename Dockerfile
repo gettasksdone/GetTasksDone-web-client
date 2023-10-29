@@ -25,3 +25,5 @@ RUN git clone https://github.com/flutter/flutter.git
 ENV PATH $PATH:/home/$USER/flutter/bin
 
 RUN yes | flutter doctor -v
+
+SHELL ["/bin/bash", "-c"]
