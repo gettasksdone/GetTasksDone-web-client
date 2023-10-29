@@ -14,7 +14,7 @@ RUN code-server --install-extension Dart-Code.dart-code \
 
 # Configuring the working directory and user to use
 ARG USER=developer
-RUN useradd -ms /bin/bash $USER
+RUN useradd -ms /bin/bash developer
 USER $USER
 WORKDIR /home/$USER
 
