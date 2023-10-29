@@ -7,7 +7,7 @@ RUN apt install -y ./google-chrome-stable_current_amd64.deb
 RUN rm google-chrome-stable_current_amd64.deb
 
 ARG USER=developer
-ARG USER_UID=1000
+ARG USER_UID=2000
 ARG USER_GID=$USER_UID
 
 RUN groupadd --gid $USER_GID $USER \
