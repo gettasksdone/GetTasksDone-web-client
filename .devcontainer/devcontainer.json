@@ -9,7 +9,7 @@
     }
   },
   "postCreateCommand": "echo \"developer\n\" | sudo -k -S chown -R \"${USER:-$(id -un)}\" .",
-  "postStartCommand": "echo \"developer\" | sudo -k -S /etc/init.d/xrdp stop && /etc/init.d/xrdp start",
+  "postStartCommand": "(echo \"developer\n\" | sudo -k -S /etc/init.d/xrdp stop) && (echo \"developer\n\" | sudo -k -S /etc/init.d/xrdp start)",
   "dockerFile": "Dockerfile",
   "build": {
     "args": {
