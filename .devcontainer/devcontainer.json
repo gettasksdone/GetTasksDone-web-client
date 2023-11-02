@@ -1,14 +1,20 @@
 {
-    "name": "GTD Web Client Development Environment",
-    "context": "..",
-    "dockerFile": "../Dockerfile",
-    "remoteUser": "developer",
-    "customizations": {
-        "vscode": {
+  "name": "Flutter",
+  "remoteUser": "developer",
+  "workspaceFolder": "/home/developer/workspace",
+  "workspaceMount": "source=${localWorkspaceFolder},target=/home/developer/workspace,type=bind",
+  "customizations": {
+      "vscode": {
           "extensions": ["Dart-Code.dart-code", "Dart-Code.flutter", "alexisvt.flutter-snippets"]
-        }
-    },
-    "workspaceMount": "source=${localWorkspaceFolder},target=/home/developer/workspace,type=bind",
-    "workspaceFolder": "/home/developer/workspace",
-    "runArgs": ["-p", "1200:80", "--name", "gtdwebclientdev"]
+      }
+  },
+  "dockerFile": "Dockerfile",
+  "build": {
+      "args": {
+          "-t": "matalodeeiras/dev-environments-flutter:latest",
+          "--rm": "",
+          "--no-chache": ""
+      }
+  },
+  "runArgs": ["-p", "3389:3389", "--name", "dev-environment-flutter", "--privileged"]
 }
