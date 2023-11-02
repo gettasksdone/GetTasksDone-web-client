@@ -4,18 +4,18 @@
   "workspaceFolder": "/home/developer/workspace",
   "workspaceMount": "source=${localWorkspaceFolder},target=/home/developer/workspace,type=bind",
   "customizations": {
-      "vscode": {
-          "extensions": ["Dart-Code.dart-code", "Dart-Code.flutter", "alexisvt.flutter-snippets"]
-      }
+    "vscode": {
+      "extensions": ["Dart-Code.dart-code", "Dart-Code.flutter", "alexisvt.flutter-snippets"]
+    }
   },
   "postCreateCommand": "sudo chown -R \"${USER:-$(id -un)}\" .",
   "dockerFile": "Dockerfile",
   "build": {
-      "args": {
-          "-t": "matalodeeiras/dev-environments-flutter:latest",
-          "--rm": "",
-          "--no-chache": ""
-      }
+    "args": {
+      "-t": "matalodeeiras/dev-environments-flutter:latest",
+      "--rm": "",
+      "--no-chache": ""
+    }
   },
   "runArgs": ["-p", "3389:3389", "--name", "dev-environment-flutter", "--privileged"]
 }
