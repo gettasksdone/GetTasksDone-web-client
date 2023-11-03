@@ -33,8 +33,6 @@ RUN cd /home/developer && git clone https://github.com/flutter/flutter.git
 
 WORKDIR /home/developer/workspace
 
-COPY startup.sh /home/developer/workspace
-
 ENV PATH $PATH:/home/developer/flutter/bin
 
 RUN yes | flutter doctor -v
