@@ -26,13 +26,9 @@ RUN echo "startxfce4" >> /etc/xrdp/startwm.sh
 
 USER developer
 
-WORKDIR /home/developer
-
 # Install Flutter
 RUN cd /home/developer && git clone https://github.com/flutter/flutter.git
+ENV PATH $PATH:/home/developer/flutter/bin
+RUN yes | flutter doctor -v
 
 WORKDIR /home/developer/app
-
-ENV PATH $PATH:/home/developer/flutter/bin
-
-RUN yes | flutter doctor -v
