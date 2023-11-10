@@ -1,3 +1,5 @@
+import 'package:gtdclient/config/config.dart';
+import 'package:gtdclient/screens/home.dart';
 import 'package:flutter/material.dart';
 
 class GTDApp extends StatelessWidget {
@@ -5,12 +7,9 @@ class GTDApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Scaffold(
-        body: Center(
-          child: Text('Hello World!'),
-        ),
-      ),
+    return MaterialApp(
+      theme: AppTheme.espresso,
+      home: const HomeScreen(),
     );
   }
 }
