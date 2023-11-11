@@ -14,8 +14,8 @@ class HomeScreen extends StatelessWidget {
         DateFormat('EEEE, d MMMM, yyyy').format(currentTime);
     final String timeText = DateFormat.Hm().format(currentTime);
 
-    final deviceSize = context.deviceSize;
-    final colors = context.colorScheme;
+    final Size deviceSize = context.deviceSize;
+    final ColorScheme colors = context.colorScheme;
 
     return Scaffold(
       body: Stack(
