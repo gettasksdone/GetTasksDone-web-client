@@ -1,8 +1,8 @@
-import 'package:gtdclient/widgets/widgets.dart';
-import 'package:gtdclient/utils/utils.dart';
-import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:gap/gap.dart';
+import "package:gtdclient/widgets/widgets.dart";
+import "package:gtdclient/utils/utils.dart";
+import "package:flutter/material.dart";
+import "package:intl/intl.dart";
+import "package:gap/gap.dart";
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -11,7 +11,7 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final DateTime currentTime = DateTime.now();
     final String dateText =
-        DateFormat('EEEE, d MMMM, yyyy').format(currentTime);
+        DateFormat("EEEE, d MMMM, yyyy").format(currentTime);
     final String timeText = DateFormat.Hm().format(currentTime);
 
     final Size deviceSize = context.deviceSize;
@@ -19,9 +19,9 @@ class HomeScreen extends StatelessWidget {
 
     return Scaffold(
       body: Stack(
-        children: <Widget>[
+        children: [
           Column(
-            children: <Widget>[
+            children: [
               Container(
                 height: deviceSize.height * 0.3,
                 width: deviceSize.width,
@@ -29,7 +29,7 @@ class HomeScreen extends StatelessWidget {
                 child: Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
+                    children: [
                       SurfaceText(
                         text: dateText,
                         fontSize: 20,
@@ -40,7 +40,7 @@ class HomeScreen extends StatelessWidget {
                       ),
                       const Gap(10),
                       const SurfaceText(
-                        text: 'G E T   T A S K S   D O N E',
+                        text: "G E T   T A S K S   D O N E",
                         fontWeight: FontWeight.bold,
                         fontSize: 40,
                       ),

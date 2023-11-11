@@ -1,5 +1,5 @@
-import 'package:gtdclient/utils/utils.dart';
-import 'package:flutter/material.dart';
+import "package:gtdclient/utils/utils.dart";
+import "package:flutter/material.dart";
 
 class SurfaceText extends StatelessWidget {
   const SurfaceText(
