@@ -19,9 +19,9 @@ class HomeScreen extends StatelessWidget {
 
     return Scaffold(
       body: Stack(
-        children: [
+        children: <Widget>[
           Column(
-            children: [
+            children: <Widget>[
               Container(
                 height: deviceSize.height * 0.3,
                 width: deviceSize.width,
@@ -29,7 +29,7 @@ class HomeScreen extends StatelessWidget {
                 child: Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
+                    children: <Widget>[
                       SurfaceText(
                         text: dateText,
                         fontSize: 20,

@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 class AppTheme {
   const AppTheme._();
 
-  static final light = FlexThemeData.light(
+  static final ThemeData light = FlexThemeData.light(
     scheme: FlexScheme.indigo,
     surfaceMode: FlexSurfaceMode.highScaffoldLowSurfacesVariantDialog,
     blendLevel: 40,
@@ -37,7 +37,7 @@ class AppTheme {
     ),
   );
 
-  static final espresso = FlexThemeData.dark(
+  static final ThemeData espresso = FlexThemeData.dark(
     scheme: FlexScheme.espresso,
     surfaceMode: FlexSurfaceMode.highScaffoldLowSurfacesVariantDialog,
     blendLevel: 40,
