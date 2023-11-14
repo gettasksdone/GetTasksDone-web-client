@@ -5,10 +5,15 @@ FROM ubuntu:latest
 
 RUN apt update
 
+# Install xrdp and xfce4
 RUN apt install -y xrdp xfce4 xfce4-goodies
+
+# Install Flutter development dependencies
 RUN apt install -y clang cmake ninja-build pkg-config libgtk-3-dev
+
 RUN apt install -y wget curl unzip git sudo nano
 
+# Install Google Chrome
 RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
 RUN apt install -y ./google-chrome-stable_current_amd64.deb
 RUN rm google-chrome-stable_current_amd64.deb
