@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 void main() {
   runApp(
     MaterialApp(
-      title: 'Flutter Demo',
+      title: 'FdI Getting Things Done',
       theme: AppTheme.dark,
       home: const LoginScreen(),
     ),
