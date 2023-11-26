@@ -9,7 +9,6 @@
     }
   },
   "postCreateCommand": "echo \"developer\n\" | sudo -k -S chown -R \"${USER:-$(id -un)}\" .",
-  "postStartCommand": "(echo \"developer\n\" | sudo -k -S /etc/init.d/xrdp stop) && (echo \"developer\n\" | sudo -k -S /etc/init.d/xrdp start)",
   "dockerFile": "Dockerfile",
-  "runArgs": ["-p", "3389:3389", "--name", "dev-environment-flutter", "--privileged"]
+  "runArgs": ["--name", "dev-environment-flutter", "--privileged"]
 }
