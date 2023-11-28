@@ -71,7 +71,6 @@ class _LoginScreenState extends State<LoginScreen> {
                           'Not registered? ',
                           style: TextStyle(
                             fontSize: 17,
-                            color: Colors.white,
                           ),
                         ),
                         TextButton(
