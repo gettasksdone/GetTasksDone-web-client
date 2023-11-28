@@ -27,8 +27,8 @@ class ClearIconButton extends ClearButton {
       onPressed: onPressed,
       label: Text(
         text,
-        style: const TextStyle(
-          color: Colors.white,
+        style: TextStyle(
+          color: context.textTheme.labelLarge!.color,
           fontSize: 17,
         ),
       ),
