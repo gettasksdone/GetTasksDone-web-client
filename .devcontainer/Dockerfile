@@ -1,5 +1,7 @@
 FROM ubuntu:latest
 
+ARG USER="developer"
+
 RUN apt update
 
 # Install Flutter development dependencies
@@ -12,13 +14,13 @@ RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.d
 RUN apt install -y ./google-chrome-stable_current_amd64.deb
 RUN rm google-chrome-stable_current_amd64.deb
 
-RUN useradd -rm -d /home/developer -s /bin/bash -g root -G sudo -u 1001 -p "$(openssl passwd -1 developer)" developer
+RUN useradd -rm -d /home/${USER} -s /bin/bash -g root -G sudo -u 1001 -p "$(openssl passwd -1 ${USER})" ${USER}
 
-USER developer
+USER ${USER}
 
 # Install Flutter
-RUN cd /home/developer && git clone https://github.com/flutter/flutter.git
-ENV PATH $PATH:/home/developer/flutter/bin
+RUN cd /home/${USER} && git clone https://github.com/flutter/flutter.git
+ENV PATH $PATH:/home/${USER}/flutter/bin
 RUN yes | flutter doctor -v
 
-WORKDIR /home/developer/app
+WORKDIR /home/${USER}/app
