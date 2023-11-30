@@ -2,13 +2,13 @@ import 'package:gtd_client/utilities/extensions.dart';
 import 'package:flutter/material.dart';
 
 class LoginField extends StatelessWidget {
+  final Iterable<String> autofillHint;
   final String hint;
-  final bool obscure;
 
   const LoginField({
     super.key,
     required this.hint,
-    this.obscure = false,
+    required this.autofillHint,
   });
 
   @override
@@ -18,7 +18,8 @@ class LoginField extends StatelessWidget {
     return SizedBox(
       width: context.parentSize.width,
       child: TextFormField(
-        obscureText: obscure,
+        obscureText: autofillHint.contains(AutofillHints.password),
+        autofillHints: autofillHint,
         decoration: InputDecoration(
           contentPadding: const EdgeInsets.symmetric(
             vertical: 23,

@@ -51,11 +51,14 @@ class _LoginScreenState extends State<LoginScreen> {
                       style: TextStyle(fontSize: 17),
                     ),
                     const SizedBox(height: 10),
-                    const LoginField(hint: 'email'),
+                    const LoginField(
+                      hint: 'email',
+                      autofillHint: [AutofillHints.username],
+                    ),
                     const SizedBox(height: 10),
                     const LoginField(
                       hint: 'password',
-                      obscure: true,
+                      autofillHint: [AutofillHints.password],
                     ),
                     const SizedBox(height: 30),
                     GradientButton(
