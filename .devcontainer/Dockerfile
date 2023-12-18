@@ -24,3 +24,12 @@ ENV PATH $PATH:/home/${USER}/flutter/bin
 RUN yes | flutter doctor -v
 
 WORKDIR /home/${USER}/app
+
+COPY .. .
+
+# Give permissions to current user
+RUN echo "${USER}\n" | sudo -k -S chown -R "${USER:-$(id -un)}" .
+
+# Fix to run scripts
+RUN chmod +x .devcontainer/postCreateCommand.bash
+RUN echo "${USER}\n" | sudo -k -S sed -i -e 's/\r$//' .devcontainer/postCreateCommand.bash
