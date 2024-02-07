@@ -1,5 +1,5 @@
-import 'package:blackforesttools/utilities/extensions.dart';
-import 'package:blackforesttools/utilities/constants.dart';
+import 'package:gtd_client/utilities/extensions.dart';
+import 'package:gtd_client/utilities/constants.dart';
 import 'package:flutter/material.dart';
 
 class ClearButton extends StatelessWidget {

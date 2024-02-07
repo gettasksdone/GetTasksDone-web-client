@@ -33,7 +33,3 @@ extension ColorExtension on Color {
     );
   }
 }
-
-extension AppWidgetExtension on BuildContext {
-  Color get darkerSecondary => Theme.of(this).colorScheme.secondary.darken(50);
-}

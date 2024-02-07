@@ -1,20 +1,19 @@
-import 'package:blackforesttools/widgets/account_form_field.dart';
-import 'package:blackforesttools/mixins/login_screen_mixin.dart';
-import 'package:blackforesttools/widgets/gradient_button.dart';
-import 'package:blackforesttools/providers/session_token.dart';
-import 'package:blackforesttools/widgets/custom_app_bar.dart';
-import 'package:blackforesttools/utilities/extensions.dart';
-import 'package:blackforesttools/widgets/show_up_text.dart';
-import 'package:blackforesttools/utilities/constants.dart';
-import 'package:blackforesttools/providers/account.dart';
+import 'package:gtd_client/mixins/sign_in_screen_mixin.dart';
+import 'package:gtd_client/widgets/account_form_field.dart';
+import 'package:gtd_client/widgets/clear_svg_button.dart';
+import 'package:gtd_client/widgets/gradient_button.dart';
+import 'package:gtd_client/providers/session_token.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:gtd_client/utilities/extensions.dart';
+import 'package:gtd_client/utilities/constants.dart';
+import 'package:gtd_client/providers/account.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/foundation.dart';
-import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import 'dart:convert';
 
 class SignInScreen extends ConsumerStatefulWidget {
+  static const double _subTitleFontSize = 25.0;
+
   const SignInScreen({super.key});
 
   @override
@@ -22,7 +21,7 @@ class SignInScreen extends ConsumerStatefulWidget {
 }
 
 class _SignInScreenState extends ConsumerState<SignInScreen>
-    with LoginScreenMixin {
+    with SignInScreenMixin {
   void _submitLogin(BuildContext context) async {
     if (kDebugMode) {
       ref.read(sessionTokenProvider.notifier).set('session_token');
@@ -34,140 +33,160 @@ class _SignInScreenState extends ConsumerState<SignInScreen>
 
       return;
     }
-
-    final http.Response respone = await http.post(
-      Uri.parse('$serverUrl/sign_in'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(
-        <String, dynamic>{
-          'account': account,
-          'password': password,
-        },
-      ),
-    );
-
-    final Map<String, dynamic> payload = jsonDecode(respone.body);
-
-    if (respone.statusCode == 200) {
-      ref.read(sessionTokenProvider.notifier).set(payload['session_token']);
-      ref.read(accountProvider.notifier).set(account);
-
-      if (context.mounted) {
-        context.go('/app');
-      }
-
-      return;
-    }
-
-    setState(() {
-      errorMessage = payload['message'];
-    });
   }
 
   @override
   Widget build(BuildContext context) {
-    final bool showError = errorMessage != null;
+    final ColorScheme colors = context.colorScheme;
 
     return Scaffold(
-      appBar: const CustomAppBar(implyLeading: false),
-      body: Center(
-        child: Column(
-          children: [
-            const SizedBox(height: 30.0),
-            const Text(
-              'Black Forest Tools',
-              style: TextStyle(
-                fontSize: 35.0,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 30.0),
-            SizedBox(
-              width: 350.0,
-              child: Column(
-                children: [
-                  const Text(
-                    'Sign in',
-                    style: TextStyle(
-                      fontSize: 25.0,
-                      fontWeight: FontWeight.bold,
-                    ),
+      body: Container(
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            fit: BoxFit.cover,
+            image: AssetImage('assets/images/background.png'),
+          ),
+        ),
+        child: Center(
+          child: SizedBox(
+            width: 600.0,
+            child: Column(
+              children: [
+                const SizedBox(height: 200.0),
+                Text(
+                  'Inicio de sesión',
+                  style: TextStyle(
+                    fontSize: 35.0,
+                    color: colors.onPrimary,
+                    fontWeight: FontWeight.w600,
                   ),
-                  const SizedBox(height: 20.0),
-                  Form(
-                    key: formKey,
-                    child: Column(
-                      children: [
-                        AccountFormField(
-                          hintText: 'email',
-                          validator: validateEmail,
-                          autofillHint: AutofillHints.username,
-                        ),
-                        const SizedBox(height: 10.0),
-                        AccountFormField(
-                          hintText: 'password',
-                          validator: validatePassword,
-                          autofillHint: AutofillHints.password,
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 30.0),
-                  GradientButton(
-                    height: 60.0,
-                    buttonText: 'Sign in',
-                    lightenGradient: true,
-                    onPressed: (account != null) && (password != null)
-                        ? () => _submitLogin(context)
-                        : null,
-                  ),
-                  const SizedBox(height: 10.0),
-                  ShowUpText(
-                    visible: showError,
-                    text: errorMessage,
-                    textStyle: TextStyle(
-                      fontSize: 18.0,
-                      fontWeight: FontWeight.bold,
-                      color: context.colorScheme.error,
-                    ),
-                  ),
-                  Visibility(
-                    visible: showError,
-                    child: const SizedBox(height: 10.0),
-                  ),
-                  Row(
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 20.0),
+                  child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Text(
-                        'Not registered? ',
+                      Text(
+                        'Inicia sesión con tu cuenta de ',
                         style: TextStyle(
-                          fontSize: LoginScreenMixin.messageFontSize,
+                          color: colors.onPrimary,
+                          fontSize: SignInScreen._subTitleFontSize,
                         ),
                       ),
-                      TextButton(
-                        onPressed: () => context.go('/register'),
-                        style: TextButton.styleFrom(
-                          padding: const EdgeInsets.all(5.0),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(3.0),
-                          ),
-                        ),
-                        child: const Text(
-                          'Create account',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: LoginScreenMixin.messageFontSize,
-                          ),
+                      Text(
+                        'get tasks done',
+                        style: TextStyle(
+                          color: colors.onPrimary,
+                          fontWeight: FontWeight.w600,
+                          fontSize: SignInScreen._subTitleFontSize,
                         ),
                       ),
                     ],
                   ),
-                ],
-              ),
+                ),
+                SizedBox(
+                  width: 350.0,
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: padding,
+                        child: Text(
+                          'Email',
+                          style: TextStyle(
+                            fontSize: labelFontSize,
+                            color: colors.onPrimary,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                      Form(
+                        key: formKey,
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: padding,
+                              child: AccountFormField(
+                                validator: validateEmail,
+                                hintText: 'tu@correo.com',
+                                autofillHint: AutofillHints.username,
+                              ),
+                            ),
+                            Padding(
+                              padding: padding,
+                              child: Text(
+                                'Contraseña',
+                                style: TextStyle(
+                                  fontSize: labelFontSize,
+                                  color: colors.onPrimary,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: padding,
+                              child: AccountFormField(
+                                validator: validatePassword,
+                                hintText: 'Introduce tu contraseña',
+                                autofillHint: AutofillHints.password,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: padding,
+                        child: GradientButton(
+                          height: 60.0,
+                          buttonText: 'Inicia sesión',
+                          onPressed: (account != null) && (password != null)
+                              ? () => _submitLogin(context)
+                              : null,
+                        ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            '¿Todavía no tienes cuenta? ',
+                            style: TextStyle(
+                              color: colors.onPrimary,
+                              fontSize: SignInScreenMixin.messageFontSize,
+                            ),
+                          ),
+                          TextButton(
+                            onPressed: () {},
+                            style: TextButton.styleFrom(
+                              padding: const EdgeInsets.all(5.0),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(3.0),
+                              ),
+                            ),
+                            child: Text(
+                              'Regístrate',
+                              style: TextStyle(
+                                color: colors.onPrimary,
+                                fontWeight: FontWeight.w600,
+                                fontSize: SignInScreenMixin.messageFontSize,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Padding(
+                        padding: padding,
+                        child: ClearSvgButton(
+                          height: 60.0,
+                          onPressed: () {},
+                          fileName: 'google_logo',
+                          buttonText: 'Continuar con Google',
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:crypto/crypto.dart';
 import 'dart:convert';
 
-mixin LoginScreenMixin<T extends StatefulWidget> on State<T> {
+mixin SignInScreenMixin<T extends StatefulWidget> on State<T> {
   static const double messageFontSize = 17.0;
 
   final GlobalKey formKey = GlobalKey<FormState>();

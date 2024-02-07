@@ -1,12 +1,9 @@
-import 'package:blackforesttools/utilities/extensions.dart';
-import 'package:blackforesttools/utilities/constants.dart';
+import 'package:gtd_client/utilities/extensions.dart';
+import 'package:gtd_client/utilities/constants.dart';
 import 'package:flutter/material.dart';
 
 class GradientButton extends StatelessWidget {
-  static const List<int> _percents = [8, 16, 24];
-
   final VoidCallback? onPressed;
-  final bool lightenGradient;
   final String buttonText;
   final double? height;
   final double? width;
@@ -17,7 +14,6 @@ class GradientButton extends StatelessWidget {
     required this.onPressed,
     this.height,
     this.width,
-    this.lightenGradient = false,
   });
 
   @override
@@ -29,19 +25,9 @@ class GradientButton extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: roundedCorners,
         gradient: LinearGradient(
-          end: Alignment.topRight,
-          begin: Alignment.bottomLeft,
-          colors: lightenGradient
-              ? [
-                  colors.primary.lighten(_percents[0]),
-                  colors.primary.lighten(_percents[1]),
-                  colors.primary.lighten(_percents[2]),
-                ]
-              : [
-                  colors.primary.darken(_percents[0]),
-                  colors.primary.darken(_percents[1]),
-                  colors.primary.darken(_percents[2]),
-                ],
+          end: Alignment.centerRight,
+          begin: Alignment.centerLeft,
+          colors: [colors.primary, Colors.transparent],
         ),
       ),
       child: ElevatedButton(
