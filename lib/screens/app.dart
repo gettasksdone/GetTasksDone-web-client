@@ -1,6 +1,7 @@
 import 'package:gtd_client/providers/session_token.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gtd_client/utilities/extensions.dart';
+import 'package:gtd_client/utilities/constants.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -47,7 +48,25 @@ class _AppScreenState extends ConsumerState<AppScreen> {
     final ColorScheme colors = context.colorScheme;
 
     return Scaffold(
-      body: _views[_viewIndex],
+      body: Container(
+        decoration: background,
+        child: Row(
+          children: [
+            SizedBox(
+              width: 350.0,
+              child: Column(
+                children: [
+                  Text(
+                    'CAPTURA',
+                    style: TextStyle(color: colors.secondary),
+                  ),
+                ],
+              ),
+            ),
+            Expanded(child: _views[_viewIndex]),
+          ],
+        ),
+      ),
     );
   }
 }

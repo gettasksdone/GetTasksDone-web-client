@@ -1,9 +1,14 @@
+import 'package:gtd_client/utilities/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:crypto/crypto.dart';
 import 'dart:convert';
 
 mixin SignInScreenMixin<T extends StatefulWidget> on State<T> {
-  static const double messageFontSize = 17.0;
+  static const double messageFontSize = 13.0;
+  static const double buttonHeight = 58.0;
+  static const EdgeInsets verticalPadding = EdgeInsets.symmetric(
+    vertical: paddingAmount,
+  );
 
   final GlobalKey formKey = GlobalKey<FormState>();
 

@@ -55,23 +55,26 @@ class _AccountFormFieldState extends State<AccountFormField> {
           ? widget.autofillHint == AutofillHints.password
           : false,
       decoration: InputDecoration(
+        filled: true,
         hintText: widget.hintText,
+        fillColor: colors.onSurface,
+        hintStyle: TextStyle(color: colors.onPrimary),
         contentPadding: const EdgeInsets.symmetric(
-          vertical: 23.0,
-          horizontal: 20.0,
+          vertical: 20.0,
+          horizontal: 17.0,
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: roundedCorners,
           borderSide: BorderSide(
             width: edgeWidth,
-            color: colors.primary.lighten(45),
+            color: colors.primary,
           ),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: roundedCorners,
           borderSide: BorderSide(
             width: edgeWidth,
-            color: colors.primary,
+            color: colors.primary.darken(20),
           ),
         ),
         errorBorder: OutlineInputBorder(

@@ -41,12 +41,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen>
 
     return Scaffold(
       body: Container(
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            fit: BoxFit.cover,
-            image: AssetImage('assets/images/background.png'),
-          ),
-        ),
+        decoration: background,
         child: Center(
           child: SizedBox(
             width: 600.0,
@@ -89,7 +84,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen>
                   child: Column(
                     children: [
                       Padding(
-                        padding: padding,
+                        padding: SignInScreenMixin.verticalPadding,
                         child: Text(
                           'Email',
                           style: TextStyle(
@@ -104,7 +99,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen>
                         child: Column(
                           children: [
                             Padding(
-                              padding: padding,
+                              padding: SignInScreenMixin.verticalPadding,
                               child: AccountFormField(
                                 validator: validateEmail,
                                 hintText: 'tu@correo.com',
@@ -112,7 +107,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen>
                               ),
                             ),
                             Padding(
-                              padding: padding,
+                              padding: SignInScreenMixin.verticalPadding,
                               child: Text(
                                 'Contraseña',
                                 style: TextStyle(
@@ -123,10 +118,10 @@ class _SignInScreenState extends ConsumerState<SignInScreen>
                               ),
                             ),
                             Padding(
-                              padding: padding,
+                              padding: SignInScreenMixin.verticalPadding,
                               child: AccountFormField(
                                 validator: validatePassword,
-                                hintText: 'Introduce tu contraseña',
+                                hintText: 'introduce tu contraseña',
                                 autofillHint: AutofillHints.password,
                               ),
                             ),
@@ -134,51 +129,54 @@ class _SignInScreenState extends ConsumerState<SignInScreen>
                         ),
                       ),
                       Padding(
-                        padding: padding,
+                        padding: SignInScreenMixin.verticalPadding,
                         child: GradientButton(
-                          height: 60.0,
                           buttonText: 'Inicia sesión',
+                          height: SignInScreenMixin.buttonHeight,
                           onPressed: (account != null) && (password != null)
                               ? () => _submitLogin(context)
                               : null,
                         ),
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            '¿Todavía no tienes cuenta? ',
-                            style: TextStyle(
-                              color: colors.onPrimary,
-                              fontSize: SignInScreenMixin.messageFontSize,
-                            ),
-                          ),
-                          TextButton(
-                            onPressed: () {},
-                            style: TextButton.styleFrom(
-                              padding: const EdgeInsets.all(5.0),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(3.0),
-                              ),
-                            ),
-                            child: Text(
-                              'Regístrate',
+                      Padding(
+                        padding: SignInScreenMixin.verticalPadding,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              '¿Todavía no tienes cuenta? ',
                               style: TextStyle(
                                 color: colors.onPrimary,
-                                fontWeight: FontWeight.w600,
                                 fontSize: SignInScreenMixin.messageFontSize,
                               ),
                             ),
-                          ),
-                        ],
+                            TextButton(
+                              onPressed: () {},
+                              style: TextButton.styleFrom(
+                                padding: const EdgeInsets.all(5.0),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(3.0),
+                                ),
+                              ),
+                              child: Text(
+                                'Regístrate',
+                                style: TextStyle(
+                                  color: colors.onPrimary,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: SignInScreenMixin.messageFontSize,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                       Padding(
-                        padding: padding,
+                        padding: SignInScreenMixin.verticalPadding,
                         child: ClearSvgButton(
-                          height: 60.0,
                           onPressed: () {},
                           fileName: 'google_logo',
                           buttonText: 'Continuar con Google',
+                          height: SignInScreenMixin.buttonHeight,
                         ),
                       )
                     ],

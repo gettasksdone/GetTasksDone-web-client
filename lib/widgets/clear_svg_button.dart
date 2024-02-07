@@ -18,19 +18,25 @@ class ClearSvgButton extends ClearButton {
 
   @override
   Widget build(BuildContext context) {
-    final parentSize = context.parentSize;
+    final ColorScheme colors = context.colorScheme;
+    final Size parentSize = context.parentSize;
 
     return TextButton.icon(
       onPressed: onPressed,
       label: Text(
         buttonText,
-        style: const TextStyle(fontSize: 17.0),
+        style: TextStyle(
+          fontSize: 17.0,
+          color: colors.onPrimary,
+          fontWeight: FontWeight.w600,
+        ),
       ),
       icon: SvgPicture.asset(
         'assets/svgs/$fileName.svg',
-        width: 25.0,
+        width: 35.0,
       ),
       style: TextButton.styleFrom(
+        backgroundColor: colors.onSurface,
         fixedSize: Size(
           width ?? parentSize.width,
           height ?? parentSize.height,
@@ -39,7 +45,7 @@ class ClearSvgButton extends ClearButton {
           borderRadius: roundedCorners,
           side: BorderSide(
             width: edgeWidth,
-            color: context.colorScheme.secondary,
+            color: colors.primary,
           ),
         ),
       ),
