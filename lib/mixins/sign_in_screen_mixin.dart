@@ -5,6 +5,7 @@ import 'dart:convert';
 
 mixin SignInScreenMixin<T extends StatefulWidget> on State<T> {
   static const double messageFontSize = 13.0;
+  static const double labelFontSize = 15.0;
   static const double buttonHeight = 58.0;
   static const EdgeInsets verticalPadding = EdgeInsets.symmetric(
     vertical: paddingAmount,

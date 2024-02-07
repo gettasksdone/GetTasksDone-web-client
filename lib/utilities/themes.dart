@@ -4,13 +4,14 @@ class AppTheme {
   static const Color _appBlue = Color.fromRGBO(51, 84, 230, 1);
 
   static final dark = ThemeData.dark(useMaterial3: true).copyWith(
+    hoverColor: const Color.fromARGB(35, 158, 158, 158),
     colorScheme: ColorScheme.fromSeed(
       seedColor: _appBlue,
       surface: Colors.transparent,
       onSurface: const Color.fromARGB(35, 158, 158, 158),
       primary: _appBlue,
       onPrimary: Colors.white,
-      secondary: const Color.fromARGB(115, 158, 158, 158),
+      secondary: const Color.fromARGB(255, 158, 158, 158),
       onSecondary: Colors.white,
     ),
   );

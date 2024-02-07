@@ -88,9 +88,9 @@ class _SignInScreenState extends ConsumerState<SignInScreen>
                         child: Text(
                           'Email',
                           style: TextStyle(
-                            fontSize: labelFontSize,
                             color: colors.onPrimary,
                             fontWeight: FontWeight.w600,
+                            fontSize: SignInScreenMixin.labelFontSize,
                           ),
                         ),
                       ),
@@ -111,9 +111,9 @@ class _SignInScreenState extends ConsumerState<SignInScreen>
                               child: Text(
                                 'Contraseña',
                                 style: TextStyle(
-                                  fontSize: labelFontSize,
                                   color: colors.onPrimary,
                                   fontWeight: FontWeight.w600,
+                                  fontSize: SignInScreenMixin.labelFontSize,
                                 ),
                               ),
                             ),
