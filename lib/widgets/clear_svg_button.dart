@@ -1,27 +1,35 @@
 import 'package:blackforesttools/utilities/extensions.dart';
+import 'package:blackforesttools/widgets/clear_button.dart';
 import 'package:blackforesttools/utilities/constants.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/material.dart';
 
-class ClearButton extends StatelessWidget {
-  final VoidCallback? onPressed;
-  final String buttonText;
-  final double? height;
-  final double? width;
+class ClearSvgButton extends ClearButton {
+  final String fileName;
 
-  const ClearButton({
+  const ClearSvgButton({
     super.key,
-    required this.buttonText,
-    required this.onPressed,
-    this.height,
-    this.width,
+    required super.buttonText,
+    required super.onPressed,
+    required this.fileName,
+    super.height,
+    super.width,
   });
 
   @override
   Widget build(BuildContext context) {
-    final Size parentSize = context.parentSize;
+    final parentSize = context.parentSize;
 
-    return TextButton(
+    return TextButton.icon(
       onPressed: onPressed,
+      label: Text(
+        buttonText,
+        style: const TextStyle(fontSize: 17.0),
+      ),
+      icon: SvgPicture.asset(
+        'assets/svgs/$fileName.svg',
+        width: 25.0,
+      ),
       style: TextButton.styleFrom(
         fixedSize: Size(
           width ?? parentSize.width,
@@ -34,10 +42,6 @@ class ClearButton extends StatelessWidget {
             color: context.colorScheme.secondary,
           ),
         ),
-      ),
-      child: Text(
-        buttonText,
-        style: const TextStyle(fontSize: 17.0),
       ),
     );
   }

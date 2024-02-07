@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 
 extension BuildContextExtension on BuildContext {
-  ThemeData get _theme => Theme.of(this);
-  ColorScheme get colorScheme => _theme.colorScheme;
-  TextTheme get textTheme => _theme.textTheme;
+  ThemeData get theme => Theme.of(this);
   Size get parentSize => MediaQuery.sizeOf(this);
+  ColorScheme get colorScheme => theme.colorScheme;
 }
 
 extension ColorExtension on Color {
   Color darken(int percent) {
-    assert(1 <= percent && percent <= 100);
+    assert(0 <= percent && percent <= 100);
 
     final darkenValue = 1 - percent / 100;
 
@@ -22,7 +21,7 @@ extension ColorExtension on Color {
   }
 
   Color lighten(int percent) {
-    assert(1 <= percent && percent <= 100);
+    assert(0 <= percent && percent <= 100);
 
     final lightenValue = percent / 100;
 
@@ -33,4 +32,8 @@ extension ColorExtension on Color {
       blue + ((255 - blue) * lightenValue).round(),
     );
   }
+}
+
+extension AppWidgetExtension on BuildContext {
+  Color get darkerSecondary => Theme.of(this).colorScheme.secondary.darken(50);
 }
