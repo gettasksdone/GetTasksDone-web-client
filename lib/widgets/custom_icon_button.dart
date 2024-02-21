@@ -35,11 +35,12 @@ class CustomIconButton extends StatelessWidget {
       ),
       style: TextButton.styleFrom(
         alignment: Alignment.centerLeft,
-        foregroundColor: colors.onSecondary,
         fixedSize: Size(size.width, height),
         padding: const EdgeInsets.all(paddingAmount),
-        backgroundColor: colors.onSurface.lighten(80),
+        backgroundColor: colors.primary.lighten(80).withAlpha(65),
         shape: const RoundedRectangleBorder(borderRadius: roundedCorners),
+      ).merge(
+        ButtonStyle(overlayColor: MaterialStatePropertyAll(context.hoverColor)),
       ),
     );
   }

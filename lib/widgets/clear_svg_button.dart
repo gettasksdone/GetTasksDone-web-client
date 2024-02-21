@@ -48,6 +48,8 @@ class ClearSvgButton extends ClearButton {
             color: colors.primary,
           ),
         ),
+      ).merge(
+        ButtonStyle(overlayColor: MaterialStatePropertyAll(context.hoverColor)),
       ),
     );
   }

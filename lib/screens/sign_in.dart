@@ -153,7 +153,13 @@ class _SignInScreenState extends ConsumerState<SignInScreen>
                               style: TextButton.styleFrom(
                                 padding: const EdgeInsets.all(5.0),
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(3.0),
+                                  borderRadius: BorderRadius.circular(5.0),
+                                ),
+                              ).merge(
+                                ButtonStyle(
+                                  overlayColor: MaterialStatePropertyAll(
+                                    context.hoverColor,
+                                  ),
                                 ),
                               ),
                               child: Text(
