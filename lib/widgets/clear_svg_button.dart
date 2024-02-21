@@ -26,7 +26,7 @@ class ClearSvgButton extends ClearButton {
       label: Text(
         buttonText,
         style: TextStyle(
-          fontSize: 17.0,
+          fontSize: defaultFontSize,
           color: colors.onPrimary,
           fontWeight: FontWeight.w600,
         ),

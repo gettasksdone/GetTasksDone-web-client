@@ -37,7 +37,7 @@ class ClearButton extends StatelessWidget {
       ),
       child: Text(
         buttonText,
-        style: const TextStyle(fontSize: 17.0),
+        style: const TextStyle(fontSize: defaultFontSize),
       ),
     );
   }

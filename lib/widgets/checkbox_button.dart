@@ -37,7 +37,7 @@ class _CheckboxButtonState extends State<CheckboxButton> {
       title: Text(
         widget.text,
         style: TextStyle(
-          fontSize: 18.0,
+          fontSize: defaultFontSize,
           color: colors.onSecondary,
         ),
       ),

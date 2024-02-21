@@ -12,8 +12,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class SignInScreen extends ConsumerStatefulWidget {
-  static const double _subTitleFontSize = 25.0;
-
   const SignInScreen({super.key});
 
   @override
@@ -22,6 +20,8 @@ class SignInScreen extends ConsumerStatefulWidget {
 
 class _SignInScreenState extends ConsumerState<SignInScreen>
     with SignInScreenMixin {
+  static const double _subTitleFontSize = 25.0;
+
   void _submitLogin(BuildContext context) async {
     if (kDebugMode) {
       ref.read(sessionTokenProvider.notifier).set('session_token');
@@ -38,6 +38,12 @@ class _SignInScreenState extends ConsumerState<SignInScreen>
   @override
   Widget build(BuildContext context) {
     final ColorScheme colors = context.colorScheme;
+    final Color textColor = colors.onPrimary;
+    final TextStyle fieldHeadingStyle = TextStyle(
+      color: colors.onPrimary,
+      fontWeight: FontWeight.w600,
+      fontSize: SignInScreenMixin.labelFontSize,
+    );
 
     return Scaffold(
       body: Container(
@@ -52,8 +58,8 @@ class _SignInScreenState extends ConsumerState<SignInScreen>
                   'Inicio de sesión',
                   style: TextStyle(
                     fontSize: 35.0,
-                    color: colors.onPrimary,
-                    fontWeight: FontWeight.w600,
+                    color: textColor,
+                    fontWeight: SignInScreenMixin.bold,
                   ),
                 ),
                 Padding(
@@ -64,16 +70,16 @@ class _SignInScreenState extends ConsumerState<SignInScreen>
                       Text(
                         'Inicia sesión con tu cuenta de ',
                         style: TextStyle(
-                          color: colors.onPrimary,
-                          fontSize: SignInScreen._subTitleFontSize,
+                          color: textColor,
+                          fontSize: _subTitleFontSize,
                         ),
                       ),
                       Text(
                         'get tasks done',
                         style: TextStyle(
-                          color: colors.onPrimary,
-                          fontWeight: FontWeight.w600,
-                          fontSize: SignInScreen._subTitleFontSize,
+                          color: textColor,
+                          fontSize: _subTitleFontSize,
+                          fontWeight: SignInScreenMixin.bold,
                         ),
                       ),
                     ],
@@ -87,11 +93,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen>
                         padding: SignInScreenMixin.verticalPadding,
                         child: Text(
                           'Email',
-                          style: TextStyle(
-                            color: colors.onPrimary,
-                            fontWeight: FontWeight.w600,
-                            fontSize: SignInScreenMixin.labelFontSize,
-                          ),
+                          style: fieldHeadingStyle,
                         ),
                       ),
                       Form(
@@ -110,11 +112,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen>
                               padding: SignInScreenMixin.verticalPadding,
                               child: Text(
                                 'Contraseña',
-                                style: TextStyle(
-                                  color: colors.onPrimary,
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: SignInScreenMixin.labelFontSize,
-                                ),
+                                style: fieldHeadingStyle,
                               ),
                             ),
                             Padding(
@@ -146,7 +144,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen>
                             Text(
                               '¿Todavía no tienes cuenta? ',
                               style: TextStyle(
-                                color: colors.onPrimary,
+                                color: textColor,
                                 fontSize: SignInScreenMixin.messageFontSize,
                               ),
                             ),
@@ -161,8 +159,8 @@ class _SignInScreenState extends ConsumerState<SignInScreen>
                               child: Text(
                                 'Regístrate',
                                 style: TextStyle(
-                                  color: colors.onPrimary,
-                                  fontWeight: FontWeight.w600,
+                                  color: textColor,
+                                  fontWeight: SignInScreenMixin.bold,
                                   fontSize: SignInScreenMixin.messageFontSize,
                                 ),
                               ),

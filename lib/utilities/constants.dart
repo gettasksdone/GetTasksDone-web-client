@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 const String serverUrl = '';
 
+const double defaultFontSize = 18.0;
+
 const double edgeWidth = 3.0;
 
 const double paddingAmount = 10.0;

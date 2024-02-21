@@ -29,7 +29,7 @@ class CustomIconButton extends StatelessWidget {
       label: Text(
         label,
         style: TextStyle(
-          fontSize: 18.0,
+          fontSize: defaultFontSize,
           color: colors.onSecondary,
         ),
       ),

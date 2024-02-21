@@ -1,6 +1,7 @@
 import 'package:gtd_client/providers/session_token.dart';
+import 'package:gtd_client/widgets/app_button_tile.dart';
+import 'package:gtd_client/widgets/app_title_text.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:gtd_client/utilities/extensions.dart';
 import 'package:gtd_client/utilities/constants.dart';
 import 'package:gtd_client/views/tasks_view.dart';
 import 'package:go_router/go_router.dart';
@@ -15,13 +16,6 @@ class AppScreen extends ConsumerStatefulWidget {
 }
 
 class _AppScreenState extends ConsumerState<AppScreen> {
-  static const double _listTileFontSize = 23.0;
-  static const double _labelFontSize = 17.0;
-  static const double _leadingWidth = 45.0;
-  static const double _iconSize = 35.0;
-  static const EdgeInsets _listTilePadding = EdgeInsets.only(
-    bottom: paddingAmount,
-  );
   static const EdgeInsets _textPadding = EdgeInsets.only(
     bottom: paddingAmount,
     left: paddingAmount,
@@ -38,7 +32,7 @@ class _AppScreenState extends ConsumerState<AppScreen> {
   ];
 
   int _viewIndex = 0;
-  int _entrada = 10;
+  int _inbox = 10;
 
   @override
   void initState() {
@@ -55,7 +49,7 @@ class _AppScreenState extends ConsumerState<AppScreen> {
     });
   }
 
-  void _setView(BuildContext context, int viewIndex) {
+  void _setView(int viewIndex) {
     setState(() {
       _viewIndex = viewIndex;
     });
@@ -63,8 +57,6 @@ class _AppScreenState extends ConsumerState<AppScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final ColorScheme colors = context.colorScheme;
-
     return Scaffold(
       body: Container(
         decoration: background,
@@ -75,185 +67,69 @@ class _AppScreenState extends ConsumerState<AppScreen> {
               child: ListView(
                 children: [
                   const SizedBox(height: 150.0),
-                  Padding(
+                  const Padding(
                     padding: _textPadding,
-                    child: Text(
-                      'CAPTURA',
-                      style: TextStyle(
-                        color: colors.secondary,
-                        fontSize: _labelFontSize,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
+                    child: AppTitleText('CAPTURA'),
                   ),
-                  Padding(
-                    padding: _listTilePadding,
-                    child: ListTile(
-                      iconColor: colors.secondary,
-                      minLeadingWidth: _leadingWidth,
-                      onTap: () => _setView(context, 0),
-                      leading: const Icon(
-                        Icons.inbox,
-                        size: _iconSize,
-                      ),
-                      title: Text('Bandeja de entrada  $_entrada'),
-                      titleTextStyle: TextStyle(
-                        color: colors.onSecondary,
-                        fontSize: _listTileFontSize,
-                      ),
-                    ),
+                  const SizedBox(height: paddingAmount),
+                  AppButtonTile(
+                    icon: Icons.inbox,
+                    onTap: () => _setView(0),
+                    text: 'Bandeja de entrada  $_inbox',
                   ),
-                  Padding(
+                  const Padding(
                     padding: _textPadding,
-                    child: Text(
-                      'CATEGORIZA',
-                      style: TextStyle(
-                        color: colors.secondary,
-                        fontSize: _labelFontSize,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
+                    child: AppTitleText('CATEGORIZA'),
                   ),
-                  Padding(
-                    padding: _listTilePadding,
-                    child: ListTile(
-                      iconColor: colors.secondary,
-                      minLeadingWidth: _leadingWidth,
-                      onTap: () => _setView(context, 1),
-                      title: const Text('Lo siguiente'),
-                      leading: const Icon(
-                        Icons.arrow_circle_right,
-                        size: _iconSize,
-                      ),
-                      titleTextStyle: TextStyle(
-                        color: colors.onSecondary,
-                        fontSize: _listTileFontSize,
-                      ),
-                    ),
+                  const SizedBox(height: paddingAmount),
+                  AppButtonTile(
+                    text: 'Lo siguiente',
+                    onTap: () => _setView(1),
+                    icon: Icons.arrow_circle_right,
                   ),
-                  Padding(
-                    padding: _listTilePadding,
-                    child: ListTile(
-                      iconColor: colors.secondary,
-                      minLeadingWidth: _leadingWidth,
-                      onTap: () => _setView(context, 2),
-                      title: const Text('Esperando'),
-                      leading: const Icon(
-                        Icons.coffee,
-                        size: _iconSize,
-                      ),
-                      titleTextStyle: TextStyle(
-                        color: colors.onSecondary,
-                        fontSize: _listTileFontSize,
-                      ),
-                    ),
+                  const SizedBox(height: paddingAmount),
+                  AppButtonTile(
+                    text: 'Esperando',
+                    icon: Icons.coffee,
+                    onTap: () => _setView(2),
                   ),
-                  Padding(
-                    padding: _listTilePadding,
-                    child: ListTile(
-                      iconColor: colors.secondary,
-                      minLeadingWidth: _leadingWidth,
-                      onTap: () => _setView(context, 3),
-                      title: const Text('Agendado'),
-                      leading: const Icon(
-                        Icons.next_plan_outlined,
-                        size: _iconSize,
-                      ),
-                      titleTextStyle: TextStyle(
-                        color: colors.onSecondary,
-                        fontSize: _listTileFontSize,
-                      ),
-                    ),
+                  const SizedBox(height: paddingAmount),
+                  AppButtonTile(
+                    text: 'Agendado',
+                    onTap: () => _setView(3),
+                    icon: Icons.next_plan_outlined,
                   ),
-                  Padding(
-                    padding: _listTilePadding,
-                    child: ListTile(
-                      iconColor: colors.secondary,
-                      minLeadingWidth: _leadingWidth,
-                      onTap: () => _setView(context, 4),
-                      title: const Text('Algún día'),
-                      leading: const Icon(
-                        Icons.landscape_outlined,
-                        size: _iconSize,
-                      ),
-                      titleTextStyle: TextStyle(
-                        color: colors.onSecondary,
-                        fontSize: _listTileFontSize,
-                      ),
-                    ),
+                  const SizedBox(height: paddingAmount),
+                  AppButtonTile(
+                    text: 'Algún día',
+                    onTap: () => _setView(4),
+                    icon: Icons.landscape_outlined,
                   ),
-                  Padding(
+                  const Padding(
                     padding: _textPadding,
-                    child: Text(
-                      'PRIORIZA',
-                      style: TextStyle(
-                        color: colors.secondary,
-                        fontSize: _labelFontSize,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
+                    child: AppTitleText('PRIORIZA'),
                   ),
-                  Padding(
-                    padding: _listTilePadding,
-                    child: ListTile(
-                      iconColor: colors.secondary,
-                      minLeadingWidth: _leadingWidth,
-                      onTap: () => _setView(context, 5),
-                      leading: const Icon(
-                        Icons.star,
-                        size: _iconSize,
-                      ),
-                      title: const Text('Importante'),
-                      titleTextStyle: TextStyle(
-                        color: colors.onSecondary,
-                        fontSize: _listTileFontSize,
-                      ),
-                    ),
+                  const SizedBox(height: paddingAmount),
+                  AppButtonTile(
+                    icon: Icons.star,
+                    text: 'Importante',
+                    onTap: () => _setView(5),
                   ),
-                  Padding(
+                  const Padding(
                     padding: _textPadding,
-                    child: Text(
-                      'ORGANIZA',
-                      style: TextStyle(
-                        color: colors.secondary,
-                        fontSize: _labelFontSize,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
+                    child: AppTitleText('ORGANIZA'),
                   ),
-                  Padding(
-                    padding: _listTilePadding,
-                    child: ListTile(
-                      iconColor: colors.secondary,
-                      minLeadingWidth: _leadingWidth,
-                      onTap: () => _setView(context, 6),
-                      leading: const Icon(
-                        Icons.personal_video,
-                        size: _iconSize,
-                      ),
-                      title: const Text('Proyectos'),
-                      titleTextStyle: TextStyle(
-                        color: colors.onSecondary,
-                        fontSize: _listTileFontSize,
-                      ),
-                    ),
+                  const SizedBox(height: paddingAmount),
+                  AppButtonTile(
+                    text: 'Proyectos',
+                    onTap: () => _setView(6),
+                    icon: Icons.personal_video,
                   ),
-                  Padding(
-                    padding: _listTilePadding,
-                    child: ListTile(
-                      iconColor: colors.secondary,
-                      minLeadingWidth: _leadingWidth,
-                      onTap: () => _setView(context, 7),
-                      leading: const Icon(
-                        Icons.label,
-                        size: _iconSize,
-                      ),
-                      title: const Text('Etiquetas'),
-                      titleTextStyle: TextStyle(
-                        color: colors.onSecondary,
-                        fontSize: _listTileFontSize,
-                      ),
-                    ),
+                  const SizedBox(height: paddingAmount),
+                  AppButtonTile(
+                    text: 'Etiquetas',
+                    icon: Icons.label,
+                    onTap: () => _setView(7),
                   ),
                 ],
               ),
