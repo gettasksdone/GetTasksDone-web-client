@@ -5,12 +5,14 @@ import 'package:flutter/material.dart';
 class CustomIconButton extends StatelessWidget {
   final IconData icon;
   final double height;
-  final String label;
+  final double? width;
+  final String? label;
 
   const CustomIconButton({
     super.key,
-    required this.label,
     required this.icon,
+    this.label,
+    this.width,
     this.height = 60.0,
   });
 
@@ -26,16 +28,18 @@ class CustomIconButton extends StatelessWidget {
         size: 30.0,
         color: colors.onSecondary,
       ),
-      label: Text(
-        label,
-        style: TextStyle(
-          fontSize: defaultFontSize,
-          color: colors.onSecondary,
-        ),
-      ),
+      label: label != null
+          ? Text(
+              label!,
+              style: TextStyle(
+                fontSize: defaultFontSize,
+                color: colors.onSecondary,
+              ),
+            )
+          : const SizedBox.shrink(),
       style: TextButton.styleFrom(
         alignment: Alignment.centerLeft,
-        fixedSize: Size(size.width, height),
+        fixedSize: Size(width ?? size.width, height),
         padding: const EdgeInsets.all(paddingAmount),
         backgroundColor: colors.primary.lighten(80).withAlpha(65),
         shape: const RoundedRectangleBorder(borderRadius: roundedCorners),
