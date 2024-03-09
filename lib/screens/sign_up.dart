@@ -27,11 +27,8 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen>
 
   void _submitSingUp(BuildContext context) async {
     if (kDebugMode) {
-      ref.read(sessionTokenProvider.notifier).set('session_token');
-      ref.read(accountProvider.notifier).set('micuenta');
-
       if (context.mounted) {
-        context.go('/app');
+        context.go('/complete_registry');
       }
 
       return;
@@ -56,7 +53,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen>
       ref.read(accountProvider.notifier).set(account);
 
       if (context.mounted) {
-        context.go('/app');
+        context.go('/complete_registry');
       }
 
       return;

@@ -1,4 +1,5 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:flutter/foundation.dart';
 
 part 'account.g.dart';
 
@@ -8,6 +9,10 @@ class Account extends _$Account {
 
   @override
   String? build() {
+    if (kDebugMode) {
+      return 'correo@correo.cor';
+    }
+
     return _account;
   }
 

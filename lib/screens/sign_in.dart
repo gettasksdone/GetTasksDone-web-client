@@ -1,3 +1,4 @@
+import 'package:gtd_client/providers/completed_registry.dart';
 import 'package:gtd_client/mixins/sign_in_screen_mixin.dart';
 import 'package:gtd_client/widgets/account_form_field.dart';
 import 'package:gtd_client/providers/session_token.dart';
@@ -24,9 +25,6 @@ class _SignInScreenState extends ConsumerState<SignInScreen>
     with SignInScreenMixin {
   void _submitSignIn(BuildContext context) async {
     if (kDebugMode) {
-      ref.read(sessionTokenProvider.notifier).set('session_token');
-      ref.read(accountProvider.notifier).set('micuenta');
-
       if (context.mounted) {
         context.go('/app');
       }
@@ -51,8 +49,20 @@ class _SignInScreenState extends ConsumerState<SignInScreen>
       ref.read(sessionTokenProvider.notifier).set(respone.body);
       ref.read(accountProvider.notifier).set(account);
 
+      final http.Response userDataRespone = await http.post(
+        Uri.parse('$serverUrl/userData'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+      );
+
       if (context.mounted) {
-        context.go('/app');
+        if (userDataRespone.body.isEmpty) {
+          context.go('/complete_registry');
+        } else {
+          ref.read(completedRegistryProvider.notifier).set(true);
+          context.go('/app');
+        }
       }
 
       return;

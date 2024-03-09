@@ -1,3 +1,4 @@
+import 'package:gtd_client/screens/complete_registry.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gtd_client/utilities/themes.dart';
 import 'package:gtd_client/screens/sign_in.dart';
@@ -21,7 +22,12 @@ final GoRouter _router = GoRouter(
           path: 'app',
           pageBuilder: (context, state) =>
               const NoTransitionPage(child: AppScreen()),
-        )
+        ),
+        GoRoute(
+          path: 'complete_registry',
+          pageBuilder: (context, state) =>
+              const NoTransitionPage(child: CompleteRegistryScreen()),
+        ),
       ],
     ),
   ],
