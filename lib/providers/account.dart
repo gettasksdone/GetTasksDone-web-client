@@ -11,8 +11,8 @@ class Account extends _$Account {
     return _account;
   }
 
-  void set(String? email) {
-    _account = email;
+  void set(String? username) {
+    _account = username;
 
     ref.invalidateSelf();
   }

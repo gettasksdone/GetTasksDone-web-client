@@ -1,36 +1,41 @@
 import 'package:gtd_client/utilities/constants.dart';
 import 'package:flutter/material.dart';
-import 'package:crypto/crypto.dart';
-import 'dart:convert';
 
 mixin SignInScreenMixin<T extends StatefulWidget> on State<T> {
-  static const double messageFontSize = 13.0;
-  static const double labelFontSize = 15.0;
-  static const double buttonHeight = 58.0;
-  static const FontWeight bold = FontWeight.w600;
-  static const EdgeInsets verticalPadding = EdgeInsets.symmetric(
-    vertical: paddingAmount,
+  static const EdgeInsets rowPadding = EdgeInsets.only(bottom: paddingAmount);
+  static const EdgeInsets doublePadding = EdgeInsets.only(bottom: 20.0);
+  static const Size buttonSize = Size(300.0, 60.0);
+  static const double subtitleFontSize = 20.0;
+  static const double buttonFontSize = 20.0;
+  static const double errorFontSize = 18.0;
+  static const double topSpacing = 200.0;
+  static const double formWidth = 350.0;
+  static const EdgeInsets buttonPadding = EdgeInsets.only(
+    top: 35.0,
+    bottom: 10.0,
+  );
+  static const Text titleWidget = Text(
+    'Get Tasks Done',
+    style: TextStyle(
+      fontSize: 38.0,
+      fontWeight: FontWeight.bold,
+    ),
   );
 
   final GlobalKey formKey = GlobalKey<FormState>();
 
+  bool showError = false;
   String? errorMessage;
   String? password;
   String? account;
 
-  String? validateEmail(String? email) {
-    if (email == null || email.isEmpty) {
-      return 'Please enter an email';
-    }
-
-    if (!RegExp(
-            r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-        .hasMatch(email)) {
-      return 'Please enter a valid email';
+  String? validateUsername(String? username) {
+    if (username == null || username.isEmpty) {
+      return 'Por favor introduzca su usuario';
     }
 
     setState(() {
-      account = email;
+      account = username;
     });
 
     return null;
@@ -38,11 +43,11 @@ mixin SignInScreenMixin<T extends StatefulWidget> on State<T> {
 
   String? validatePassword(String? password) {
     if (password == null || password.isEmpty) {
-      return 'Please enter password';
+      return 'Introduzca contraseña';
     }
 
     setState(() {
-      this.password = sha256.convert(utf8.encode(password)).toString();
+      this.password = password;
     });
 
     return null;

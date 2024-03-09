@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 
 extension BuildContextExtension on BuildContext {
-  ThemeData get theme => Theme.of(this);
-  Size get parentSize => MediaQuery.sizeOf(this);
-  Color get hoverColor => theme.hoverColor;
-  ColorScheme get colorScheme => theme.colorScheme;
+  ThemeData get _theme => Theme.of(this);
+  ColorScheme get colorScheme => _theme.colorScheme;
 }
 
 extension ColorExtension on Color {

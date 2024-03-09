@@ -13,16 +13,19 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'dart:convert';
 
-class SignInScreen extends ConsumerStatefulWidget {
-  const SignInScreen({super.key});
+class SignUpScreen extends ConsumerStatefulWidget {
+  const SignUpScreen({super.key});
 
   @override
-  ConsumerState<SignInScreen> createState() => _SignInScreenState();
+  ConsumerState<SignUpScreen> createState() => _SignUpScreenState();
 }
 
-class _SignInScreenState extends ConsumerState<SignInScreen>
+class _SignUpScreenState extends ConsumerState<SignUpScreen>
     with SignInScreenMixin {
-  void _submitSignIn(BuildContext context) async {
+  bool _matchingPasswords = false;
+  String? _email;
+
+  void _submitSingUp(BuildContext context) async {
     if (kDebugMode) {
       ref.read(sessionTokenProvider.notifier).set('session_token');
       ref.read(accountProvider.notifier).set('micuenta');
@@ -35,7 +38,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen>
     }
 
     final http.Response respone = await http.post(
-      Uri.parse('$serverUrl/auth/login'),
+      Uri.parse('$serverUrl/auth/register'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -43,6 +46,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen>
         <String, dynamic>{
           'username': account,
           'password': password,
+          'email': _email,
         },
       ),
     );
@@ -59,9 +63,49 @@ class _SignInScreenState extends ConsumerState<SignInScreen>
     }
 
     setState(() {
-      errorMessage = 'Hubo un error inesperado';
+      errorMessage = respone.body;
       showError = true;
     });
+  }
+
+  String? _validateEmail(String? email) {
+    if (email == null || email.isEmpty) {
+      return 'Por favor introduzca correo electrónico';
+    }
+
+    if (!RegExp(
+            r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+        .hasMatch(email)) {
+      return 'Introduzca un correo electrónico válido';
+    }
+
+    setState(() {
+      _email = email;
+    });
+
+    return null;
+  }
+
+  String? _validateRepeatPassword(String? password) {
+    if (password == null || password.isEmpty) {
+      if (_matchingPasswords) {
+        setState(() {
+          _matchingPasswords = false;
+        });
+      }
+
+      return 'Introduzca contraseña de nuevo';
+    }
+
+    setState(() {
+      _matchingPasswords = this.password == password;
+    });
+
+    if (!_matchingPasswords) {
+      return 'Las contraseñas no coinciden';
+    }
+
+    return null;
   }
 
   @override
@@ -78,8 +122,10 @@ class _SignInScreenState extends ConsumerState<SignInScreen>
             const Padding(
               padding: SignInScreenMixin.doublePadding,
               child: Text(
-                'Inicio de sesión',
-                style: TextStyle(fontSize: SignInScreenMixin.subtitleFontSize),
+                'Registro',
+                style: TextStyle(
+                  fontSize: SignInScreenMixin.subtitleFontSize,
+                ),
               ),
             ),
             SizedBox(
@@ -99,10 +145,28 @@ class _SignInScreenState extends ConsumerState<SignInScreen>
                             autofillHint: AutofillHints.username,
                           ),
                         ),
+                        Padding(
+                          padding: SignInScreenMixin.doublePadding,
+                          child: AccountFormField(
+                            validator: _validateEmail,
+                            label: 'Correo electrónico',
+                            hintText: 'tu@correo.electrónico',
+                            autofillHint: AutofillHints.email,
+                          ),
+                        ),
+                        Padding(
+                          padding: SignInScreenMixin.doublePadding,
+                          child: AccountFormField(
+                            label: 'Contraseña',
+                            hintText: 'tu contraseña',
+                            validator: validatePassword,
+                            autofillHint: AutofillHints.password,
+                          ),
+                        ),
                         AccountFormField(
-                          label: 'Contraseña',
-                          hintText: 'tu contraseña',
-                          validator: validatePassword,
+                          label: 'Repetir contraseña',
+                          hintText: 'repite tu contraseña',
+                          validator: _validateRepeatPassword,
                           autofillHint: AutofillHints.password,
                         ),
                       ],
@@ -111,11 +175,13 @@ class _SignInScreenState extends ConsumerState<SignInScreen>
                   Padding(
                     padding: SignInScreenMixin.buttonPadding,
                     child: SolidButton(
-                      text: 'Inicia sesión',
+                      text: 'Registrarse',
                       size: SignInScreenMixin.buttonSize,
                       textSize: SignInScreenMixin.buttonFontSize,
-                      onPressed: (account != null) && (password != null)
-                          ? () => _submitSignIn(context)
+                      onPressed: (account != null) &&
+                              (_email != null) &&
+                              _matchingPasswords
+                          ? () => _submitSingUp(context)
                           : null,
                     ),
                   ),
@@ -131,22 +197,6 @@ class _SignInScreenState extends ConsumerState<SignInScreen>
                   Visibility(
                     visible: showError,
                     child: const SizedBox(height: paddingAmount),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text('¿Todavía no tienes cuenta? '),
-                      TextButton(
-                        onPressed: () => context.go('/sign_up'),
-                        style: TextButton.styleFrom(
-                          padding: const EdgeInsets.all(5.0),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(5.0),
-                          ),
-                        ),
-                        child: const Text('Regístrate'),
-                      ),
-                    ],
                   ),
                 ],
               ),

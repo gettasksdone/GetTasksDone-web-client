@@ -1,18 +1,20 @@
-import 'package:gtd_client/utilities/extensions.dart';
 import 'package:gtd_client/utilities/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:gtd_client/utilities/extensions.dart';
 
 class AccountFormField extends StatefulWidget {
   final String? Function(String?)? validator;
   final bool _gotAutofillHint;
   final String? autofillHint;
   final String? hintText;
+  final String? label;
 
   const AccountFormField({
     super.key,
     required this.hintText,
     this.autofillHint,
     this.validator,
+    this.label,
   }) : _gotAutofillHint = autofillHint != null;
 
   @override
@@ -55,10 +57,9 @@ class _AccountFormFieldState extends State<AccountFormField> {
           ? widget.autofillHint == AutofillHints.password
           : false,
       decoration: InputDecoration(
-        filled: true,
         hintText: widget.hintText,
-        fillColor: colors.onSurface,
-        hintStyle: TextStyle(color: colors.onPrimary),
+        labelStyle: TextStyle(color: colors.onPrimary),
+        label: widget.label != null ? Text(widget.label!) : null,
         contentPadding: const EdgeInsets.symmetric(
           vertical: 20.0,
           horizontal: 17.0,
