@@ -1,3 +1,4 @@
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:gtd_client/providers/completed_registry.dart';
 import 'package:gtd_client/mixins/sign_in_screen_mixin.dart';
 import 'package:gtd_client/widgets/account_form_field.dart';
@@ -23,6 +24,23 @@ class SignInScreen extends ConsumerStatefulWidget {
 
 class _SignInScreenState extends ConsumerState<SignInScreen>
     with SignInScreenMixin {
+  @override
+  void initState() {
+    super.initState();
+
+    if (kDebugMode) {
+      return;
+    }
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (context.mounted) {
+        if (ref.watch(sessionTokenProvider) != null) {
+          context.go('/app');
+        }
+      }
+    });
+  }
+
   void _submitSignIn(BuildContext context) async {
     if (kDebugMode) {
       if (context.mounted) {
@@ -46,13 +64,21 @@ class _SignInScreenState extends ConsumerState<SignInScreen>
     );
 
     if (respone.statusCode == 200) {
-      ref.read(sessionTokenProvider.notifier).set(respone.body);
+      final String sessionToken = respone.body;
+
+      const FlutterSecureStorage().write(
+        key: 'session_token',
+        value: sessionToken,
+      );
+
+      ref.read(sessionTokenProvider.notifier).set(sessionToken);
       ref.read(accountProvider.notifier).set(account);
 
       final http.Response userDataRespone = await http.post(
         Uri.parse('$serverUrl/userData'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': 'Bearer $sessionToken',
         },
       );
 

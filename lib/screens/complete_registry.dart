@@ -60,7 +60,7 @@ class _CompleteRegistryScreenState extends ConsumerState<CompleteRegistryScreen>
 
     final String? sessionToken = ref.watch(sessionTokenProvider);
 
-    final http.Response respone = await http.post(
+    final http.Response response = await http.post(
       Uri.parse('$serverUrl/userData/create'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
@@ -76,7 +76,7 @@ class _CompleteRegistryScreenState extends ConsumerState<CompleteRegistryScreen>
       ),
     );
 
-    if (respone.statusCode == 200) {
+    if (response.statusCode == 200) {
       ref.read(completedRegistryProvider.notifier).set(true);
 
       if (context.mounted) {

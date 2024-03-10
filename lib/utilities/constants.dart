@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-const String serverUrl = 'https://lopezgeraghty.com:8080/';
+const String serverUrl = 'https://lopezgeraghty.com:8080';
 
 const double edgeWidth = 3.0;
 
