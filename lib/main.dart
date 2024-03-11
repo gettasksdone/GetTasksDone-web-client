@@ -102,7 +102,7 @@ Future<Map<String, dynamic>> _getInitialData() async {
     debugPrint('Session token: $sessionToken');
 
     final http.Response response = await http.get(
-      Uri.parse('$serverUrl/userData/'),
+      Uri.parse('$serverUrl/userData/authed'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'Authorization': 'Bearer $sessionToken',

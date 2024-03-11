@@ -76,7 +76,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen>
       ref.read(sessionTokenProvider.notifier).set(sessionToken);
 
       final http.Response userDataRespone = await http.get(
-        Uri.parse('$serverUrl/userData'),
+        Uri.parse('$serverUrl/userData/authed'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           'Authorization': 'Bearer $sessionToken',
