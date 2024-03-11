@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:gtd_client/providers/completed_registry.dart';
 import 'package:gtd_client/mixins/sign_in_screen_mixin.dart';
@@ -76,7 +74,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen>
       ref.read(sessionTokenProvider.notifier).set(sessionToken);
       ref.read(accountProvider.notifier).set(account);
 
-      sleep(const Duration(seconds: 1));
+      await Future.delayed(const Duration(seconds: 1));
 
       final http.Response userDataRespone = await http.get(
         Uri.parse('$serverUrl/userData'),
