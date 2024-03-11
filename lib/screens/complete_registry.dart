@@ -69,7 +69,7 @@ class _CompleteRegistryScreenState extends ConsumerState<CompleteRegistryScreen>
       body: jsonEncode(
         <String, dynamic>{
           'nombre': _name,
-          'telefono': _phoneNumber,
+          'telefono': _phoneNumber!.replaceAll('+', ''),
           'puesto': _jobTitle,
           'departamento': _department,
         },
@@ -113,10 +113,10 @@ class _CompleteRegistryScreenState extends ConsumerState<CompleteRegistryScreen>
       return 'Por favor introduzca número de teléfono';
     }
 
-    // if (!RegExp(r'(^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$)')
-    //     .hasMatch(phoneNumber)) {
-    //   return 'Introduzca un número de teléfono válido';
-    // }
+    if (!RegExp(r'(^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$)')
+        .hasMatch(phoneNumber)) {
+      return 'Introduzca un número de teléfono válido';
+    }
 
     setState(() {
       _phoneNumber = phoneNumber;

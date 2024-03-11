@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:gtd_client/providers/completed_registry.dart';
 import 'package:gtd_client/mixins/sign_in_screen_mixin.dart';
@@ -74,6 +76,8 @@ class _SignInScreenState extends ConsumerState<SignInScreen>
       ref.read(sessionTokenProvider.notifier).set(sessionToken);
       ref.read(accountProvider.notifier).set(account);
 
+      sleep(const Duration(seconds: 1));
+
       final http.Response userDataRespone = await http.get(
         Uri.parse('$serverUrl/userData'),
         headers: <String, String>{
@@ -83,11 +87,16 @@ class _SignInScreenState extends ConsumerState<SignInScreen>
       );
 
       if (context.mounted) {
-        if (userDataRespone.body.isEmpty) {
+        if (userDataRespone.statusCode == 404) {
           context.go('/complete_registry');
-        } else {
+        } else if (userDataRespone.statusCode == 200) {
           ref.read(completedRegistryProvider.notifier).set(true);
           context.go('/app');
+        } else {
+          setState(() {
+            errorMessage = 'Hubo un error inesperado';
+            showError = true;
+          });
         }
       }
 
