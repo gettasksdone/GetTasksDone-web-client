@@ -31,7 +31,7 @@ mixin SignInScreenMixin<T extends StatefulWidget> on State<T> {
 
   String? validateUsername(String? username) {
     if (username == null || username.isEmpty) {
-      return 'Por favor introduzca su usuario';
+      return 'Por favor introduzca usuario';
     }
 
     setState(() {

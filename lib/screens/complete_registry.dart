@@ -8,7 +8,6 @@ import 'package:gtd_client/widgets/show_up_text.dart';
 import 'package:gtd_client/widgets/solid_button.dart';
 import 'package:gtd_client/utilities/constants.dart';
 import 'package:go_router/go_router.dart';
-import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'dart:convert';
@@ -32,25 +31,23 @@ class _CompleteRegistryScreenState extends ConsumerState<CompleteRegistryScreen>
   void initState() {
     super.initState();
 
-    if (kDebugMode) {
+    if (testNavigation) {
       return;
     }
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (context.mounted) {
-        if (ref.watch(sessionTokenProvider) == null) {
-          context.go('/');
-        }
+      if (ref.watch(sessionTokenProvider) == null) {
+        context.go('/');
+      }
 
-        if (ref.watch(completedRegistryProvider)) {
-          context.go('/app');
-        }
+      if (ref.watch(completedRegistryProvider)) {
+        context.go('/app');
       }
     });
   }
 
   void _submitUserData(BuildContext context) async {
-    if (kDebugMode) {
+    if (testNavigation) {
       if (context.mounted) {
         context.go('/app');
       }
@@ -58,13 +55,11 @@ class _CompleteRegistryScreenState extends ConsumerState<CompleteRegistryScreen>
       return;
     }
 
-    final String? sessionToken = ref.watch(sessionTokenProvider);
-
     final http.Response response = await http.post(
       Uri.parse('$serverUrl/userData/create'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
-        'Authorization': 'Bearer $sessionToken',
+        'Authorization': 'Bearer ${ref.watch(sessionTokenProvider)}',
       },
       body: jsonEncode(
         <String, dynamic>{
@@ -75,6 +70,8 @@ class _CompleteRegistryScreenState extends ConsumerState<CompleteRegistryScreen>
         },
       ),
     );
+
+    debugPrint('Login call status code: ${response.statusCode}');
 
     if (response.statusCode == 200) {
       ref.read(completedRegistryProvider.notifier).set(true);

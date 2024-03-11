@@ -8,9 +8,7 @@ import 'package:gtd_client/utilities/extensions.dart';
 import 'package:gtd_client/widgets/show_up_text.dart';
 import 'package:gtd_client/widgets/solid_button.dart';
 import 'package:gtd_client/utilities/constants.dart';
-import 'package:gtd_client/providers/account.dart';
 import 'package:go_router/go_router.dart';
-import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'dart:convert';
@@ -28,21 +26,21 @@ class _SignInScreenState extends ConsumerState<SignInScreen>
   void initState() {
     super.initState();
 
-    if (kDebugMode) {
+    if (testNavigation) {
       return;
     }
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (context.mounted) {
-        if (ref.watch(sessionTokenProvider) != null) {
-          context.go('/app');
-        }
+      if (ref.watch(sessionTokenProvider) != null) {
+        context.go('/app');
       }
     });
+
+    debugPrint('Null token from provider');
   }
 
   void _submitSignIn(BuildContext context) async {
-    if (kDebugMode) {
+    if (testNavigation) {
       if (context.mounted) {
         context.go('/app');
       }
@@ -50,7 +48,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen>
       return;
     }
 
-    final http.Response respone = await http.post(
+    final http.Response response = await http.post(
       Uri.parse('$serverUrl/auth/login'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
@@ -63,8 +61,12 @@ class _SignInScreenState extends ConsumerState<SignInScreen>
       ),
     );
 
-    if (respone.statusCode == 200) {
-      final String sessionToken = respone.body;
+    debugPrint('Login call status code: ${response.statusCode}');
+
+    if (response.statusCode == 200) {
+      final String sessionToken = response.body;
+
+      debugPrint('Session token: $sessionToken');
 
       const FlutterSecureStorage().write(
         key: 'session_token',
@@ -72,9 +74,6 @@ class _SignInScreenState extends ConsumerState<SignInScreen>
       );
 
       ref.read(sessionTokenProvider.notifier).set(sessionToken);
-      ref.read(accountProvider.notifier).set(account);
-
-      await Future.delayed(const Duration(seconds: 1));
 
       final http.Response userDataRespone = await http.get(
         Uri.parse('$serverUrl/userData'),
@@ -84,21 +83,20 @@ class _SignInScreenState extends ConsumerState<SignInScreen>
         },
       );
 
+      debugPrint('userData call status code: ${userDataRespone.statusCode}');
+
       if (context.mounted) {
-        if (userDataRespone.statusCode == 404) {
-          context.go('/complete_registry');
-        } else if (userDataRespone.statusCode == 200) {
-          ref.read(completedRegistryProvider.notifier).set(true);
-          context.go('/app');
-        } else {
-          setState(() {
-            errorMessage = 'Hubo un error inesperado';
-            showError = true;
-          });
+        switch (userDataRespone.statusCode) {
+          case 200:
+            ref.read(completedRegistryProvider.notifier).set(true);
+
+            context.go('/app');
+          case 404:
+            context.go('/complete_registry');
+          default:
+            debugPrint('Reached default case');
         }
       }
-
-      return;
     }
 
     setState(() {

@@ -7,9 +7,7 @@ import 'package:gtd_client/utilities/extensions.dart';
 import 'package:gtd_client/widgets/show_up_text.dart';
 import 'package:gtd_client/widgets/solid_button.dart';
 import 'package:gtd_client/utilities/constants.dart';
-import 'package:gtd_client/providers/account.dart';
 import 'package:go_router/go_router.dart';
-import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'dart:convert';
@@ -30,21 +28,21 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen>
   void initState() {
     super.initState();
 
-    if (kDebugMode) {
+    if (testNavigation) {
       return;
     }
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (context.mounted) {
-        if (ref.watch(sessionTokenProvider) != null) {
-          context.go('/app');
-        }
+      if (ref.watch(sessionTokenProvider) != null) {
+        context.go('/app');
       }
     });
+
+    debugPrint('Null token from provider');
   }
 
   void _submitSingUp(BuildContext context) async {
-    if (kDebugMode) {
+    if (testNavigation) {
       if (context.mounted) {
         context.go('/complete_registry');
       }
@@ -52,7 +50,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen>
       return;
     }
 
-    final http.Response respone = await http.post(
+    final http.Response response = await http.post(
       Uri.parse('$serverUrl/auth/register'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
@@ -66,24 +64,25 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen>
       ),
     );
 
-    if (respone.statusCode == 200) {
+    debugPrint('Register call status code: ${response.statusCode}');
+
+    if (response.statusCode == 200) {
+      debugPrint('Session token: ${response.body}');
+
       const FlutterSecureStorage().write(
         key: 'session_token',
-        value: respone.body,
+        value: response.body,
       );
 
-      ref.read(sessionTokenProvider.notifier).set(respone.body);
-      ref.read(accountProvider.notifier).set(account);
+      ref.read(sessionTokenProvider.notifier).set(response.body);
 
       if (context.mounted) {
         context.go('/complete_registry');
       }
-
-      return;
     }
 
     setState(() {
-      errorMessage = respone.body;
+      errorMessage = response.body;
       showError = true;
     });
   }

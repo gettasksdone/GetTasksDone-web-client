@@ -1,4 +1,7 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+
+const bool testNavigation = kDebugMode && false;
 
 const String serverUrl = 'https://lopezgeraghty.com:8080';
 
