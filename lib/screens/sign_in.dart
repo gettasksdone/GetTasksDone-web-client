@@ -74,7 +74,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen>
       ref.read(sessionTokenProvider.notifier).set(sessionToken);
       ref.read(accountProvider.notifier).set(account);
 
-      final http.Response userDataRespone = await http.post(
+      final http.Response userDataRespone = await http.get(
         Uri.parse('$serverUrl/userData'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',

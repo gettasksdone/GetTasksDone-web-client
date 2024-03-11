@@ -53,11 +53,11 @@ class _EagerInitialization extends ConsumerWidget {
   ) async {
     const FlutterSecureStorage storage = FlutterSecureStorage();
 
-    if (await storage.containsKey(key: "session_token")) {
-      final String? sessionToken = await storage.read(key: "session_token");
+    if (await storage.containsKey(key: 'session_token')) {
+      final String? sessionToken = await storage.read(key: 'session_token');
 
-      final http.Response response = await http.post(
-        Uri.parse('$serverUrl/userData'),
+      final http.Response response = await http.get(
+        Uri.parse('$serverUrl/userData/'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           'Authorization': 'Bearer $sessionToken',
@@ -70,7 +70,11 @@ class _EagerInitialization extends ConsumerWidget {
         ref
             .read(completedRegistryProvider.notifier)
             .set(response.body.isNotEmpty);
+      } else if (response.statusCode == 404) {
+        ref.read(sessionTokenProvider.notifier).set(sessionToken!);
       }
+
+      await storage.delete(key: 'session_token');
     }
   }
 
