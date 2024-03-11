@@ -77,6 +77,8 @@ class _EagerInitialization extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     if (sessionToken != null) {
+      debugPrint('Session token from storage: $sessionToken');
+
       ref.read(sessionTokenProvider.notifier).set(sessionToken!);
     }
 
@@ -101,17 +103,25 @@ Future<Map<String, dynamic>> _getInitialData() async {
 
     debugPrint('Session token: $sessionToken');
 
-    final http.Response response = await http.get(
-      Uri.parse('$serverUrl/userData/authed'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-        'Authorization': 'Bearer $sessionToken',
-      },
-    );
+    int statusCode = 403;
 
-    debugPrint('Get intial data call status code: ${response.statusCode}');
+    try {
+      final http.Response response = await http.get(
+        Uri.parse('$serverUrl/userData/authed'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': 'Bearer $sessionToken',
+        },
+      );
 
-    switch (response.statusCode) {
+      statusCode = response.statusCode;
+    } catch (exception) {
+      debugPrint('Exception occured trying to get userData: $exception');
+    }
+
+    debugPrint('Get intial data call status code: $statusCode');
+
+    switch (statusCode) {
       case 200:
         return {
           'token': sessionToken,

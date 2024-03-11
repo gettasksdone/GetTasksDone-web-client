@@ -1,5 +1,5 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:flutter/foundation.dart';
+import 'package:gtd_client/utilities/constants.dart';
 
 part 'completed_registry.g.dart';
 
@@ -9,7 +9,7 @@ class CompletedRegistry extends _$CompletedRegistry {
 
   @override
   bool build() {
-    if (kDebugMode) {
+    if (testNavigation) {
       return true;
     }
 

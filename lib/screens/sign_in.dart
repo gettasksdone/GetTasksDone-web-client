@@ -34,9 +34,9 @@ class _SignInScreenState extends ConsumerState<SignInScreen>
       if (ref.watch(sessionTokenProvider) != null) {
         context.go('/app');
       }
-    });
 
-    debugPrint('Null token from provider');
+      debugPrint('Sign in null token from provider');
+    });
   }
 
   void _submitSignIn(BuildContext context) async {

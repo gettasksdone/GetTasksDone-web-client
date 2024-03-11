@@ -37,6 +37,8 @@ class _CompleteRegistryScreenState extends ConsumerState<CompleteRegistryScreen>
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (ref.watch(sessionTokenProvider) == null) {
+        debugPrint('Null token from provider');
+
         context.go('/');
       }
 
@@ -71,7 +73,7 @@ class _CompleteRegistryScreenState extends ConsumerState<CompleteRegistryScreen>
       ),
     );
 
-    debugPrint('Login call status code: ${response.statusCode}');
+    debugPrint('userData/create call status code: ${response.statusCode}');
 
     if (response.statusCode == 200) {
       ref.read(completedRegistryProvider.notifier).set(true);

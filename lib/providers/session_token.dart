@@ -1,5 +1,5 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:flutter/foundation.dart';
+import 'package:gtd_client/utilities/constants.dart';
 
 part 'session_token.g.dart';
 
@@ -9,7 +9,7 @@ class SessionToken extends _$SessionToken {
 
   @override
   String? build() {
-    if (kDebugMode) {
+    if (testNavigation) {
       return 'session_token';
     }
 

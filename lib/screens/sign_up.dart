@@ -36,9 +36,9 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen>
       if (ref.watch(sessionTokenProvider) != null) {
         context.go('/app');
       }
-    });
 
-    debugPrint('Null token from provider');
+      debugPrint('Sign up null token from provider');
+    });
   }
 
   void _submitSingUp(BuildContext context) async {
