@@ -7,6 +7,7 @@ class AppTheme {
       seedColor: const Color.fromRGBO(51, 84, 230, 1),
       secondary: Colors.grey.darken(55),
       onSecondary: Colors.white,
+      onBackground: Colors.white,
     ),
   );
 

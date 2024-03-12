@@ -15,7 +15,7 @@ mixin SignInScreenMixin<T extends StatefulWidget> on State<T> {
     bottom: 10.0,
   );
   static const Text titleWidget = Text(
-    'Get Tasks Done',
+    appName,
     style: TextStyle(
       fontSize: 38.0,
       fontWeight: FontWeight.bold,

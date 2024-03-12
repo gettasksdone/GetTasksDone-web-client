@@ -12,3 +12,5 @@ const double paddingAmount = 10.0;
 const BorderRadius roundedCorners = BorderRadius.all(Radius.circular(10.0));
 
 const EdgeInsets padding = EdgeInsets.all(paddingAmount);
+
+const String appName = 'Get Tasks Done';
