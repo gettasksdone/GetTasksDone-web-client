@@ -1,6 +1,7 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:gtd_client/mixins/sign_in_screen_mixin.dart';
 import 'package:gtd_client/widgets/account_form_field.dart';
+import 'package:gtd_client/providers/initialized_app.dart';
 import 'package:gtd_client/providers/session_token.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gtd_client/utilities/extensions.dart';
@@ -34,11 +35,16 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen>
     }
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (ref.watch(sessionTokenProvider) != null) {
-        context.go('/app');
+      if (!ref.watch(initializedAppProvider)) {
+        context.go('/');
+        return;
       }
 
-      debugPrint('Sign up null token from provider');
+      if (ref.watch(sessionTokenProvider) != null) {
+        context.go('/app');
+      } else {
+        debugPrint('Sign up null token from provider');
+      }
     });
   }
 
@@ -77,6 +83,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen>
 
       if (context.mounted) {
         context.go('/complete_registry');
+        return;
       }
     }
 

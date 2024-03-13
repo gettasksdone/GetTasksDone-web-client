@@ -1,5 +1,6 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:gtd_client/providers/completed_registry.dart';
+import 'package:gtd_client/providers/initialized_app.dart';
 import 'package:gtd_client/screens/complete_registry.dart';
 import 'package:gtd_client/providers/session_token.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -143,20 +144,22 @@ class _Initializer extends ConsumerWidget {
                   completedRegistry,
                 );
 
+            ref.read(initializedAppProvider.notifier).done();
+
             WidgetsBinding.instance.addPostFrameCallback((_) {
+              late final String route;
+
               if (validToken && completedRegistry) {
-                debugPrint('Redirecting to /app');
-
-                context.go('/app');
+                route = '/app';
               } else if (validToken) {
-                debugPrint('Redirecting to /complete_registry');
-
-                context.go('/complete_registry');
+                route = '/complete_registry';
               } else {
-                debugPrint('Redirecting to /sign_in');
-
-                context.go('/sign_in');
+                route = '/sign_in';
               }
+
+              debugPrint('Redirecting to $route');
+
+              context.go(route);
             });
           }
 

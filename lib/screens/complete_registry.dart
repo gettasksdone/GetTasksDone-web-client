@@ -1,5 +1,6 @@
 import 'package:gtd_client/providers/completed_registry.dart';
 import 'package:gtd_client/mixins/sign_in_screen_mixin.dart';
+import 'package:gtd_client/providers/initialized_app.dart';
 import 'package:gtd_client/widgets/account_form_field.dart';
 import 'package:gtd_client/providers/session_token.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -37,14 +38,22 @@ class _CompleteRegistryScreenState extends ConsumerState<CompleteRegistryScreen>
     }
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (ref.watch(sessionTokenProvider) == null) {
-        debugPrint('Null token from provider');
-
+      if (!ref.watch(initializedAppProvider)) {
         context.go('/');
+        return;
+      }
+
+      if (ref.watch(sessionTokenProvider) == null) {
+        debugPrint('Complete registry null token from provider');
+
+        context.go('/sign_in');
+
+        return;
       }
 
       if (ref.watch(completedRegistryProvider)) {
         context.go('/app');
+        return;
       }
     });
   }
@@ -78,9 +87,8 @@ class _CompleteRegistryScreenState extends ConsumerState<CompleteRegistryScreen>
 
       if (context.mounted) {
         context.go('/app');
+        return;
       }
-
-      return;
     }
 
     setState(() {

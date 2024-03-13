@@ -2,6 +2,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:gtd_client/providers/completed_registry.dart';
 import 'package:gtd_client/mixins/sign_in_screen_mixin.dart';
 import 'package:gtd_client/widgets/account_form_field.dart';
+import 'package:gtd_client/providers/initialized_app.dart';
 import 'package:gtd_client/providers/session_token.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gtd_client/utilities/extensions.dart';
@@ -32,6 +33,11 @@ class _SignInScreenState extends ConsumerState<SignInScreen>
     }
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!ref.watch(initializedAppProvider)) {
+        context.go('/');
+        return;
+      }
+
       if (ref.watch(sessionTokenProvider) != null) {
         context.go('/app');
       } else {
@@ -89,18 +95,20 @@ class _SignInScreenState extends ConsumerState<SignInScreen>
             ref.read(completedRegistryProvider.notifier).set(true);
 
             context.go('/app');
+            break;
           case 404:
             context.go('/complete_registry');
+            break;
           default:
             debugPrint('Reached default case');
+
+            setState(() {
+              errorMessage = 'Hubo un error inesperado';
+              showError = true;
+            });
         }
       }
     }
-
-    setState(() {
-      errorMessage = 'Hubo un error inesperado';
-      showError = true;
-    });
   }
 
   @override

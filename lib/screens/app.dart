@@ -1,4 +1,5 @@
 import 'package:gtd_client/providers/completed_registry.dart';
+import 'package:gtd_client/providers/initialized_app.dart';
 import 'package:gtd_client/providers/session_token.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gtd_client/widgets/button_tile.dart';
@@ -34,12 +35,19 @@ class _AppScreenState extends ConsumerState<AppScreen> {
     }
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (ref.watch(sessionTokenProvider) == null) {
+      if (!ref.watch(initializedAppProvider)) {
         context.go('/');
+        return;
+      }
+
+      if (ref.watch(sessionTokenProvider) == null) {
+        context.go('/sign_in');
+        return;
       }
 
       if (!ref.watch(completedRegistryProvider)) {
         context.go('/complete_registry');
+        return;
       }
     });
   }
