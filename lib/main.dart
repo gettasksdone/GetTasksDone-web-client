@@ -4,6 +4,7 @@ import 'package:gtd_client/screens/complete_registry.dart';
 import 'package:gtd_client/providers/session_token.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gtd_client/utilities/constants.dart';
+import 'package:gtd_client/utilities/extensions.dart';
 import 'package:gtd_client/utilities/themes.dart';
 import 'package:gtd_client/screens/sign_in.dart';
 import 'package:gtd_client/screens/sign_up.dart';
@@ -13,12 +14,35 @@ import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 
+void main() {
+  if (kReleaseMode) {
+    debugPrint = (String? message, {int? wrapWidth}) {};
+  }
+
+  WidgetsFlutterBinding.ensureInitialized();
+
+  runApp(
+    ProviderScope(
+      child: MaterialApp.router(
+        theme: AppTheme.dark,
+        routerConfig: _router,
+        title: 'Get Tasks Done',
+      ),
+    ),
+  );
+}
+
 final GoRouter _router = GoRouter(
   routes: [
     GoRoute(
       path: '/',
-      builder: (context, state) => const SignInScreen(),
+      builder: (context, state) => const _Initializer(),
       routes: [
+        GoRoute(
+          path: 'sign_in',
+          pageBuilder: (context, state) =>
+              const NoTransitionPage(child: SignInScreen()),
+        ),
         GoRoute(
           path: 'sign_up',
           pageBuilder: (context, state) =>
@@ -38,20 +62,6 @@ final GoRouter _router = GoRouter(
     ),
   ],
 );
-
-void main() {
-  if (kReleaseMode) {
-    debugPrint = (String? message, {int? wrapWidth}) {};
-  }
-
-  WidgetsFlutterBinding.ensureInitialized();
-
-  runApp(
-    const ProviderScope(
-      child: _Initializer(),
-    ),
-  );
-}
 
 class _Initializer extends ConsumerWidget {
   const _Initializer();
@@ -122,22 +132,43 @@ class _Initializer extends ConsumerWidget {
           if (snapshot.hasData) {
             final Map<String, dynamic> data = snapshot.data!;
 
-            if (data['token'] != null) {
+            final bool completedRegistry = data['completedRegistry'];
+            final bool validToken = data['token'] != null;
+
+            if (validToken) {
               ref.read(sessionTokenProvider.notifier).set(data['token']!);
             }
 
             ref.read(completedRegistryProvider.notifier).set(
-                  data['completedRegistry'],
+                  completedRegistry,
                 );
 
-            return MaterialApp.router(
-              title: 'Get Tasks Done',
-              theme: AppTheme.dark,
-              routerConfig: _router,
-            );
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (validToken && completedRegistry) {
+                debugPrint('Redirecting to /app');
+
+                context.go('/app');
+              } else if (validToken) {
+                debugPrint('Redirecting to /complete_registry');
+
+                context.go('/complete_registry');
+              } else {
+                debugPrint('Redirecting to /sign_in');
+
+                context.go('/sign_in');
+              }
+            });
           }
 
-          return const Center(child: CircularProgressIndicator());
+          return Container(
+            color: context.theme.canvasColor,
+            child: Center(
+              child: CircularProgressIndicator(
+                color: context.colorScheme.primary,
+                backgroundColor: Colors.transparent,
+              ),
+            ),
+          );
         });
   }
 }

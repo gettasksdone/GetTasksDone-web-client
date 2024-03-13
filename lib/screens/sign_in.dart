@@ -34,9 +34,9 @@ class _SignInScreenState extends ConsumerState<SignInScreen>
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (ref.watch(sessionTokenProvider) != null) {
         context.go('/app');
+      } else {
+        debugPrint('Sign in null token from provider');
       }
-
-      debugPrint('Sign in null token from provider');
     });
   }
 
