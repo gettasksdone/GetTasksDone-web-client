@@ -1,7 +1,10 @@
-class Context {
-  final int id;
+import 'package:gtd_client/mixins/serializable_mixin.dart';
 
-  String name;
+class Context with SerializableMixin<String> {
+  static final Context instance = Context();
 
-  Context({required this.name, required this.id});
+  @override
+  Map<int, String> deserialize(Map<String, dynamic> data) {
+    return {data['id']: data['nombre']};
+  }
 }

@@ -1,8 +1,19 @@
+import 'package:gtd_client/mixins/serializable_mixin.dart';
 import 'package:gtd_client/logic/complex_element.dart';
+import 'package:gtd_client/logic/note.dart';
+import 'package:gtd_client/logic/task.dart';
+import 'package:gtd_client/logic/tag.dart';
 
-class Project extends ComplexElement {
+class Project extends ComplexElement with SerializableMixin<Project> {
+  static final Project instance = Project(
+    finish: DateTime.now(),
+    start: DateTime.now(),
+    description: '',
+    state: '',
+    name: '',
+  );
+
   final List<int> _tasks;
-  final int id;
 
   String description;
   DateTime _finish;
@@ -16,7 +27,6 @@ class Project extends ComplexElement {
     required DateTime start,
     required this.state,
     required this.name,
-    required this.id,
     List<int>? tasks,
     List<int>? notes,
     List<int>? tags,
@@ -47,5 +57,21 @@ class Project extends ComplexElement {
 
   void removeTask(int task) {
     _tasks.remove(task);
+  }
+
+  @override
+  Map<int, Project> deserialize(Map<String, dynamic> data) {
+    final Project project = Project(
+      tags: Tag.instance.deserializeList(data['etiquetas']).keys.toList(),
+      tasks: Task.instance.deserializeList(data['tareas']).keys.toList(),
+      notes: Note.instance.deserializeList(data['notas']).keys.toList(),
+      start: DateTime.parse(data['inicio']),
+      finish: DateTime.parse(data['fin']),
+      description: data['descripcion'],
+      state: data['estado'],
+      name: data['nombre'],
+    );
+
+    return {data['id']: project};
   }
 }

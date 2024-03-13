@@ -1,7 +1,10 @@
-class Tag {
-  final int id;
+import 'package:gtd_client/mixins/serializable_mixin.dart';
 
-  String name;
+class Tag with SerializableMixin<String> {
+  static final Tag instance = Tag();
 
-  Tag({required this.name, required this.id});
+  @override
+  Map<int, String> deserialize(Map<String, dynamic> data) {
+    return {data['id']: data['nombre']};
+  }
 }

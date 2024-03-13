@@ -6,7 +6,7 @@ part of 'completed_registry.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$completedRegistryHash() => r'4d46625c42b46f76373277883cb066c621dd5a16';
+String _$completedRegistryHash() => r'52265a5aa25962a8d6ce1e6fbc13bc9db5e024ae';
 
 /// See also [CompletedRegistry].
 @ProviderFor(CompletedRegistry)

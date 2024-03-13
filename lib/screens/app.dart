@@ -3,6 +3,7 @@ import 'package:gtd_client/providers/session_token.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gtd_client/widgets/button_tile.dart';
 import 'package:gtd_client/utilities/constants.dart';
+import 'package:gtd_client/views/projects.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 
@@ -16,7 +17,7 @@ class AppScreen extends ConsumerStatefulWidget {
 class _AppScreenState extends ConsumerState<AppScreen> {
   static const double _menuWidth = 350.0;
   static const List<Widget> _views = [
-    Placeholder(),
+    ProjectsView(),
     Placeholder(),
     Placeholder(),
     Placeholder(),
