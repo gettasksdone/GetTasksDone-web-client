@@ -1,10 +1,11 @@
-import 'package:gtd_client/providers/session_token.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gtd_client/utilities/constants.dart';
+import 'package:gtd_client/utilities/headers.dart';
 import 'package:gtd_client/logic/user_data.dart';
 import 'package:gtd_client/logic/project.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'dart:convert';
 
 class ProjectsView extends ConsumerStatefulWidget {
   const ProjectsView({super.key});
@@ -22,24 +23,18 @@ class _ProjectsViewState extends ConsumerState<ProjectsView> {
   }
 
   void _getProjects() async {
-    if (testNavigation) {
-      // TODO
-      return;
-    }
-
-    final http.Response response = await http.post(
-      Uri.parse('$serverUrl/project'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-        'Authorization': 'Bearer ${ref.watch(sessionTokenProvider)}',
-      },
+    final http.Response response = await http.get(
+      Uri.parse('$serverUrl/project/authed'),
+      headers: headers(ref),
     );
 
-    debugPrint('/project (authed) call status code: ${response.statusCode}');
+    debugPrint('/project/authed call status code: ${response.statusCode}');
+
+    debugPrint(response.body);
 
     if (response.statusCode == 200) {
       for (final MapEntry<int, Project> entry
-          in Project.instance.parseList(response.body).entries) {
+          in Project.instance.decodeList(response.body).entries) {
         debugPrint('Adding project with ID [${entry.key}]');
 
         _userData.addProject(entry.key, entry.value);
@@ -47,11 +42,47 @@ class _ProjectsViewState extends ConsumerState<ProjectsView> {
     }
   }
 
+  void _createProject(Project project) async {
+    final http.Response response = await http.post(
+      Uri.parse('$serverUrl/project/create'),
+      headers: headers(ref),
+      body: jsonEncode(project.toJson()),
+    );
+
+    debugPrint('/project/create call status code: ${response.statusCode}');
+  }
+
+  void _deleteProject(int id) async {
+    final String endpoint = '/project/delete/$id';
+
+    final http.Response response = await http.delete(
+      Uri.parse('$serverUrl$endpoint'),
+      headers: headers(ref),
+    );
+
+    debugPrint('$endpoint call status code: ${response.statusCode}');
+  }
+
+  void _updateProject(int id) async {
+    // TODO
+  }
+
+  void _addTag(int projectId, int tagId) {
+    // TODO
+  }
+
+  void _deleteTag(int projectId, int tagId) {
+    // TODO
+  }
+
   @override
   Widget build(BuildContext context) {
-    _getProjects();
-
-    return const Placeholder();
+    return Center(
+      child: TextButton(
+        onPressed: _getProjects,
+        child: const Text('Prueba'),
+      ),
+    );
 
     // return Center(
     //   child: SizedBox(

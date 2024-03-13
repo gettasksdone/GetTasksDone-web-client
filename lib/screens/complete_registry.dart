@@ -7,6 +7,7 @@ import 'package:gtd_client/utilities/extensions.dart';
 import 'package:gtd_client/widgets/show_up_text.dart';
 import 'package:gtd_client/widgets/solid_button.dart';
 import 'package:gtd_client/utilities/constants.dart';
+import 'package:gtd_client/utilities/headers.dart';
 import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
@@ -59,10 +60,7 @@ class _CompleteRegistryScreenState extends ConsumerState<CompleteRegistryScreen>
 
     final http.Response response = await http.post(
       Uri.parse('$serverUrl/userData/create'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-        'Authorization': 'Bearer ${ref.watch(sessionTokenProvider)}',
-      },
+      headers: headers(ref),
       body: jsonEncode(
         <String, dynamic>{
           'nombre': _name,
@@ -73,7 +71,7 @@ class _CompleteRegistryScreenState extends ConsumerState<CompleteRegistryScreen>
       ),
     );
 
-    debugPrint('userData/create call status code: ${response.statusCode}');
+    debugPrint('/userData/create call status code: ${response.statusCode}');
 
     if (response.statusCode == 200) {
       ref.read(completedRegistryProvider.notifier).set(true);

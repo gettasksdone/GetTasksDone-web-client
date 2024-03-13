@@ -1,6 +1,6 @@
-import 'package:gtd_client/mixins/serializable_mixin.dart';
+import 'package:gtd_client/logic/serializable.dart';
 
-class Note with SerializableMixin<Note> {
+class Note extends Serializable<Note> {
   static final Note instance = Note(content: '');
 
   final DateTime created;
@@ -11,12 +11,20 @@ class Note with SerializableMixin<Note> {
       : created = created ?? DateTime.now();
 
   @override
-  Map<int, Note> deserialize(Map<String, dynamic> data) {
-    final Note note = Note(
-      content: data['contenido'],
-      created: data['creacion'],
-    );
+  Map<int, Note> fromJson(Map<String, dynamic> json) {
+    return {
+      json['id']: Note(
+        content: json['contenido'],
+        created: json['creacion'],
+      ),
+    };
+  }
 
-    return {data['id']: note};
+  @override
+  Map<String, dynamic> toJson() {
+    return {
+      'contenido': content,
+      'creacion': created,
+    };
   }
 }

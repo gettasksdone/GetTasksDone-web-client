@@ -1,10 +1,9 @@
-import 'package:gtd_client/mixins/serializable_mixin.dart';
 import 'package:gtd_client/logic/complex_element.dart';
 import 'package:gtd_client/logic/note.dart';
 import 'package:gtd_client/logic/task.dart';
 import 'package:gtd_client/logic/tag.dart';
 
-class Project extends ComplexElement with SerializableMixin<Project> {
+class Project extends ComplexElement<Project> {
   static final Project instance = Project(
     finish: DateTime.now(),
     start: DateTime.now(),
@@ -34,7 +33,7 @@ class Project extends ComplexElement with SerializableMixin<Project> {
         _finish = finish,
         _start = start,
         super(notes, tags) {
-    assert(_start.isBefore(_finish));
+    assert(!_finish.isBefore(_start));
   }
 
   List<int> get tasks => _tasks;
@@ -60,18 +59,38 @@ class Project extends ComplexElement with SerializableMixin<Project> {
   }
 
   @override
-  Map<int, Project> deserialize(Map<String, dynamic> data) {
-    final Project project = Project(
-      tags: Tag.instance.deserializeList(data['etiquetas']).keys.toList(),
-      tasks: Task.instance.deserializeList(data['tareas']).keys.toList(),
-      notes: Note.instance.deserializeList(data['notas']).keys.toList(),
-      start: DateTime.parse(data['inicio']),
-      finish: DateTime.parse(data['fin']),
-      description: data['descripcion'],
-      state: data['estado'],
-      name: data['nombre'],
-    );
+  Map<int, Project> fromJson(Map<String, dynamic> json) {
+    return {
+      json['id']: Project(
+        tags: Tag.instance
+            .fromJsonList(json['etiquetas'] as List<dynamic>)
+            .keys
+            .toList(),
+        tasks: Task.instance
+            .fromJsonList(json['tareas'] as List<dynamic>)
+            .keys
+            .toList(),
+        notes: Note.instance
+            .fromJsonList(json['notas'] as List<dynamic>)
+            .keys
+            .toList(),
+        start: DateTime.parse(json['inicio']),
+        finish: DateTime.parse(json['fin']),
+        description: json['descripcion'],
+        state: json['estado'],
+        name: json['nombre'],
+      ),
+    };
+  }
 
-    return {data['id']: project};
+  @override
+  Map<String, dynamic> toJson() {
+    return {
+      'nombre': name,
+      'inicio': _start,
+      'fin': _finish,
+      'descripcion': description,
+      'estado': state,
+    };
   }
 }

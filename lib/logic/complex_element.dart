@@ -1,4 +1,6 @@
-class ComplexElement {
+import 'package:gtd_client/logic/serializable.dart';
+
+abstract class ComplexElement<T> extends Serializable<T> {
   final List<int> _notes;
   final List<int> _tags;
 

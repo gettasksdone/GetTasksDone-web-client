@@ -8,6 +8,7 @@ import 'package:gtd_client/utilities/extensions.dart';
 import 'package:gtd_client/widgets/show_up_text.dart';
 import 'package:gtd_client/widgets/solid_button.dart';
 import 'package:gtd_client/utilities/constants.dart';
+import 'package:gtd_client/utilities/headers.dart';
 import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
@@ -50,9 +51,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen>
 
     final http.Response response = await http.post(
       Uri.parse('$serverUrl/auth/login'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
+      headers: contentType,
       body: jsonEncode(
         <String, dynamic>{
           'username': account,
@@ -61,7 +60,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen>
       ),
     );
 
-    debugPrint('Login call status code: ${response.statusCode}');
+    debugPrint('/auth/login call status code: ${response.statusCode}');
 
     if (response.statusCode == 200) {
       final String sessionToken = response.body;
@@ -77,13 +76,12 @@ class _SignInScreenState extends ConsumerState<SignInScreen>
 
       final http.Response userDataRespone = await http.get(
         Uri.parse('$serverUrl/userData/authed'),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-          'Authorization': 'Bearer $sessionToken',
-        },
+        headers: headers(ref),
       );
 
-      debugPrint('userData call status code: ${userDataRespone.statusCode}');
+      debugPrint(
+        '/userData/authed call status code: ${userDataRespone.statusCode}',
+      );
 
       if (context.mounted) {
         switch (userDataRespone.statusCode) {

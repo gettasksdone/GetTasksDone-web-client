@@ -1,10 +1,19 @@
-import 'package:gtd_client/mixins/serializable_mixin.dart';
+import 'package:gtd_client/logic/serializable.dart';
 
-class Tag with SerializableMixin<String> {
-  static final Tag instance = Tag();
+class Tag extends Serializable<Tag> {
+  static final Tag instance = Tag(name: '');
+
+  String name;
+
+  Tag({required this.name});
 
   @override
-  Map<int, String> deserialize(Map<String, dynamic> data) {
-    return {data['id']: data['nombre']};
+  Map<int, Tag> fromJson(Map<String, dynamic> json) {
+    return {json['id']: Tag(name: json['nombre'])};
+  }
+
+  @override
+  Map<String, dynamic> toJson() {
+    return {'nombre': name};
   }
 }

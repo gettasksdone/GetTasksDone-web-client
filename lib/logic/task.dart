@@ -1,11 +1,10 @@
-import 'package:gtd_client/mixins/serializable_mixin.dart';
 import 'package:gtd_client/logic/complex_element.dart';
 import 'package:gtd_client/logic/check_item.dart';
 import 'package:gtd_client/logic/context.dart';
 import 'package:gtd_client/logic/note.dart';
 import 'package:gtd_client/logic/tag.dart';
 
-class Task extends ComplexElement with SerializableMixin<Task> {
+class Task extends ComplexElement<Task> {
   static final Task instance = Task(
     description: '',
     contextId: -1,
@@ -37,7 +36,7 @@ class Task extends ComplexElement with SerializableMixin<Task> {
         _expiration = expiration,
         super(notes, tags) {
     if (_expiration != null) {
-      assert(_expiration!.isAfter(this.created));
+      assert(!_expiration!.isBefore(this.created));
     }
   }
 
@@ -53,22 +52,42 @@ class Task extends ComplexElement with SerializableMixin<Task> {
   }
 
   @override
-  Map<int, Task> deserialize(Map<String, dynamic> data) {
-    final Task task = Task(
-      expiration: data.containsKey('vencimiento')
-          ? DateTime.parse(data['vencimiento'])
-          : null,
-      checkItems:
-          CheckItem.instance.deserializeList(data['checkItems']).keys.toList(),
-      contextId: Context.instance.deserialize(data['contexto']).keys.first,
-      tags: Tag.instance.deserializeList(data['etiquetas']).keys.toList(),
-      notes: Note.instance.deserializeList(data['notas']).keys.toList(),
-      created: DateTime.parse(data['creacion']),
-      description: data['descripcion'],
-      priority: data['prioridad'],
-      state: data['estado'],
-    );
+  Map<int, Task> fromJson(Map<String, dynamic> json) {
+    return {
+      json['id']: Task(
+        checkItems: CheckItem.instance
+            .fromJsonList(json['checkItems'] as List<dynamic>)
+            .keys
+            .toList(),
+        tags: Tag.instance
+            .fromJsonList(json['etiquetas'] as List<dynamic>)
+            .keys
+            .toList(),
+        notes: Note.instance
+            .fromJsonList(json['notas'] as List<dynamic>)
+            .keys
+            .toList(),
+        expiration: json.containsKey('vencimiento')
+            ? DateTime.parse(json['vencimiento'])
+            : null,
+        contextId: Context.instance.fromJson(json['contexto']).keys.first,
+        created: DateTime.parse(json['creacion']),
+        description: json['descripcion'],
+        priority: json['prioridad'],
+        state: json['estado'],
+      ),
+    };
+  }
 
-    return {data['id']: task};
+  @override
+  Map<String, dynamic> toJson() {
+    return {
+      'contexto': {'id': contextId},
+      'descripcion': description,
+      'vencimiento': _expiration,
+      'prioridad': priority,
+      'creacion': created,
+      'estado': state,
+    };
   }
 }

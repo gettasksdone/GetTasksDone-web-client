@@ -39,106 +39,105 @@ final GoRouter _router = GoRouter(
   ],
 );
 
-Future<void> main() async {
+void main() {
   if (kReleaseMode) {
     debugPrint = (String? message, {int? wrapWidth}) {};
   }
 
-  final Map<String, dynamic> response = await _getInitialData();
-
   WidgetsFlutterBinding.ensureInitialized();
 
   runApp(
-    ProviderScope(
-      child: _EagerInitialization(
-        sessionToken: response['sessionToken'] as String?,
-        completedRegistry: response['completedRegistry'] as bool,
-        child: MaterialApp.router(
-          title: 'Get Tasks Done',
-          theme: AppTheme.dark,
-          routerConfig: _router,
-        ),
-      ),
+    const ProviderScope(
+      child: _Initializer(),
     ),
   );
 }
 
-class _EagerInitialization extends ConsumerWidget {
-  final bool completedRegistry;
-  final String? sessionToken;
-  final Widget child;
+class _Initializer extends ConsumerWidget {
+  const _Initializer();
 
-  const _EagerInitialization({
-    required this.completedRegistry,
-    required this.sessionToken,
-    required this.child,
-  });
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    if (sessionToken != null) {
-      debugPrint('Session token from storage: $sessionToken');
-
-      ref.read(sessionTokenProvider.notifier).set(sessionToken!);
+  Future<Map<String, dynamic>> _getInitialData() async {
+    if (testNavigation) {
+      return {
+        'token': 'sessionToken',
+        'completedRegistry': true,
+      };
     }
 
-    ref.read(completedRegistryProvider.notifier).set(completedRegistry);
+    const FlutterSecureStorage storage = FlutterSecureStorage();
 
-    return child;
-  }
-}
+    if (await storage.containsKey(key: 'session_token')) {
+      final String? sessionToken = await storage.read(key: 'session_token');
 
-Future<Map<String, dynamic>> _getInitialData() async {
-  if (testNavigation) {
+      debugPrint('Session token: $sessionToken');
+
+      int statusCode = 403;
+
+      try {
+        final http.Response response = await http.get(
+          Uri.parse('$serverUrl/userData/authed'),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+            'Authorization': 'Bearer $sessionToken',
+          },
+        );
+
+        statusCode = response.statusCode;
+      } catch (exception) {
+        debugPrint('Exception occured trying to get userData: $exception');
+      }
+
+      debugPrint('Initial /userData/authed call status code: $statusCode');
+
+      switch (statusCode) {
+        case 200:
+          return {
+            'token': sessionToken,
+            'completedRegistry': true,
+          };
+        case 404:
+          return {
+            'token': sessionToken,
+            'completedRegistry': false,
+          };
+        default:
+          await storage.delete(key: 'session_token');
+      }
+    }
+
     return {
-      'token': 'sessionToken',
-      'completedRegistry': true,
+      'token': null,
+      'completedRegistry': false,
     };
   }
 
-  const FlutterSecureStorage storage = FlutterSecureStorage();
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return FutureBuilder(
+        future: _getInitialData(),
+        builder: (
+          BuildContext context,
+          AsyncSnapshot<Map<String, dynamic>> snapshot,
+        ) {
+          if (snapshot.hasData) {
+            final Map<String, dynamic> data = snapshot.data!;
 
-  if (await storage.containsKey(key: 'session_token')) {
-    final String? sessionToken = await storage.read(key: 'session_token');
+            if (data['token'] != null) {
+              ref.read(sessionTokenProvider.notifier).set(data['token']!);
+            }
 
-    debugPrint('Session token: $sessionToken');
+            ref.read(completedRegistryProvider.notifier).set(
+                  data['completedRegistry'],
+                );
 
-    int statusCode = 403;
+            return MaterialApp.router(
+              title: 'Get Tasks Done',
+              theme: AppTheme.dark,
+              routerConfig: _router,
+            );
+          }
 
-    try {
-      final http.Response response = await http.get(
-        Uri.parse('$serverUrl/userData/authed'),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-          'Authorization': 'Bearer $sessionToken',
-        },
-      );
-
-      statusCode = response.statusCode;
-    } catch (exception) {
-      debugPrint('Exception occured trying to get userData: $exception');
-    }
-
-    debugPrint('Get intial data call status code: $statusCode');
-
-    switch (statusCode) {
-      case 200:
-        return {
-          'token': sessionToken,
-          'completedRegistry': true,
-        };
-      case 404:
-        return {
-          'token': sessionToken,
-          'completedRegistry': false,
-        };
-      default:
-        await storage.delete(key: 'session_token');
-    }
+          return const Center(child: CircularProgressIndicator());
+        });
   }
-
-  return {
-    'token': null,
-    'completedRegistry': false,
-  };
 }

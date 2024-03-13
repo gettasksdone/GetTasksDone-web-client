@@ -1,6 +1,6 @@
-import 'package:gtd_client/mixins/serializable_mixin.dart';
+import 'package:gtd_client/logic/serializable.dart';
 
-class CheckItem with SerializableMixin<CheckItem> {
+class CheckItem extends Serializable<CheckItem> {
   static final CheckItem instance = CheckItem(content: '');
 
   String content;
@@ -10,12 +10,20 @@ class CheckItem with SerializableMixin<CheckItem> {
       : checked = checked ?? false;
 
   @override
-  Map<int, CheckItem> deserialize(Map<String, dynamic> data) {
-    final CheckItem checkItem = CheckItem(
-      checked: data['esta_marcado'],
-      content: data['contenido'],
-    );
+  Map<int, CheckItem> fromJson(Map<String, dynamic> json) {
+    return {
+      json['id']: CheckItem(
+        checked: json['esta_marcado'],
+        content: json['contenido'],
+      ),
+    };
+  }
 
-    return {data['id']: checkItem};
+  @override
+  Map<String, dynamic> toJson() {
+    return {
+      'esta_marcado': checked,
+      'contenido': content,
+    };
   }
 }

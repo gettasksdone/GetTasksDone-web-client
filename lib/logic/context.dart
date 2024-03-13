@@ -1,10 +1,19 @@
-import 'package:gtd_client/mixins/serializable_mixin.dart';
+import 'package:gtd_client/logic/serializable.dart';
 
-class Context with SerializableMixin<String> {
-  static final Context instance = Context();
+class Context extends Serializable<Context> {
+  static final Context instance = Context(name: '');
+
+  String name;
+
+  Context({required this.name});
 
   @override
-  Map<int, String> deserialize(Map<String, dynamic> data) {
-    return {data['id']: data['nombre']};
+  Map<int, Context> fromJson(Map<String, dynamic> json) {
+    return {json['id']: Context(name: json['nombre'])};
+  }
+
+  @override
+  Map<String, dynamic> toJson() {
+    return {'nombre': name};
   }
 }
