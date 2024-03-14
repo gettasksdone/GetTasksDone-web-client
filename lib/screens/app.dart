@@ -1,11 +1,12 @@
+import 'package:gtd_client/widgets/stateful_solid_button.dart';
 import 'package:gtd_client/providers/completed_registry.dart';
-import 'package:gtd_client/providers/initialized_app.dart';
+import 'package:gtd_client/widgets/solid_icon_button.dart';
 import 'package:gtd_client/providers/session_token.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:gtd_client/widgets/button_tile.dart';
+import 'package:gtd_client/utilities/extensions.dart';
 import 'package:gtd_client/utilities/constants.dart';
+import 'package:gtd_client/providers/username.dart';
 import 'package:gtd_client/views/projects.dart';
-import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 
 class AppScreen extends ConsumerStatefulWidget {
@@ -16,99 +17,105 @@ class AppScreen extends ConsumerStatefulWidget {
 }
 
 class _AppScreenState extends ConsumerState<AppScreen> {
-  static const double _menuWidth = 350.0;
-  static const List<Widget> _views = [
-    ProjectsView(),
-    Placeholder(),
-    Placeholder(),
-    Placeholder(),
-  ];
+  static const Map<String, IconData> _icons = {
+    'Contextos': Icons.landscape_outlined,
+    'Proyectos': Icons.personal_video,
+    'Etiquetas': Icons.inbox,
+    'Tareas': Icons.label,
+  };
+  static const Map<String, Widget> _views = {
+    'Proyectos': ProjectsView(),
+    'Contextos': Placeholder(),
+    'Etiquetas': Placeholder(),
+    'Tareas': Placeholder(),
+  };
 
-  int _viewIndex = 0;
+  String _viewKey = 'Proyectos';
 
-  @override
-  void initState() {
-    super.initState();
-
-    if (testNavigation) {
-      return;
-    }
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!ref.watch(initializedAppProvider)) {
-        context.go('/');
-        return;
-      }
-
-      if (ref.watch(sessionTokenProvider) == null) {
-        context.go('/sign_in');
-        return;
-      }
-
-      if (!ref.watch(completedRegistryProvider)) {
-        context.go('/complete_registry');
-        return;
-      }
+  void _setView(String viewKey) {
+    setState(() {
+      _viewKey = viewKey;
     });
   }
 
-  void _setView(int viewIndex) {
-    setState(() {
-      _viewIndex = viewIndex;
-    });
+  Color _getButtonColor(ColorScheme colors, String buttonKey) {
+    if (_viewKey == buttonKey) {
+      return colors.primary;
+    }
+
+    return Colors.transparent;
   }
 
   @override
   Widget build(BuildContext context) {
+    final ColorScheme colors = context.colorScheme;
+
+    Color buttonColor(String buttonKey) => _getButtonColor(colors, buttonKey);
+
     return Scaffold(
       body: Stack(
         children: [
-          _views[_viewIndex],
+          _views[_viewKey]!,
           SizedBox(
-            width: _menuWidth,
-            child: ListView(
-              children: [
-                const SizedBox(
-                  height: 120.0,
-                  child: Padding(
-                    padding: EdgeInsets.only(
-                      top: 40.0,
-                      left: 20.0,
-                    ),
-                    child: Text(
-                      appName,
-                      style: TextStyle(
-                        fontSize: 30.0,
-                        fontWeight: FontWeight.bold,
+            width: 290.0,
+            child: Padding(
+              padding: padding,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  SizedBox(
+                    height: 120.0,
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: paddingAmount),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(height: 30.0),
+                          const Text(
+                            appName,
+                            style: TextStyle(fontSize: 30.0),
+                          ),
+                          const SizedBox(height: 10.0),
+                          Text(
+                            ref.watch(usernameProvider)!,
+                            style: TextStyle(
+                              fontSize: 17.0,
+                              color: colors.onSurface,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
-                ),
-                const SizedBox(height: paddingAmount),
-                ButtonTile(
-                  text: 'Proyectos',
-                  onTap: () => _setView(0),
-                  icon: Icons.personal_video,
-                ),
-                const SizedBox(height: paddingAmount),
-                ButtonTile(
-                  text: 'Contextos',
-                  onTap: () => _setView(1),
-                  icon: Icons.landscape_outlined,
-                ),
-                const SizedBox(height: paddingAmount),
-                ButtonTile(
-                  text: 'Tareas',
-                  icon: Icons.inbox,
-                  onTap: () => _setView(2),
-                ),
-                const SizedBox(height: paddingAmount),
-                ButtonTile(
-                  text: 'Etiquetas',
-                  icon: Icons.label,
-                  onTap: () => _setView(3),
-                ),
-              ],
+                  for (final String key in _views.keys)
+                    Padding(
+                      padding: rowPadding,
+                      child: SolidIconButton(
+                        text: key,
+                        innerSize: 22.0,
+                        icon: _icons[key]!,
+                        color: buttonColor(key),
+                        innerPadding: cardPadding,
+                        onPressed: () => _setView(key),
+                      ),
+                    ),
+                  const Spacer(),
+                  Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: StatefulSolidButton(
+                      textSize: 25.0,
+                      color: Colors.red,
+                      text: 'Cerrar sesión',
+                      size: const Size(100.0, 60.0),
+                      onPressed: () async {
+                        ref.read(usernameProvider.notifier).set(null);
+                        ref.read(sessionTokenProvider.notifier).set(null);
+                        ref.read(completedRegistryProvider.notifier).set(false);
+                      },
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ],

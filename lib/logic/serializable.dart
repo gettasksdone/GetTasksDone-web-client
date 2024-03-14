@@ -10,7 +10,7 @@ abstract class Serializable<T> {
   Map<int, T> fromJsonList(List<dynamic> json) {
     final Map<int, T> elements = {};
 
-    for (Map<String, dynamic> elementData in json) {
+    for (final Map<String, dynamic> elementData in json) {
       elements.addAll(fromJson(elementData));
     }
 

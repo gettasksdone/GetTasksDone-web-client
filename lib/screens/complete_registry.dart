@@ -1,12 +1,10 @@
+import 'package:gtd_client/widgets/stateful_solid_button.dart';
 import 'package:gtd_client/providers/completed_registry.dart';
 import 'package:gtd_client/mixins/sign_in_screen_mixin.dart';
-import 'package:gtd_client/providers/initialized_app.dart';
 import 'package:gtd_client/widgets/account_form_field.dart';
-import 'package:gtd_client/providers/session_token.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gtd_client/utilities/extensions.dart';
 import 'package:gtd_client/widgets/show_up_text.dart';
-import 'package:gtd_client/widgets/solid_button.dart';
 import 'package:gtd_client/utilities/constants.dart';
 import 'package:gtd_client/utilities/headers.dart';
 import 'package:go_router/go_router.dart';
@@ -29,36 +27,7 @@ class _CompleteRegistryScreenState extends ConsumerState<CompleteRegistryScreen>
   String? _jobTitle;
   String? _name;
 
-  @override
-  void initState() {
-    super.initState();
-
-    if (testNavigation) {
-      return;
-    }
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!ref.watch(initializedAppProvider)) {
-        context.go('/');
-        return;
-      }
-
-      if (ref.watch(sessionTokenProvider) == null) {
-        debugPrint('Complete registry null token from provider');
-
-        context.go('/sign_in');
-
-        return;
-      }
-
-      if (ref.watch(completedRegistryProvider)) {
-        context.go('/app');
-        return;
-      }
-    });
-  }
-
-  void _submitUserData(BuildContext context) async {
+  Future<void> _submitUserData(BuildContext context) async {
     if (testNavigation) {
       if (context.mounted) {
         context.go('/app');
@@ -85,10 +54,7 @@ class _CompleteRegistryScreenState extends ConsumerState<CompleteRegistryScreen>
     if (response.statusCode == 200) {
       ref.read(completedRegistryProvider.notifier).set(true);
 
-      if (context.mounted) {
-        context.go('/app');
-        return;
-      }
+      return;
     }
 
     setState(() {
@@ -218,7 +184,7 @@ class _CompleteRegistryScreenState extends ConsumerState<CompleteRegistryScreen>
                   ),
                   Padding(
                     padding: SignInScreenMixin.buttonPadding,
-                    child: SolidButton(
+                    child: StatefulSolidButton(
                       text: 'Completar registro',
                       size: SignInScreenMixin.buttonSize,
                       textSize: SignInScreenMixin.buttonFontSize,

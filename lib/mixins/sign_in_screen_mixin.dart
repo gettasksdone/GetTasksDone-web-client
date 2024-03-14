@@ -27,7 +27,7 @@ mixin SignInScreenMixin<T extends StatefulWidget> on State<T> {
   bool showError = false;
   String? errorMessage;
   String? password;
-  String? account;
+  String? username;
 
   String? validateUsername(String? username) {
     if (username == null || username.isEmpty) {
@@ -35,7 +35,7 @@ mixin SignInScreenMixin<T extends StatefulWidget> on State<T> {
     }
 
     setState(() {
-      account = username;
+      this.username = username;
     });
 
     return null;

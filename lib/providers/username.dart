@@ -2,22 +2,22 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:gtd_client/utilities/constants.dart';
 
-part 'session_token.g.dart';
+part 'username.g.dart';
 
 @Riverpod(keepAlive: true)
-class SessionToken extends _$SessionToken {
+class Username extends _$Username {
   static const FlutterSecureStorage _storage = FlutterSecureStorage();
-  static const String key = 'session_token';
+  static const String key = 'username';
 
-  String? _token;
+  String? _username;
 
   @override
   String? build() {
     if (testNavigation) {
-      return 'session_token';
+      return 'username';
     }
 
-    return _token;
+    return _username;
   }
 
   static Future<String?> readFromStorage() async {
@@ -28,13 +28,13 @@ class SessionToken extends _$SessionToken {
     return null;
   }
 
-  void set(String? token) async {
-    _token = token;
+  void set(String? username) async {
+    _username = username;
 
     ref.invalidateSelf();
 
-    if (token != null) {
-      await _storage.write(key: key, value: token);
+    if (username != null) {
+      await _storage.write(key: key, value: username);
     } else {
       await _storage.delete(key: key);
     }

@@ -4,17 +4,27 @@ import 'package:flutter/material.dart';
 
 class SolidButton extends StatelessWidget {
   final VoidCallback? onPressed;
+  final Widget? withWidget;
   final double? textSize;
-  final String text;
+  final Color? textColor;
+  final bool leftAligned;
+  final Color? color;
+  final String? text;
   final Size? size;
 
-  const SolidButton({
+  SolidButton({
     super.key,
     required this.onPressed,
-    required this.text,
+    this.withWidget,
+    this.textColor,
     this.textSize,
+    this.color,
     this.size,
-  });
+    this.text,
+    this.leftAligned = false,
+  }) {
+    assert((text != null) || (withWidget != null));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,17 +34,20 @@ class SolidButton extends StatelessWidget {
       onPressed: onPressed,
       style: TextButton.styleFrom(
         minimumSize: size,
-        backgroundColor: colors.primary,
         disabledBackgroundColor: Colors.grey,
+        backgroundColor: color ?? colors.primary,
+        alignment: leftAligned ? Alignment.centerLeft : null,
         shape: const RoundedRectangleBorder(borderRadius: roundedCorners),
       ),
-      child: Text(
-        text,
-        style: TextStyle(
-          fontSize: textSize,
-          color: colors.onPrimary,
-        ),
-      ),
+      child: withWidget == null
+          ? Text(
+              text!,
+              style: TextStyle(
+                fontSize: textSize,
+                color: textColor ?? colors.onPrimary,
+              ),
+            )
+          : withWidget!,
     );
   }
 }

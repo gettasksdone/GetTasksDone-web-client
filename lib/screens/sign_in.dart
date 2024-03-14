@@ -1,14 +1,14 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:gtd_client/widgets/stateful_solid_button.dart';
 import 'package:gtd_client/providers/completed_registry.dart';
 import 'package:gtd_client/mixins/sign_in_screen_mixin.dart';
 import 'package:gtd_client/widgets/account_form_field.dart';
-import 'package:gtd_client/providers/initialized_app.dart';
 import 'package:gtd_client/providers/session_token.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gtd_client/utilities/extensions.dart';
 import 'package:gtd_client/widgets/show_up_text.dart';
-import 'package:gtd_client/widgets/solid_button.dart';
 import 'package:gtd_client/utilities/constants.dart';
+import 'package:gtd_client/providers/username.dart';
 import 'package:gtd_client/utilities/headers.dart';
 import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
@@ -24,33 +24,9 @@ class SignInScreen extends ConsumerStatefulWidget {
 
 class _SignInScreenState extends ConsumerState<SignInScreen>
     with SignInScreenMixin {
-  @override
-  void initState() {
-    super.initState();
-
+  Future<void> _submitSignIn(BuildContext context) async {
     if (testNavigation) {
-      return;
-    }
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!ref.watch(initializedAppProvider)) {
-        context.go('/');
-        return;
-      }
-
-      if (ref.watch(sessionTokenProvider) != null) {
-        context.go('/app');
-      } else {
-        debugPrint('Sign in null token from provider');
-      }
-    });
-  }
-
-  void _submitSignIn(BuildContext context) async {
-    if (testNavigation) {
-      if (context.mounted) {
-        context.go('/app');
-      }
+      context.go('/app');
 
       return;
     }
@@ -60,7 +36,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen>
       headers: contentType,
       body: jsonEncode(
         <String, dynamic>{
-          'username': account,
+          'username': username,
           'password': password,
         },
       ),
@@ -78,26 +54,26 @@ class _SignInScreenState extends ConsumerState<SignInScreen>
         value: sessionToken,
       );
 
-      ref.read(sessionTokenProvider.notifier).set(sessionToken);
-
       final http.Response userDataRespone = await http.get(
         Uri.parse('$serverUrl/userData/authed'),
-        headers: headers(ref),
+        headers: {
+          'Authorization': 'Bearer $sessionToken',
+        }..addAll(contentType),
       );
 
       debugPrint(
         '/userData/authed call status code: ${userDataRespone.statusCode}',
       );
 
+      ref.read(usernameProvider.notifier).set(username);
+      ref.read(sessionTokenProvider.notifier).set(sessionToken);
+
       if (context.mounted) {
         switch (userDataRespone.statusCode) {
           case 200:
             ref.read(completedRegistryProvider.notifier).set(true);
-
-            context.go('/app');
             break;
           case 404:
-            context.go('/complete_registry');
             break;
           default:
             debugPrint('Reached default case');
@@ -157,11 +133,11 @@ class _SignInScreenState extends ConsumerState<SignInScreen>
                   ),
                   Padding(
                     padding: SignInScreenMixin.buttonPadding,
-                    child: SolidButton(
+                    child: StatefulSolidButton(
                       text: 'Inicia sesión',
                       size: SignInScreenMixin.buttonSize,
                       textSize: SignInScreenMixin.buttonFontSize,
-                      onPressed: (account != null) && (password != null)
+                      onPressed: (username != null) && (password != null)
                           ? () => _submitSignIn(context)
                           : null,
                     ),

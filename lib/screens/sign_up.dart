@@ -1,13 +1,13 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:gtd_client/widgets/stateful_solid_button.dart';
 import 'package:gtd_client/mixins/sign_in_screen_mixin.dart';
 import 'package:gtd_client/widgets/account_form_field.dart';
-import 'package:gtd_client/providers/initialized_app.dart';
 import 'package:gtd_client/providers/session_token.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gtd_client/utilities/extensions.dart';
 import 'package:gtd_client/widgets/show_up_text.dart';
-import 'package:gtd_client/widgets/solid_button.dart';
 import 'package:gtd_client/utilities/constants.dart';
+import 'package:gtd_client/providers/username.dart';
 import 'package:gtd_client/utilities/headers.dart';
 import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
@@ -26,33 +26,9 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen>
   bool _matchingPasswords = false;
   String? _email;
 
-  @override
-  void initState() {
-    super.initState();
-
+  Future<void> _submitSingUp(BuildContext context) async {
     if (testNavigation) {
-      return;
-    }
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!ref.watch(initializedAppProvider)) {
-        context.go('/');
-        return;
-      }
-
-      if (ref.watch(sessionTokenProvider) != null) {
-        context.go('/app');
-      } else {
-        debugPrint('Sign up null token from provider');
-      }
-    });
-  }
-
-  void _submitSingUp(BuildContext context) async {
-    if (testNavigation) {
-      if (context.mounted) {
-        context.go('/complete_registry');
-      }
+      context.go('/complete_registry');
 
       return;
     }
@@ -62,7 +38,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen>
       headers: contentType,
       body: jsonEncode(
         <String, dynamic>{
-          'username': account,
+          'username': username,
           'password': password,
           'email': _email,
         },
@@ -79,12 +55,10 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen>
         value: response.body,
       );
 
+      ref.read(usernameProvider.notifier).set(username);
       ref.read(sessionTokenProvider.notifier).set(response.body);
 
-      if (context.mounted) {
-        context.go('/complete_registry');
-        return;
-      }
+      return;
     }
 
     setState(() {
@@ -199,11 +173,11 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen>
                   ),
                   Padding(
                     padding: SignInScreenMixin.buttonPadding,
-                    child: SolidButton(
+                    child: StatefulSolidButton(
                       text: 'Registrarse',
                       size: SignInScreenMixin.buttonSize,
                       textSize: SignInScreenMixin.buttonFontSize,
-                      onPressed: (account != null) &&
+                      onPressed: (username != null) &&
                               (_email != null) &&
                               _matchingPasswords
                           ? () => _submitSingUp(context)

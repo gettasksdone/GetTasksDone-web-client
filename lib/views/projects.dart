@@ -1,11 +1,16 @@
+import 'package:gtd_client/widgets/custom_progress_indicator.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:gtd_client/utilities/extensions.dart';
 import 'package:gtd_client/utilities/constants.dart';
 import 'package:gtd_client/utilities/headers.dart';
 import 'package:gtd_client/logic/user_data.dart';
 import 'package:gtd_client/logic/project.dart';
+import 'package:gtd_client/widgets/solid_button.dart';
+import 'package:gtd_client/widgets/solid_icon_button.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'dart:convert';
+import 'dart:math';
 
 class ProjectsView extends ConsumerStatefulWidget {
   const ProjectsView({super.key});
@@ -17,20 +22,13 @@ class ProjectsView extends ConsumerStatefulWidget {
 class _ProjectsViewState extends ConsumerState<ProjectsView> {
   final UserData _userData = UserData();
 
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  void _getProjects() async {
+  Future<Map<int, Project>> _getProjects() async {
     final http.Response response = await http.get(
       Uri.parse('$serverUrl/project/authed'),
       headers: headers(ref),
     );
 
     debugPrint('/project/authed call status code: ${response.statusCode}');
-
-    debugPrint(response.body);
 
     if (response.statusCode == 200) {
       for (final MapEntry<int, Project> entry
@@ -40,6 +38,43 @@ class _ProjectsViewState extends ConsumerState<ProjectsView> {
         _userData.addProject(entry.key, entry.value);
       }
     }
+
+    return _userData.projects;
+  }
+
+  void _editProject(BuildContext context, MapEntry<int, Project> entry) {
+    final ColorScheme colors = context.colorScheme;
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          shape: const RoundedRectangleBorder(borderRadius: roundedCorners),
+          backgroundColor: colors.secondary,
+          surfaceTintColor: Colors.transparent,
+          child: SizedBox(
+            width: modalSize.width,
+            height: modalSize.height,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                SizedBox(
+                  height: modalHeaderHeight,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: colors.primary,
+                      borderRadius: const BorderRadius.vertical(
+                        top: cornerRadius,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 
   void _createProject(Project project) async {
@@ -77,73 +112,92 @@ class _ProjectsViewState extends ConsumerState<ProjectsView> {
 
   @override
   Widget build(BuildContext context) {
+    final ColorScheme colors = context.colorScheme;
+
     return Center(
-      child: TextButton(
-        onPressed: _getProjects,
-        child: const Text('Prueba'),
+      child: SizedBox(
+        width: 380.0,
+        height: 600.0,
+        child: Container(
+          decoration: BoxDecoration(
+            color: colors.secondary,
+            borderRadius: roundedCorners,
+          ),
+          child: Padding(
+            padding: cardPadding,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Padding(
+                  padding: rowPadding,
+                  child: Text(
+                    'Tus proyectos',
+                    style: TextStyle(fontSize: 23.0),
+                  ),
+                ),
+                Expanded(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: colors.tertiary,
+                      borderRadius: roundedCorners,
+                    ),
+                    child: FutureBuilder(
+                      future: _getProjects(),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          final Map<int, Project> projects = snapshot.data!;
+
+                          return Padding(
+                            padding: cardPadding,
+                            child: SingleChildScrollView(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  for (final entry in projects.entries)
+                                    Padding(
+                                      padding: rowPadding,
+                                      child: SolidButton(
+                                        leftAligned: true,
+                                        size: elementCardSize,
+                                        onPressed: () =>
+                                            _editProject(context, entry),
+                                        color: Colors.primaries[Random()
+                                            .nextInt(Colors.primaries.length)],
+                                        withWidget: Padding(
+                                          padding: const EdgeInsets.all(4.0),
+                                          child: Text(
+                                            entry.value.name,
+                                            style: TextStyle(
+                                              color: colors.onPrimary,
+                                              fontSize: elementCardFontSize,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  SolidIconButton(
+                                    onPressed: () {},
+                                    size: elementCardSize,
+                                    text: 'Agregar proyecto',
+                                    icon: Icons.add_box_outlined,
+                                    innerSize: elementCardFontSize,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        }
+
+                        return const Center(child: CustomProgressIndicator());
+                      },
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
-
-    // return Center(
-    //   child: SizedBox(
-    //     height: 600.0,
-    //     width: 350.0,
-    //     child: Column(
-    //       crossAxisAlignment: CrossAxisAlignment.stretch,
-    //       children: [
-    //         Padding(
-    //           padding: _rowPadding,
-    //           child: Text(
-    //             'Tus tareas',
-    //             style: TextStyle(
-    //               fontSize: 23.0,
-    //               color: colors.onSecondary,
-    //               fontWeight: FontWeight.w500,
-    //             ),
-    //           ),
-    //         ),
-    //         for (int i = 0; i < _tasks.length; i++)
-    //           Padding(
-    //             padding: _rowPadding,
-    //             child: Row(
-    //               children: [
-    //                 Expanded(
-    //                   child: CheckboxButton(
-    //                     text: _tasks[i].name,
-    //                     onChanged: (value) {},
-    //                   ),
-    //                 ),
-    //                 const SizedBox(width: 10.0),
-    //                 SizedBox(
-    //                   width: _editButtonSize,
-    //                   height: _editButtonSize,
-    //                   child: IconButton(
-    //                     icon: const Icon(Icons.edit),
-    //                     style: IconButton.styleFrom(
-    //                       backgroundColor: colors.onSurface.lighten(80),
-    //                       shape: const RoundedRectangleBorder(
-    //                         borderRadius: roundedCorners,
-    //                       ),
-    //                     ),
-    //                     onPressed: () {
-    //                       setState(() {
-    //                         _editTaskIndex = i;
-    //                         _editTask = true;
-    //                       });
-    //                     },
-    //                   ),
-    //                 ),
-    //               ],
-    //             ),
-    //           ),
-    //         const SizedBox(height: 50.0),
-    //         const CustomIconButton(
-    //           label: 'Agregar tarea',
-    //           icon: Icons.add_box_outlined,
-    //         ),
-    //       ],
-    //     ),
-    //   ),
-    // );
   }
 }

@@ -1,17 +1,19 @@
 import 'package:gtd_client/logic/check_item.dart';
+import 'package:gtd_client/logic/context.dart';
 import 'package:gtd_client/logic/project.dart';
 import 'package:gtd_client/logic/note.dart';
 import 'package:gtd_client/logic/task.dart';
+import 'package:gtd_client/logic/tag.dart';
 
 class UserData {
   static final UserData _instance = UserData._userData();
 
   Map<int, CheckItem> _checkItems;
   Map<int, Project> _projects;
-  Map<int, String> _contexts;
-  Map<int, String> _tags;
+  Map<int, Context> _contexts;
   Map<int, Task> _tasks;
   Map<int, Note> _notes;
+  Map<int, Tag> _tags;
 
   UserData._userData()
       : _checkItems = {},
@@ -25,29 +27,12 @@ class UserData {
     return _instance;
   }
 
-  List<CheckItem> getCheckItems() {
-    return _checkItems.values.toList();
-  }
-
-  List<Project> getProjects() {
-    return _projects.values.toList();
-  }
-
-  List<String> getContexts() {
-    return _contexts.values.toList();
-  }
-
-  List<String> getTags() {
-    return _tags.values.toList();
-  }
-
-  List<Task> getTasks() {
-    return _tasks.values.toList();
-  }
-
-  List<Note> getNotes() {
-    return _notes.values.toList();
-  }
+  Map<int, CheckItem> get checkItems => _checkItems;
+  Map<int, Project> get projects => _projects;
+  Map<int, Context> get contexts => _contexts;
+  Map<int, Task> get tasks => _tasks;
+  Map<int, Note> get notes => _notes;
+  Map<int, Tag> get tags => _tags;
 
   CheckItem? getCheckItem(int id) {
     if (_checkItems.containsKey(id)) {
@@ -65,7 +50,7 @@ class UserData {
     return null;
   }
 
-  String? getContext(int id) {
+  Context? getContext(int id) {
     if (_contexts.containsKey(id)) {
       return _contexts[id];
     }
@@ -73,7 +58,7 @@ class UserData {
     return null;
   }
 
-  String? getTag(int id) {
+  Tag? getTag(int id) {
     if (_tags.containsKey(id)) {
       return _tags[id];
     }
@@ -98,38 +83,26 @@ class UserData {
   }
 
   void addCheckItem(int id, CheckItem checkItem) {
-    assert(!(_checkItems.containsKey(id)));
-
     _checkItems[id] = checkItem;
   }
 
   void addProject(int id, Project project) {
-    assert(!(_projects.containsKey(id)));
-
     _projects[id] = project;
   }
 
-  void addContext(int id, String context) {
-    assert(!(_contexts.containsKey(id)));
-
+  void addContext(int id, Context context) {
     _contexts[id] = context;
   }
 
-  void addTag(int id, String tag) {
-    assert(!(_tags.containsKey(id)));
-
+  void addTag(int id, Tag tag) {
     _tags[id] = tag;
   }
 
   void addTask(int id, Task task) {
-    assert(!(_tasks.containsKey(id)));
-
     _tasks[id] = task;
   }
 
   void addNote(int id, Note note) {
-    assert(!(_notes.containsKey(id)));
-
     _notes[id] = note;
   }
 
@@ -155,41 +128,5 @@ class UserData {
 
   void removeNote(int id) {
     _notes.remove(id);
-  }
-
-  void updateCheckItem(int id, CheckItem checkItem) {
-    assert(_checkItems.containsKey(id));
-
-    _checkItems[id] = checkItem;
-  }
-
-  void updateProject(int id, Project project) {
-    assert(_projects.containsKey(id));
-
-    _projects[id] = project;
-  }
-
-  void updateContext(int id, String context) {
-    assert(_contexts.containsKey(id));
-
-    _contexts[id] = context;
-  }
-
-  void updateTag(int id, String tag) {
-    assert(_tags.containsKey(id));
-
-    _tags[id] = tag;
-  }
-
-  void updateTask(int id, Task task) {
-    assert(_tasks.containsKey(id));
-
-    _tasks[id] = task;
-  }
-
-  void updateNote(int id, Note note) {
-    assert(_notes.containsKey(id));
-
-    _notes[id] = note;
   }
 }
