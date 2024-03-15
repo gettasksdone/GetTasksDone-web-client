@@ -1,16 +1,16 @@
 import 'package:gtd_client/widgets/custom_progress_indicator.dart';
+import 'package:gtd_client/widgets/solid_icon_button.dart';
+import 'package:gtd_client/widgets/custom_form_field.dart';
+import 'package:gtd_client/mixins/app_screen_mixin.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:gtd_client/widgets/solid_button.dart';
 import 'package:gtd_client/utilities/extensions.dart';
 import 'package:gtd_client/utilities/constants.dart';
 import 'package:gtd_client/utilities/headers.dart';
-import 'package:gtd_client/logic/user_data.dart';
 import 'package:gtd_client/logic/project.dart';
-import 'package:gtd_client/widgets/solid_button.dart';
-import 'package:gtd_client/widgets/solid_icon_button.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'dart:convert';
-import 'dart:math';
 
 class ProjectsView extends ConsumerStatefulWidget {
   const ProjectsView({super.key});
@@ -19,8 +19,9 @@ class ProjectsView extends ConsumerStatefulWidget {
   ConsumerState<ConsumerStatefulWidget> createState() => _ProjectsViewState();
 }
 
-class _ProjectsViewState extends ConsumerState<ProjectsView> {
-  final UserData _userData = UserData();
+class _ProjectsViewState extends ConsumerState<ProjectsView>
+    with AppScreenMixin {
+  Project? _project;
 
   Future<Map<int, Project>> _getProjects() async {
     final http.Response response = await http.get(
@@ -35,45 +36,52 @@ class _ProjectsViewState extends ConsumerState<ProjectsView> {
           in Project.instance.decodeList(response.body).entries) {
         debugPrint('Adding project with ID [${entry.key}]');
 
-        _userData.addProject(entry.key, entry.value);
+        userData.addProject(entry.key, entry.value);
       }
     }
 
-    return _userData.projects;
+    return userData.projects;
   }
 
   void _editProject(BuildContext context, MapEntry<int, Project> entry) {
-    final ColorScheme colors = context.colorScheme;
+    // final ColorScheme colors = context.colorScheme;
 
-    showDialog(
-      context: context,
-      builder: (context) {
-        return Dialog(
-          shape: const RoundedRectangleBorder(borderRadius: roundedCorners),
-          backgroundColor: colors.secondary,
-          surfaceTintColor: Colors.transparent,
-          child: SizedBox(
-            width: modalSize.width,
-            height: modalSize.height,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                SizedBox(
-                  height: modalHeaderHeight,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: colors.primary,
-                      borderRadius: const BorderRadius.vertical(
-                        top: cornerRadius,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
+    _project = entry.value;
+
+    showModal(
+      context,
+      CustomFormField(
+        label: 'Nombre',
+        hintText: 'nombre',
+        initialValue: _project!.name,
+        validator: (String? input) {
+          final String? message = notEmptyValidator(
+            input,
+            'Introduzca nombre del proyecto',
+          );
+
+          if (message != null) {
+            return message;
+          } else {
+            setState(() {
+              _project!.name = input!;
+            });
+          }
+
+          return null;
+        },
+      ),
+      Column(
+        children: [
+          getTagsWidget(context, _project!.tags, (int? id) {
+            if (id != null) {
+              setState(() {
+                _project!.addTag(id);
+              });
+            }
+          }),
+        ],
+      ),
     );
   }
 
@@ -161,8 +169,7 @@ class _ProjectsViewState extends ConsumerState<ProjectsView> {
                                         size: elementCardSize,
                                         onPressed: () =>
                                             _editProject(context, entry),
-                                        color: Colors.primaries[Random()
-                                            .nextInt(Colors.primaries.length)],
+                                        color: getRandomColor(),
                                         withWidget: Padding(
                                           padding: const EdgeInsets.all(4.0),
                                           child: Text(

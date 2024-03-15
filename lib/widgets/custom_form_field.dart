@@ -1,27 +1,29 @@
+import 'package:gtd_client/utilities/extensions.dart';
 import 'package:gtd_client/utilities/constants.dart';
 import 'package:flutter/material.dart';
-import 'package:gtd_client/utilities/extensions.dart';
 
-class AccountFormField extends StatefulWidget {
+class CustomFormField extends StatefulWidget {
   final String? Function(String?)? validator;
   final bool _gotAutofillHint;
   final String? autofillHint;
+  final String? initialValue;
   final String? hintText;
   final String? label;
 
-  const AccountFormField({
+  const CustomFormField({
     super.key,
     required this.hintText,
     this.autofillHint,
+    this.initialValue,
     this.validator,
     this.label,
   }) : _gotAutofillHint = autofillHint != null;
 
   @override
-  State<AccountFormField> createState() => _AccountFormFieldState();
+  State<CustomFormField> createState() => _CustomFormFieldState();
 }
 
-class _AccountFormFieldState extends State<AccountFormField> {
+class _CustomFormFieldState extends State<CustomFormField> {
   final GlobalKey<FormFieldState> _fieldKey = GlobalKey();
 
   FocusNode? _focusNode;
@@ -52,6 +54,7 @@ class _AccountFormFieldState extends State<AccountFormField> {
       key: _fieldKey,
       focusNode: _focusNode,
       validator: widget.validator,
+      initialValue: widget.initialValue,
       autofillHints: widget._gotAutofillHint ? [widget.autofillHint!] : null,
       obscureText: widget._gotAutofillHint
           ? widget.autofillHint == AutofillHints.password

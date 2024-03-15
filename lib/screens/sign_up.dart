@@ -1,7 +1,7 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:gtd_client/widgets/stateful_solid_button.dart';
 import 'package:gtd_client/mixins/sign_in_screen_mixin.dart';
-import 'package:gtd_client/widgets/account_form_field.dart';
+import 'package:gtd_client/widgets/custom_form_field.dart';
 import 'package:gtd_client/providers/session_token.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gtd_client/utilities/extensions.dart';
@@ -137,7 +137,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen>
                       children: [
                         Padding(
                           padding: SignInScreenMixin.doublePadding,
-                          child: AccountFormField(
+                          child: CustomFormField(
                             hintText: 'tu usuario',
                             validator: validateUsername,
                             label: 'Nombre de usuario',
@@ -146,7 +146,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen>
                         ),
                         Padding(
                           padding: SignInScreenMixin.doublePadding,
-                          child: AccountFormField(
+                          child: CustomFormField(
                             validator: _validateEmail,
                             label: 'Correo electrónico',
                             hintText: 'tu@correo.electrónico',
@@ -155,14 +155,14 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen>
                         ),
                         Padding(
                           padding: SignInScreenMixin.doublePadding,
-                          child: AccountFormField(
+                          child: CustomFormField(
                             label: 'Contraseña',
                             hintText: 'tu contraseña',
                             validator: validatePassword,
                             autofillHint: AutofillHints.password,
                           ),
                         ),
-                        AccountFormField(
+                        CustomFormField(
                           label: 'Repetir contraseña',
                           hintText: 'repite tu contraseña',
                           validator: _validateRepeatPassword,

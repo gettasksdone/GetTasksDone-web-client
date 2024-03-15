@@ -2,7 +2,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:gtd_client/widgets/stateful_solid_button.dart';
 import 'package:gtd_client/providers/completed_registry.dart';
 import 'package:gtd_client/mixins/sign_in_screen_mixin.dart';
-import 'package:gtd_client/widgets/account_form_field.dart';
+import 'package:gtd_client/widgets/custom_form_field.dart';
 import 'package:gtd_client/providers/session_token.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gtd_client/utilities/extensions.dart';
@@ -115,14 +115,14 @@ class _SignInScreenState extends ConsumerState<SignInScreen>
                       children: [
                         Padding(
                           padding: SignInScreenMixin.doublePadding,
-                          child: AccountFormField(
+                          child: CustomFormField(
                             hintText: 'tu usuario',
                             validator: validateUsername,
                             label: 'Nombre de usuario',
                             autofillHint: AutofillHints.username,
                           ),
                         ),
-                        AccountFormField(
+                        CustomFormField(
                           label: 'Contraseña',
                           hintText: 'tu contraseña',
                           validator: validatePassword,

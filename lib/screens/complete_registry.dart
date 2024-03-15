@@ -1,7 +1,7 @@
 import 'package:gtd_client/widgets/stateful_solid_button.dart';
 import 'package:gtd_client/providers/completed_registry.dart';
 import 'package:gtd_client/mixins/sign_in_screen_mixin.dart';
-import 'package:gtd_client/widgets/account_form_field.dart';
+import 'package:gtd_client/widgets/custom_form_field.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gtd_client/utilities/extensions.dart';
 import 'package:gtd_client/widgets/show_up_text.dart';
@@ -146,7 +146,7 @@ class _CompleteRegistryScreenState extends ConsumerState<CompleteRegistryScreen>
                       children: [
                         Padding(
                           padding: SignInScreenMixin.doublePadding,
-                          child: AccountFormField(
+                          child: CustomFormField(
                             label: 'Nombre',
                             hintText: 'tu nombre',
                             validator: _validateName,
@@ -155,7 +155,7 @@ class _CompleteRegistryScreenState extends ConsumerState<CompleteRegistryScreen>
                         ),
                         Padding(
                           padding: SignInScreenMixin.doublePadding,
-                          child: AccountFormField(
+                          child: CustomFormField(
                             hintText: 'tu teléfono',
                             label: 'Número de teléfono',
                             validator: _validatePhoneNumber,
@@ -164,7 +164,7 @@ class _CompleteRegistryScreenState extends ConsumerState<CompleteRegistryScreen>
                         ),
                         Padding(
                           padding: SignInScreenMixin.doublePadding,
-                          child: AccountFormField(
+                          child: CustomFormField(
                             label: 'Puesto',
                             hintText: 'tu puesto',
                             validator: _validateJobTitle,
@@ -173,7 +173,7 @@ class _CompleteRegistryScreenState extends ConsumerState<CompleteRegistryScreen>
                         ),
                         Padding(
                           padding: SignInScreenMixin.doublePadding,
-                          child: AccountFormField(
+                          child: CustomFormField(
                             label: 'Departamento',
                             hintText: 'tu departamento',
                             validator: _validateDepartment,
