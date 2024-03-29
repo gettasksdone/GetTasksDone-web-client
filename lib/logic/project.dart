@@ -36,6 +36,8 @@ class Project extends ComplexElement<Project> {
     assert(!_finish.isBefore(_start));
   }
 
+  DateTime get finishDate => _finish;
+  DateTime get startDate => _start;
   List<int> get tasks => _tasks;
 
   void setStart(DateTime start) {

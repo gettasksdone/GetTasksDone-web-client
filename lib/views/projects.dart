@@ -3,6 +3,7 @@ import 'package:gtd_client/widgets/solid_icon_button.dart';
 import 'package:gtd_client/widgets/custom_form_field.dart';
 import 'package:gtd_client/mixins/app_screen_mixin.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:gtd_client/widgets/custom_modal.dart';
 import 'package:gtd_client/widgets/solid_button.dart';
 import 'package:gtd_client/utilities/extensions.dart';
 import 'package:gtd_client/utilities/constants.dart';
@@ -21,8 +22,6 @@ class ProjectsView extends ConsumerStatefulWidget {
 
 class _ProjectsViewState extends ConsumerState<ProjectsView>
     with AppScreenMixin {
-  Project? _project;
-
   Future<Map<int, Project>> _getProjects() async {
     final http.Response response = await http.get(
       Uri.parse('$serverUrl/project/authed'),
@@ -43,46 +42,184 @@ class _ProjectsViewState extends ConsumerState<ProjectsView>
     return userData.projects;
   }
 
-  void _editProject(BuildContext context, MapEntry<int, Project> entry) {
-    // final ColorScheme colors = context.colorScheme;
+  void _showProjectModal(BuildContext context, Project? selectedProject) {
+    late final List<int> tasks;
+    late final List<int> notes;
+    late final List<int> tags;
 
-    _project = entry.value;
+    String? description;
+    DateTime finishDate;
+    DateTime startDate;
+    String? state;
+    String? name;
 
-    showModal(
-      context,
-      CustomFormField(
-        label: 'Nombre',
-        hintText: 'nombre',
-        initialValue: _project!.name,
-        validator: (String? input) {
-          final String? message = notEmptyValidator(
-            input,
-            'Introduzca nombre del proyecto',
-          );
+    if (selectedProject != null) {
+      description = selectedProject.description;
+      finishDate = selectedProject.finishDate;
+      startDate = selectedProject.startDate;
+      state = selectedProject.state;
+      tasks = selectedProject.tasks;
+      notes = selectedProject.notes;
+      name = selectedProject.name;
+      tags = selectedProject.tags;
+    } else {
+      final DateTime currentTime = DateTime.now();
 
-          if (message != null) {
-            return message;
-          } else {
-            setState(() {
-              _project!.name = input!;
-            });
-          }
+      finishDate = currentTime;
+      startDate = currentTime;
+      tasks = [];
+      notes = [];
+      tags = [];
+    }
 
-          return null;
-        },
-      ),
-      Column(
-        children: [
-          getTagsWidget(context, _project!.tags, (int? id) {
-            if (id != null) {
-              setState(() {
-                _project!.addTag(id);
-              });
-            }
-          }),
-        ],
-      ),
+    showDialog(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, dialogSetState) {
+            final String parsedStartDate = startDate.toCustomFormat;
+            final String parsedEndDate = finishDate.toCustomFormat;
+
+            return CustomModal(
+              titleWidget: CustomFormField(
+                label: 'Nombre',
+                hintText: 'nombre',
+                initialValue: name,
+                validator: (String? input) {
+                  final String? message = notEmptyValidator(
+                    input,
+                    'Introduzca nombre del proyecto',
+                  );
+
+                  if (message != null) {
+                    return message;
+                  }
+
+                  dialogSetState(() {
+                    name = input!;
+                  });
+
+                  return null;
+                },
+              ),
+              bodyWidgets: [
+                Padding(
+                  padding: rowPadding,
+                  child: getTagsWidget(context, tags, (int? id) {
+                    if (id != null) {
+                      dialogSetState(
+                        () {
+                          tags.add(id);
+                        },
+                      );
+                    }
+                  }),
+                ),
+                Padding(
+                  padding: rowPadding,
+                  child: CustomFormField(
+                    multiline: true,
+                    label: 'Descripción',
+                    hintText: 'descripción',
+                    initialValue: description,
+                    validator: (String? input) {
+                      final String? message = notEmptyValidator(
+                        input,
+                        'Introduzca descripción del proyecto',
+                      );
+
+                      if (message != null) {
+                        return message;
+                      } else {
+                        dialogSetState(() {
+                          description = input!;
+                        });
+                      }
+
+                      return null;
+                    },
+                  ),
+                ),
+                Padding(
+                  padding: rowPadding,
+                  child: CustomFormField(
+                    label: 'Estado',
+                    hintText: 'estado',
+                    initialValue: state,
+                    validator: (String? input) {
+                      final String? message = notEmptyValidator(
+                        input,
+                        'Introduzca estado del proyecto',
+                      );
+
+                      if (message != null) {
+                        return message;
+                      } else {
+                        dialogSetState(() {
+                          state = input!;
+                        });
+                      }
+
+                      return null;
+                    },
+                  ),
+                ),
+                Padding(
+                  padding: rowPadding,
+                  child: SizedBox(
+                    height: 50.0,
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Expanded(
+                          child: SolidButton(
+                            text: 'Fecha de inicio [$parsedStartDate]',
+                            onPressed: () async {
+                              final DateTime? result = await showDateTimePicker(
+                                context: context,
+                                finishDate: finishDate,
+                              );
+
+                              if (result != null) {
+                                dialogSetState(() {
+                                  startDate = result;
+                                });
+                              }
+                            },
+                          ),
+                        ),
+                        const SizedBox(width: paddingAmount),
+                        Expanded(
+                          child: SolidButton(
+                            text: 'Fecha de finalización [$parsedEndDate]',
+                            onPressed: () async {
+                              final DateTime? result = await showDateTimePicker(
+                                context: context,
+                                startDate: startDate,
+                              );
+
+                              if (result != null) {
+                                dialogSetState(() {
+                                  finishDate = result;
+                                });
+                              }
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            );
+          },
+        );
+      },
     );
+  }
+
+  void _editProject(BuildContext context, MapEntry<int, Project> entry) {
+    _showProjectModal(context, entry.value);
   }
 
   void _createProject(Project project) async {
@@ -157,40 +294,37 @@ class _ProjectsViewState extends ConsumerState<ProjectsView>
 
                           return Padding(
                             padding: cardPadding,
-                            child: SingleChildScrollView(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.stretch,
-                                children: [
-                                  for (final entry in projects.entries)
-                                    Padding(
-                                      padding: rowPadding,
-                                      child: SolidButton(
-                                        leftAligned: true,
-                                        size: elementCardSize,
-                                        onPressed: () =>
-                                            _editProject(context, entry),
-                                        color: getRandomColor(),
-                                        withWidget: Padding(
-                                          padding: const EdgeInsets.all(4.0),
-                                          child: Text(
-                                            entry.value.name,
-                                            style: TextStyle(
-                                              color: colors.onPrimary,
-                                              fontSize: elementCardFontSize,
-                                            ),
+                            child: ListView(
+                              children: [
+                                for (final entry in projects.entries)
+                                  Padding(
+                                    padding: rowPadding,
+                                    child: SolidButton(
+                                      leftAligned: true,
+                                      size: elementCardSize,
+                                      onPressed: () =>
+                                          _editProject(context, entry),
+                                      color: getRandomColor(),
+                                      withWidget: Padding(
+                                        padding: const EdgeInsets.all(4.0),
+                                        child: Text(
+                                          entry.value.name,
+                                          style: TextStyle(
+                                            color: colors.onPrimary,
+                                            fontSize: elementCardFontSize,
                                           ),
                                         ),
                                       ),
                                     ),
-                                  SolidIconButton(
-                                    onPressed: () {},
-                                    size: elementCardSize,
-                                    text: 'Agregar proyecto',
-                                    icon: Icons.add_box_outlined,
-                                    innerSize: elementCardFontSize,
                                   ),
-                                ],
-                              ),
+                                SolidIconButton(
+                                  onPressed: () {},
+                                  size: elementCardSize,
+                                  text: 'Agregar proyecto',
+                                  icon: Icons.add_box_outlined,
+                                  innerSize: elementCardFontSize,
+                                ),
+                              ],
                             ),
                           );
                         }

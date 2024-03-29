@@ -20,8 +20,8 @@ class _AppScreenState extends ConsumerState<AppScreen> {
   static const Map<String, IconData> _icons = {
     'Contextos': Icons.landscape_outlined,
     'Proyectos': Icons.personal_video,
-    'Etiquetas': Icons.inbox,
-    'Tareas': Icons.label,
+    'Etiquetas': Icons.label,
+    'Tareas': Icons.inbox,
   };
   static const Map<String, Widget> _views = {
     'Proyectos': ProjectsView(),

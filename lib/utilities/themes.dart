@@ -10,6 +10,11 @@ class AppTheme {
       secondary: Colors.grey.darken(55),
       onSurface: Colors.white.darken(40),
     ),
+    datePickerTheme: const DatePickerThemeData(
+      backgroundColor: Color.fromARGB(255, 38, 41, 48),
+      surfaceTintColor: Colors.transparent,
+      headerForegroundColor: Colors.white,
+    ),
   );
 
   const AppTheme._();

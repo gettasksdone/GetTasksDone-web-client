@@ -4,10 +4,12 @@ import 'package:flutter/material.dart';
 
 class CustomFormField extends StatefulWidget {
   final String? Function(String?)? validator;
+  final TextInputType? _keyboardType;
   final bool _gotAutofillHint;
   final String? autofillHint;
   final String? initialValue;
   final String? hintText;
+  final bool multiline;
   final String? label;
 
   const CustomFormField({
@@ -17,7 +19,9 @@ class CustomFormField extends StatefulWidget {
     this.initialValue,
     this.validator,
     this.label,
-  }) : _gotAutofillHint = autofillHint != null;
+    this.multiline = false,
+  })  : _keyboardType = multiline ? TextInputType.multiline : null,
+        _gotAutofillHint = autofillHint != null;
 
   @override
   State<CustomFormField> createState() => _CustomFormFieldState();
@@ -55,6 +59,10 @@ class _CustomFormFieldState extends State<CustomFormField> {
       focusNode: _focusNode,
       validator: widget.validator,
       initialValue: widget.initialValue,
+      keyboardType: widget._keyboardType,
+      minLines: widget.multiline ? 5 : 1,
+      maxLines: widget.multiline ? null : 1,
+      textAlignVertical: TextAlignVertical.top,
       autofillHints: widget._gotAutofillHint ? [widget.autofillHint!] : null,
       obscureText: widget._gotAutofillHint
           ? widget.autofillHint == AutofillHints.password

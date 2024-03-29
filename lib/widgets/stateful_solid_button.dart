@@ -1,5 +1,5 @@
-import 'package:gtd_client/utilities/extensions.dart';
 import 'package:gtd_client/widgets/custom_progress_indicator.dart';
+import 'package:gtd_client/utilities/extensions.dart';
 import 'package:gtd_client/widgets/solid_button.dart';
 import 'package:flutter/material.dart';
 

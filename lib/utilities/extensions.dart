@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 extension BuildContextExtension on BuildContext {
   ThemeData get theme => Theme.of(this);
@@ -31,4 +32,10 @@ extension ColorExtension on Color {
       blue + ((255 - blue) * lightenValue).round(),
     );
   }
+}
+
+final DateFormat _customDateFormat = DateFormat('dd/MM/yyyy');
+
+extension DateTimeExtension on DateTime {
+  String get toCustomFormat => _customDateFormat.format(this);
 }

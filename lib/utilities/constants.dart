@@ -11,6 +11,8 @@ const double edgeWidth = 3.0;
 
 const double paddingAmount = 10.0;
 
+const double cardPaddingAmount = 15.0;
+
 const double modalHeaderHeight = 150.0;
 
 const double elementCardFontSize = 20.0;
@@ -21,7 +23,7 @@ const Size elementCardSize = Size(120.0, 80.0);
 
 const Radius cornerRadius = Radius.circular(10.0);
 
-const EdgeInsets cardPadding = EdgeInsets.all(15.0);
+const EdgeInsets cardPadding = EdgeInsets.all(cardPaddingAmount);
 
 const EdgeInsets padding = EdgeInsets.all(paddingAmount);
 
