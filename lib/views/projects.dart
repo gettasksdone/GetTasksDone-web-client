@@ -43,9 +43,9 @@ class _ProjectsViewState extends ConsumerState<ProjectsView>
   }
 
   void _showProjectModal(BuildContext context, Project? selectedProject) {
-    late final List<int> tasks;
-    late final List<int> notes;
-    late final List<int> tags;
+    final List<int>? tasks;
+    final List<int>? notes;
+    final List<int> tags;
 
     String? description;
     DateTime finishDate;
@@ -67,8 +67,6 @@ class _ProjectsViewState extends ConsumerState<ProjectsView>
 
       finishDate = currentTime;
       startDate = currentTime;
-      tasks = [];
-      notes = [];
       tags = [];
     }
 
