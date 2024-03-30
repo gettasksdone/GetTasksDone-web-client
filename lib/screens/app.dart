@@ -21,11 +21,13 @@ class _AppScreenState extends ConsumerState<AppScreen> {
     'Contextos': Icons.landscape_outlined,
     'Proyectos': Icons.personal_video,
     'Etiquetas': Icons.label,
+    'Tareas': Icons.inbox,
   };
   static const Map<String, Widget> _views = {
     'Proyectos': ProjectsView(),
     'Contextos': Placeholder(),
     'Etiquetas': Placeholder(),
+    'Tareas': Placeholder(),
   };
 
   String _viewKey = 'Proyectos';
