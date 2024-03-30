@@ -1,5 +1,6 @@
 import 'package:gtd_client/utilities/extensions.dart';
 import 'package:gtd_client/widgets/solid_button.dart';
+import 'package:gtd_client/utilities/constants.dart';
 import 'package:flutter/material.dart';
 
 class SolidIconButton extends StatelessWidget {
@@ -10,6 +11,7 @@ class SolidIconButton extends StatelessWidget {
   final IconData icon;
   final Color? color;
   final String text;
+  final bool center;
   final Size? size;
 
   const SolidIconButton({
@@ -22,6 +24,7 @@ class SolidIconButton extends StatelessWidget {
     this.innerSize,
     this.color,
     this.size,
+    this.center = false,
   });
 
   @override
@@ -36,13 +39,15 @@ class SolidIconButton extends StatelessWidget {
       withWidget: Padding(
         padding: innerPadding ?? const EdgeInsets.all(0.0),
         child: Row(
+          mainAxisAlignment:
+              center ? MainAxisAlignment.center : MainAxisAlignment.start,
           children: [
             Icon(
               icon,
               color: finalInnerColor,
               size: innerSize != null ? innerSize! * 1.5 : null,
             ),
-            const SizedBox(width: 15.0),
+            const SizedBox(width: smallPaddingAmount),
             Text(
               text,
               style: TextStyle(

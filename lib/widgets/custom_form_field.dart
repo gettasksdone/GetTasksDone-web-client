@@ -57,10 +57,11 @@ class _CustomFormFieldState extends State<CustomFormField> {
     return TextFormField(
       key: _fieldKey,
       focusNode: _focusNode,
+      expands: widget.multiline,
       validator: widget.validator,
       initialValue: widget.initialValue,
       keyboardType: widget._keyboardType,
-      minLines: widget.multiline ? 5 : 1,
+      minLines: widget.multiline ? null : 1,
       maxLines: widget.multiline ? null : 1,
       textAlignVertical: TextAlignVertical.top,
       autofillHints: widget._gotAutofillHint ? [widget.autofillHint!] : null,

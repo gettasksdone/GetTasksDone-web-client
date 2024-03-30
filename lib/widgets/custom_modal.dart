@@ -1,17 +1,16 @@
 import 'package:gtd_client/utilities/extensions.dart';
-import 'package:gtd_client/widgets/solid_button.dart';
 import 'package:gtd_client/utilities/constants.dart';
 import 'package:flutter/material.dart';
 
 class CustomModal extends StatelessWidget {
   final GlobalKey _formKey = GlobalKey<FormState>();
-  final List<Widget> bodyWidgets;
   final Widget titleWidget;
+  final Widget bodyWidget;
 
   CustomModal({
     super.key,
     required this.titleWidget,
-    required this.bodyWidgets,
+    required this.bodyWidget,
   });
 
   @override
@@ -39,41 +38,16 @@ class CustomModal extends StatelessWidget {
                       top: cornerRadius,
                     ),
                   ),
-                  child: Align(
-                    alignment: Alignment.bottomLeft,
-                    child: Padding(
-                      padding: cardPadding,
-                      child: titleWidget,
-                    ),
+                  child: Padding(
+                    padding: cardPadding,
+                    child: titleWidget,
                   ),
                 ),
               ),
               Expanded(
                 child: Padding(
                   padding: cardPadding,
-                  child: ListView(children: bodyWidgets),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(
-                  right: cardPaddingAmount,
-                  bottom: cardPaddingAmount,
-                ),
-                child: Align(
-                  alignment: Alignment.centerRight,
-                  child: SolidButton(
-                    color: Colors.green,
-                    size: const Size(200.0, 60.0),
-                    withWidget: const Text(
-                      'Guardar',
-                      style: TextStyle(
-                        fontSize: 18.0,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    onPressed: () {},
-                  ),
+                  child: bodyWidget,
                 ),
               ),
             ],
