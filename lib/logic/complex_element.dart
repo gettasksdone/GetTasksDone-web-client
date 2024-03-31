@@ -4,7 +4,7 @@ abstract class ComplexElement<T> extends Serializable<T> {
   final List<int> _notes;
   final List<int> _tags;
 
-  ComplexElement(List<int>? notes, List<int>? tags)
+  ComplexElement({required super.id, List<int>? notes, List<int>? tags})
       : _notes = notes ?? [],
         _tags = tags ?? [];
 

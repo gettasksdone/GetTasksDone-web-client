@@ -7,12 +7,14 @@ import 'package:flutter/material.dart';
 class CustomTagList extends StatelessWidget {
   static const double _tagTextSize = 17.0;
 
+  final void Function(int id) onTagRemoved;
   final void Function(int? id) onTagAdded;
   final UserData _userData = UserData();
   final List<int> tags;
 
   CustomTagList({
     super.key,
+    required this.onTagRemoved,
     required this.onTagAdded,
     required this.tags,
   });
@@ -44,12 +46,27 @@ class CustomTagList extends StatelessWidget {
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(11.5),
-                  child: Text(
-                    _userData.getTag(id)!.name,
-                    style: TextStyle(
-                      fontSize: _tagTextSize,
-                      color: colors.onPrimary,
-                    ),
+                  child: Row(
+                    children: [
+                      Text(
+                        _userData.getTag(id)!.name,
+                        style: TextStyle(
+                          fontSize: _tagTextSize,
+                          color: colors.onPrimary,
+                        ),
+                      ),
+                      const SizedBox(width: 5.0),
+                      IconButton(
+                        style: IconButton.styleFrom(
+                          backgroundColor: Colors.transparent,
+                        ),
+                        icon: const Icon(
+                          Icons.delete,
+                          color: Colors.white,
+                        ),
+                        onPressed: () => onTagRemoved(id),
+                      ),
+                    ],
                   ),
                 ),
               ),

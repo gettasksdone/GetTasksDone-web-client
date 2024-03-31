@@ -7,9 +7,11 @@ const String serverUrl = 'https://lopezgeraghty.com:8080';
 
 const String appName = 'Get Tasks Done';
 
-const int modalRightFlex = 3;
+const int modalNotesFlex = 2;
 
-const int modalFieldsFlex = 4;
+const int modalTasksFlex = 5;
+
+const int modalFieldsFlex = 3;
 
 const double edgeWidth = 3.0;
 

@@ -6,6 +6,7 @@ import 'package:gtd_client/logic/tag.dart';
 
 class Task extends ComplexElement<Task> {
   static final Task instance = Task(
+    id: -1,
     description: '',
     contextId: -1,
     priority: -1,
@@ -22,6 +23,9 @@ class Task extends ComplexElement<Task> {
   int priority;
 
   Task({
+    required super.id,
+    super.notes,
+    super.tags,
     required this.description,
     required this.contextId,
     required this.priority,
@@ -29,12 +33,9 @@ class Task extends ComplexElement<Task> {
     List<int>? checkItems,
     DateTime? expiration,
     DateTime? created,
-    List<int>? notes,
-    List<int>? tags,
   })  : created = created ?? DateTime.now(),
         _checkItems = checkItems ?? [],
-        _expiration = expiration,
-        super(notes, tags) {
+        _expiration = expiration {
     if (_expiration != null) {
       assert(!_expiration!.isBefore(this.created));
     }
@@ -55,6 +56,7 @@ class Task extends ComplexElement<Task> {
   Map<int, Task> fromJson(Map<String, dynamic> json) {
     return {
       json['id']: Task(
+        id: json['id'],
         checkItems: CheckItem.instance
             .fromJsonList(json['checkItems'] as List<dynamic>)
             .keys
@@ -89,5 +91,21 @@ class Task extends ComplexElement<Task> {
       'creacion': created,
       'estado': state,
     };
+  }
+
+  @override
+  Task withId(int id) {
+    return Task(
+      id: id,
+      description: description,
+      expiration: _expiration,
+      checkItems: _checkItems,
+      contextId: contextId,
+      priority: priority,
+      created: created,
+      state: state,
+      notes: notes,
+      tags: tags,
+    );
   }
 }

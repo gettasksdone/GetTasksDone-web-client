@@ -14,12 +14,14 @@ import 'package:flutter/material.dart';
 
 void showModal(BuildContext context, Project? selectedProject) {
   final TextStyle titleStyle = TextStyle(
-    fontSize: elementCardFontSize,
     color: context.colorScheme.onSecondary,
+    fontSize: elementCardFontSize,
     fontWeight: FontWeight.w600,
   );
   final bool hasProject = selectedProject != null;
   final UserData userData = UserData();
+  final Set<int> removedNoteIds = {};
+  final Set<int> editedNoteIds = {};
   final List<Note> notes;
   final List<int> tasks;
   final List<int> tags;
@@ -80,7 +82,7 @@ void showModal(BuildContext context, Project? selectedProject) {
                     ),
                     const SizedBox(width: paddingAmount),
                     Expanded(
-                      flex: modalRightFlex,
+                      flex: modalNotesFlex,
                       child: Center(
                         child: Text(
                           'Notas',
@@ -90,7 +92,7 @@ void showModal(BuildContext context, Project? selectedProject) {
                     ),
                     const SizedBox(width: paddingAmount),
                     Expanded(
-                      flex: modalRightFlex,
+                      flex: modalTasksFlex,
                       child: Center(
                         child: Text(
                           'Tareas',
@@ -121,6 +123,13 @@ void showModal(BuildContext context, Project? selectedProject) {
                                 },
                               );
                             }
+                          },
+                          onTagRemoved: (int id) {
+                            dialogSetState(
+                              () {
+                                tags.remove(id);
+                              },
+                            );
                           },
                         ),
                       ),
@@ -244,29 +253,42 @@ void showModal(BuildContext context, Project? selectedProject) {
                 ),
                 const SizedBox(width: paddingAmount),
                 Expanded(
-                  flex: modalRightFlex,
+                  flex: modalNotesFlex,
                   child: CustomNoteList(
                     notes: notes,
                     onNoteDeleted: (i) {
+                      if (notes[i].id != -1) {
+                        removedNoteIds.add(notes[i].id);
+                      }
+
                       dialogSetState(() {
                         notes.removeAt(i);
                       });
                     },
                     onNoteCreated: () {
                       dialogSetState(() {
-                        notes.add(Note(content: ''));
+                        notes.add(Note(
+                          id: -1,
+                          content: '',
+                        ));
                       });
                     },
                     onNoteEdited: (i, input) {
-                      dialogSetState(() {
-                        notes[i].content = input ?? '';
-                      });
+                      if (notes[i].content != input) {
+                        if (notes[i].id != -1) {
+                          editedNoteIds.add(notes[i].id);
+                        }
+
+                        dialogSetState(() {
+                          notes[i].content = input ?? '';
+                        });
+                      }
                     },
                   ),
                 ),
                 const SizedBox(width: paddingAmount),
                 const Expanded(
-                  flex: modalRightFlex,
+                  flex: modalTasksFlex,
                   child: Placeholder(),
                 ),
               ],

@@ -5,6 +5,7 @@ import 'package:gtd_client/logic/tag.dart';
 
 class Project extends ComplexElement<Project> {
   static final Project instance = Project(
+    id: -1,
     finish: DateTime.now(),
     start: DateTime.now(),
     description: '',
@@ -21,18 +22,18 @@ class Project extends ComplexElement<Project> {
   String name;
 
   Project({
+    required super.id,
+    super.notes,
+    super.tags,
     required this.description,
     required DateTime finish,
     required DateTime start,
     required this.state,
     required this.name,
     List<int>? tasks,
-    List<int>? notes,
-    List<int>? tags,
   })  : _tasks = tasks ?? [],
         _finish = finish,
-        _start = start,
-        super(notes, tags) {
+        _start = start {
     assert(!_finish.isBefore(_start));
   }
 
@@ -64,6 +65,7 @@ class Project extends ComplexElement<Project> {
   Map<int, Project> fromJson(Map<String, dynamic> json) {
     return {
       json['id']: Project(
+        id: json['id'],
         tags: Tag.instance
             .fromJsonList(json['etiquetas'] as List<dynamic>)
             .keys
@@ -94,5 +96,20 @@ class Project extends ComplexElement<Project> {
       'descripcion': description,
       'estado': state,
     };
+  }
+
+  @override
+  Project withId(int id) {
+    return Project(
+      id: id,
+      description: description,
+      finish: _finish,
+      start: _start,
+      tasks: _tasks,
+      state: state,
+      notes: notes,
+      name: name,
+      tags: tags,
+    );
   }
 }

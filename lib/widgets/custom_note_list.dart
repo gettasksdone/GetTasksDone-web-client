@@ -1,9 +1,9 @@
-import 'package:flutter/material.dart';
-import 'package:gtd_client/logic/note.dart';
-import 'package:gtd_client/utilities/constants.dart';
-import 'package:gtd_client/utilities/extensions.dart';
 import 'package:gtd_client/widgets/custom_form_field.dart';
 import 'package:gtd_client/widgets/solid_icon_button.dart';
+import 'package:gtd_client/utilities/extensions.dart';
+import 'package:gtd_client/utilities/constants.dart';
+import 'package:gtd_client/logic/note.dart';
+import 'package:flutter/material.dart';
 
 class CustomNoteList extends StatelessWidget {
   final void Function(int index, String? content) onNoteEdited;
