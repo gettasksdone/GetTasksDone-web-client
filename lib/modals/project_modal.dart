@@ -1,26 +1,27 @@
 import 'package:gtd_client/modals/custom_date_picker.dart';
 import 'package:gtd_client/widgets/custom_form_field.dart';
-import 'package:gtd_client/widgets/custom_tag_row.dart';
+import 'package:gtd_client/widgets/custom_note_list.dart';
+import 'package:gtd_client/widgets/custom_tag_list.dart';
 import 'package:gtd_client/utilities/extensions.dart';
 import 'package:gtd_client/utilities/validators.dart';
 import 'package:gtd_client/widgets/custom_modal.dart';
 import 'package:gtd_client/widgets/solid_button.dart';
 import 'package:gtd_client/utilities/constants.dart';
+import 'package:gtd_client/logic/user_data.dart';
 import 'package:gtd_client/logic/project.dart';
+import 'package:gtd_client/logic/note.dart';
 import 'package:flutter/material.dart';
 
-void showModal(
-  BuildContext context,
-  String buttonText,
-  Project? selectedProject,
-) {
+void showModal(BuildContext context, Project? selectedProject) {
   final TextStyle titleStyle = TextStyle(
     fontSize: elementCardFontSize,
     color: context.colorScheme.onSecondary,
     fontWeight: FontWeight.w600,
   );
-  final List<int>? tasks;
-  final List<int>? notes;
+  final bool hasProject = selectedProject != null;
+  final UserData userData = UserData();
+  final List<Note> notes;
+  final List<int> tasks;
   final List<int> tags;
 
   String? description;
@@ -29,13 +30,13 @@ void showModal(
   String? state;
   String? name;
 
-  if (selectedProject != null) {
+  if (hasProject) {
+    notes = selectedProject.notes.map((i) => userData.getNote(i)!).toList();
     description = selectedProject.description;
     finishDate = selectedProject.finishDate;
     startDate = selectedProject.startDate;
     state = selectedProject.state;
     tasks = selectedProject.tasks;
-    notes = selectedProject.notes;
     name = selectedProject.name;
     tags = selectedProject.tags;
   } else {
@@ -43,6 +44,8 @@ void showModal(
 
     finishDate = currentTime;
     startDate = currentTime;
+    tasks = [];
+    notes = [];
     tags = [];
   }
 
@@ -108,7 +111,7 @@ void showModal(
                     children: [
                       Padding(
                         padding: rowPadding,
-                        child: CustomTagRow(
+                        child: CustomTagList(
                           tags: tags,
                           onTagAdded: (int? id) {
                             if (id != null) {
@@ -140,7 +143,7 @@ void showModal(
                         child: Padding(
                           padding: rowPadding,
                           child: CustomFormField(
-                            multiline: true,
+                            expands: true,
                             label: 'Descripción',
                             hintText: 'descripción',
                             initialValue: description,
@@ -200,26 +203,66 @@ void showModal(
                           ],
                         ),
                       ),
-                      SolidButton(
-                        color: Colors.green,
-                        size: modalButtonSize,
-                        withWidget: Text(
-                          buttonText,
-                          style: const TextStyle(
-                            fontSize: 18.0,
-                            color: Colors.white,
-                            fontWeight: FontWeight.w600,
+                      Row(
+                        children: [
+                          Expanded(
+                            child: SolidButton(
+                              color: Colors.green,
+                              size: modalButtonSize,
+                              withWidget: Text(
+                                hasProject ? 'Guardar' : 'Crear',
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: modalButtonFontSize,
+                                ),
+                              ),
+                              onPressed: () {},
+                            ),
                           ),
-                        ),
-                        onPressed: () {},
+                          if (hasProject) const SizedBox(width: paddingAmount),
+                          if (hasProject)
+                            Expanded(
+                              child: SolidButton(
+                                color: Colors.red,
+                                size: modalButtonSize,
+                                withWidget: const Text(
+                                  'Borrar',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: modalButtonFontSize,
+                                  ),
+                                ),
+                                onPressed: () {},
+                              ),
+                            ),
+                        ],
                       ),
                     ],
                   ),
                 ),
                 const SizedBox(width: paddingAmount),
-                const Expanded(
+                Expanded(
                   flex: modalRightFlex,
-                  child: Placeholder(),
+                  child: CustomNoteList(
+                    notes: notes,
+                    onNoteDeleted: (i) {
+                      dialogSetState(() {
+                        notes.removeAt(i);
+                      });
+                    },
+                    onNoteCreated: () {
+                      dialogSetState(() {
+                        notes.add(Note(content: ''));
+                      });
+                    },
+                    onNoteEdited: (i, input) {
+                      dialogSetState(() {
+                        notes[i].content = input ?? '';
+                      });
+                    },
+                  ),
                 ),
                 const SizedBox(width: paddingAmount),
                 const Expanded(

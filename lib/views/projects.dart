@@ -43,7 +43,7 @@ class _ProjectsViewState extends ConsumerState<ProjectsView> {
   }
 
   void _editProject(BuildContext context, MapEntry<int, Project> entry) {
-    showModal(context, 'Guardar', entry.value);
+    showModal(context, entry.value);
   }
 
   void _createProject(Project project) async {

@@ -4,14 +4,14 @@ import 'package:gtd_client/utilities/colors.dart';
 import 'package:gtd_client/logic/user_data.dart';
 import 'package:flutter/material.dart';
 
-class CustomTagRow extends StatelessWidget {
+class CustomTagList extends StatelessWidget {
   static const double _tagTextSize = 17.0;
 
   final void Function(int? id) onTagAdded;
-  final UserData userData = UserData();
+  final UserData _userData = UserData();
   final List<int> tags;
 
-  CustomTagRow({
+  CustomTagList({
     super.key,
     required this.onTagAdded,
     required this.tags,
@@ -20,7 +20,7 @@ class CustomTagRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final List<int> addableTags =
-        userData.tags.keys.where((id) => !tags.contains(id)).toList();
+        _userData.tags.keys.where((id) => !tags.contains(id)).toList();
     final ColorScheme colors = context.colorScheme;
 
     return SizedBox(
@@ -45,7 +45,7 @@ class CustomTagRow extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.all(11.5),
                   child: Text(
-                    userData.getTag(id)!.name,
+                    _userData.getTag(id)!.name,
                     style: TextStyle(
                       fontSize: _tagTextSize,
                       color: colors.onPrimary,
@@ -76,7 +76,7 @@ class CustomTagRow extends StatelessWidget {
                   return DropdownMenuItem(
                     value: id,
                     child: Text(
-                      userData.getTag(id)!.name,
+                      _userData.getTag(id)!.name,
                       style: TextStyle(
                         fontSize: _tagTextSize,
                         color: colors.onPrimary,

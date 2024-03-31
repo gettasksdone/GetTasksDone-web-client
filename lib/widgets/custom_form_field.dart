@@ -11,15 +11,17 @@ class CustomFormField extends StatefulWidget {
   final String? hintText;
   final bool multiline;
   final String? label;
+  final bool expands;
 
   const CustomFormField({
     super.key,
-    required this.hintText,
     this.autofillHint,
     this.initialValue,
     this.validator,
+    this.hintText,
     this.label,
     this.multiline = false,
+    this.expands = false,
   })  : _keyboardType = multiline ? TextInputType.multiline : null,
         _gotAutofillHint = autofillHint != null;
 
@@ -57,13 +59,14 @@ class _CustomFormFieldState extends State<CustomFormField> {
     return TextFormField(
       key: _fieldKey,
       focusNode: _focusNode,
-      expands: widget.multiline,
+      expands: widget.expands,
       validator: widget.validator,
       initialValue: widget.initialValue,
       keyboardType: widget._keyboardType,
-      minLines: widget.multiline ? null : 1,
-      maxLines: widget.multiline ? null : 1,
+      minLines: widget.expands ? null : 1,
       textAlignVertical: TextAlignVertical.top,
+      style: TextStyle(color: colors.onPrimary),
+      maxLines: widget.multiline || widget.expands ? null : 1,
       autofillHints: widget._gotAutofillHint ? [widget.autofillHint!] : null,
       obscureText: widget._gotAutofillHint
           ? widget.autofillHint == AutofillHints.password

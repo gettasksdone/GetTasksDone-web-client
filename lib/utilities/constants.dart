@@ -23,6 +23,8 @@ const double modalHeaderHeight = 110.0;
 
 const double elementCardFontSize = 20.0;
 
+const double modalButtonFontSize = 18.0;
+
 const Size modalSize = Size(1200.0, 700.0);
 
 const Size modalButtonSize = Size(120.0, 60.0);
