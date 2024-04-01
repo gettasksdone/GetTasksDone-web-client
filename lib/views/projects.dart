@@ -5,7 +5,7 @@ import 'package:gtd_client/modals/project_modal.dart';
 import 'package:gtd_client/utilities/extensions.dart';
 import 'package:gtd_client/utilities/constants.dart';
 import 'package:gtd_client/utilities/headers.dart';
-import 'package:gtd_client/widgets/card_row.dart';
+import 'package:gtd_client/widgets/card_element.dart';
 import 'package:gtd_client/logic/user_data.dart';
 import 'package:gtd_client/logic/project.dart';
 import 'package:http/http.dart' as http;
@@ -35,7 +35,7 @@ class _ProjectsViewState extends ConsumerState<ProjectsView> {
           in Project.instance.decodeList(response.body).entries) {
         debugPrint('Adding project with ID [${entry.key}]');
 
-        userData.addProject(entry.key, entry.value);
+        userData.putProject(entry.key, entry.value);
       }
     }
 
@@ -121,18 +121,18 @@ class _ProjectsViewState extends ConsumerState<ProjectsView> {
                             child: ListView(
                               children: [
                                 for (var entry in projects.entries)
-                                  CardRow(
+                                  CardElement(
                                     cells: [
-                                      CardRowCellData(
+                                      CardCellData(
                                         icon: Icons.folder,
                                         text: entry.value.name,
                                       ),
-                                      CardRowCellData(
+                                      CardCellData(
                                         width: 150.0,
                                         icon: Icons.push_pin,
                                         text: entry.value.state,
                                       ),
-                                      CardRowCellData(
+                                      CardCellData(
                                         icon: Icons.calendar_today,
                                         text: entry
                                             .value.finishDate.toCustomFormat,
@@ -145,10 +145,10 @@ class _ProjectsViewState extends ConsumerState<ProjectsView> {
                                   ),
                                 SolidIconButton(
                                   center: true,
-                                  size: elementCardSize,
+                                  size: cardElementSize,
                                   text: 'Agregar proyecto',
                                   icon: Icons.add_box_outlined,
-                                  innerSize: elementCardFontSize,
+                                  innerSize: cardElementFontSize,
                                   onPressed: () {},
                                 ),
                               ],

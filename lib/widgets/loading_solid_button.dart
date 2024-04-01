@@ -3,7 +3,7 @@ import 'package:gtd_client/utilities/extensions.dart';
 import 'package:gtd_client/widgets/solid_button.dart';
 import 'package:flutter/material.dart';
 
-class StatefulSolidButton extends StatefulWidget {
+class LoadingSolidButton extends StatefulWidget {
   final Future<void> Function()? onPressed;
   final double? textSize;
   final Color? textColor;
@@ -11,7 +11,7 @@ class StatefulSolidButton extends StatefulWidget {
   final String text;
   final Size? size;
 
-  const StatefulSolidButton({
+  const LoadingSolidButton({
     super.key,
     required this.onPressed,
     required this.text,
@@ -22,10 +22,10 @@ class StatefulSolidButton extends StatefulWidget {
   });
 
   @override
-  State<StatefulSolidButton> createState() => _StatefulSolidButtonState();
+  State<LoadingSolidButton> createState() => _LoadingSolidButtonState();
 }
 
-class _StatefulSolidButtonState extends State<StatefulSolidButton> {
+class _LoadingSolidButtonState extends State<LoadingSolidButton> {
   bool _pressed = false;
 
   @override

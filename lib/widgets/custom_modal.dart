@@ -22,15 +22,15 @@ class CustomModal extends StatelessWidget {
       backgroundColor: context.theme.canvasColor,
       shape: const RoundedRectangleBorder(borderRadius: roundedCorners),
       child: SizedBox(
-        width: modalSize.width,
-        height: modalSize.height,
+        width: 1200.0,
+        height: 700.0,
         child: Form(
           key: _formKey,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               SizedBox(
-                height: modalHeaderHeight,
+                height: 110.0,
                 child: Container(
                   decoration: BoxDecoration(
                     color: colors.secondary,

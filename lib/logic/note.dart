@@ -1,13 +1,13 @@
-import 'package:gtd_client/logic/serializable.dart';
+import 'package:gtd_client/logic/base_item.dart';
 
-class Note extends Serializable<Note> {
-  static final Note instance = Note(id: -1, content: '');
+class Note extends BaseItem<Note> {
+  static final Note instance = Note();
 
   final DateTime created;
 
-  String content;
+  String? content;
 
-  Note({required super.id, required this.content, DateTime? created})
+  Note({super.id, this.content, DateTime? created})
       : created = created ?? DateTime.now();
 
   @override
@@ -23,14 +23,11 @@ class Note extends Serializable<Note> {
 
   @override
   Map<String, dynamic> toJson() {
+    assert(content != null);
+
     return {
       'contenido': content,
       'creacion': created,
     };
-  }
-
-  @override
-  Note withId(int id) {
-    return Note(id: id, content: content, created: created);
   }
 }

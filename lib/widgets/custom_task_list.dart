@@ -2,21 +2,21 @@ import 'package:gtd_client/widgets/custom_form_field.dart';
 import 'package:gtd_client/widgets/solid_icon_button.dart';
 import 'package:gtd_client/utilities/extensions.dart';
 import 'package:gtd_client/utilities/constants.dart';
-import 'package:gtd_client/logic/note.dart';
+import 'package:gtd_client/logic/task.dart';
 import 'package:flutter/material.dart';
 
-class CustomNoteList extends StatelessWidget {
-  final void Function(int index, String? content) onNoteEdited;
-  final void Function(int index) onNoteDeleted;
-  final void Function() onNoteCreated;
-  final List<Note> notes;
+class CustomTaskList extends StatelessWidget {
+  final void Function(int index, Task task) onTaskEdited;
+  final void Function(int index) onTaskDeleted;
+  final void Function() onTaskCreated;
+  final List<Task> tasks;
 
-  const CustomNoteList({
+  const CustomTaskList({
     super.key,
-    required this.onNoteCreated,
-    required this.onNoteDeleted,
-    required this.onNoteEdited,
-    required this.notes,
+    required this.onTaskCreated,
+    required this.onTaskDeleted,
+    required this.onTaskEdited,
+    required this.tasks,
   });
 
   @override
@@ -25,12 +25,12 @@ class CustomNoteList extends StatelessWidget {
 
     return ListView(
       children: [
-        for (int i = 0; i < notes.length; i++)
+        for (int i = 0; i < tasks.length; i++)
           Padding(
             padding: rowPadding,
             child: Container(
               decoration: BoxDecoration(
-                color: colors.tertiary,
+                color: colors.secondary,
                 borderRadius: roundedCorners,
               ),
               child: Padding(
@@ -44,28 +44,57 @@ class CustomNoteList extends StatelessWidget {
                         children: [
                           Expanded(
                             child: Text(
-                              notes[i].created.toCustomFormat,
+                              tasks[i].created.toCustomFormat,
                               style: TextStyle(color: colors.onSecondary),
                             ),
                           ),
                           IconButton(
                             style: IconButton.styleFrom(
-                              backgroundColor: Colors.red.darken(30),
+                              backgroundColor: colors.errorContainer,
                             ),
                             icon: const Icon(
                               Icons.delete,
                               color: Colors.white,
                             ),
-                            onPressed: () => onNoteDeleted(i),
+                            onPressed: () => onTaskDeleted(i),
                           ),
                         ],
                       ),
                     ),
+                    Padding(
+                      padding: rowPadding,
+                      child: CustomFormField(
+                        label: 'Estado',
+                        initialValue: tasks[i].state,
+                        validator: (String? input) {
+                          tasks[i].state = input ?? '';
+
+                          onTaskEdited(i, tasks[i]);
+
+                          return null;
+                        },
+                      ),
+                    ),
+                    Padding(
+                      padding: rowPadding,
+                      child: CustomFormField(
+                        multiline: true,
+                        label: 'Descripción',
+                        initialValue: tasks[i].description,
+                        validator: (String? input) {
+                          tasks[i].description = input ?? '';
+
+                          onTaskEdited(i, tasks[i]);
+
+                          return null;
+                        },
+                      ),
+                    ),
                     CustomFormField(
                       multiline: true,
-                      initialValue: notes[i].content,
+                      initialValue: tasks[i].content,
                       validator: (String? input) {
-                        onNoteEdited(i, input);
+                        onTaskEdited(i, input);
 
                         return null;
                       },
@@ -80,7 +109,7 @@ class CustomNoteList extends StatelessWidget {
           text: 'Agregar nota',
           size: modalButtonSize,
           icon: Icons.add_box_outlined,
-          onPressed: onNoteCreated,
+          onPressed: onTaskCreated,
         ),
       ],
     );

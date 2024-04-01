@@ -1,9 +1,17 @@
 import 'dart:convert';
 
-abstract class Serializable<T> {
-  final int id;
+abstract class BaseItem<T> {
+  int _id;
 
-  const Serializable({required this.id});
+  BaseItem({int id = -1}) : _id = id;
+
+  int get id => _id;
+
+  void setId(int id) {
+    assert(_id != -1);
+
+    _id = id;
+  }
 
   Map<int, T> decodeList(String body) {
     return fromJsonList(jsonDecode(body) as List<dynamic>);
@@ -26,6 +34,4 @@ abstract class Serializable<T> {
   Map<int, T> fromJson(Map<String, dynamic> json);
 
   Map<String, dynamic> toJson();
-
-  T withId(int id);
 }

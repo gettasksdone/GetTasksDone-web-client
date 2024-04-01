@@ -1,47 +1,41 @@
-import 'package:gtd_client/logic/complex_element.dart';
+import 'package:gtd_client/logic/complex_item.dart';
 import 'package:gtd_client/logic/check_item.dart';
 import 'package:gtd_client/logic/context.dart';
 import 'package:gtd_client/logic/note.dart';
 import 'package:gtd_client/logic/tag.dart';
 
-class Task extends ComplexElement<Task> {
-  static final Task instance = Task(
-    id: -1,
-    description: '',
-    contextId: -1,
-    priority: -1,
-    state: '',
-  );
+class Task extends ComplexItem<Task> {
+  static final Task instance = Task();
 
-  final List<int> _checkItems;
+  final Set<int> _checkItems;
   final DateTime created;
 
   DateTime? _expiration;
-  String description;
-  int contextId;
-  String state;
-  int priority;
+  String? description;
+  int? contextId;
+  String? state;
+  int? priority;
 
   Task({
-    required super.id,
+    super.id,
     super.notes,
     super.tags,
-    required this.description,
-    required this.contextId,
-    required this.priority,
-    required this.state,
-    List<int>? checkItems,
+    this.description,
+    this.contextId,
+    this.priority,
+    this.state,
+    Set<int>? checkItems,
     DateTime? expiration,
     DateTime? created,
   })  : created = created ?? DateTime.now(),
-        _checkItems = checkItems ?? [],
+        _checkItems = checkItems ?? {},
         _expiration = expiration {
     if (_expiration != null) {
       assert(!_expiration!.isBefore(this.created));
     }
   }
 
-  List<int> get checkItems => _checkItems;
+  Set<int> get checkItems => _checkItems;
   DateTime? get expiration => _expiration;
 
   void setExpiration(DateTime? expiration) {
@@ -60,15 +54,15 @@ class Task extends ComplexElement<Task> {
         checkItems: CheckItem.instance
             .fromJsonList(json['checkItems'] as List<dynamic>)
             .keys
-            .toList(),
+            .toSet(),
         tags: Tag.instance
             .fromJsonList(json['etiquetas'] as List<dynamic>)
             .keys
-            .toList(),
+            .toSet(),
         notes: Note.instance
             .fromJsonList(json['notas'] as List<dynamic>)
             .keys
-            .toList(),
+            .toSet(),
         expiration: json.containsKey('vencimiento')
             ? DateTime.parse(json['vencimiento'])
             : null,
@@ -83,6 +77,11 @@ class Task extends ComplexElement<Task> {
 
   @override
   Map<String, dynamic> toJson() {
+    assert(description != null);
+    assert(contextId != null);
+    assert(priority != null);
+    assert(state != null);
+
     return {
       'contexto': {'id': contextId},
       'descripcion': description,
@@ -91,21 +90,5 @@ class Task extends ComplexElement<Task> {
       'creacion': created,
       'estado': state,
     };
-  }
-
-  @override
-  Task withId(int id) {
-    return Task(
-      id: id,
-      description: description,
-      expiration: _expiration,
-      checkItems: _checkItems,
-      contextId: contextId,
-      priority: priority,
-      created: created,
-      state: state,
-      notes: notes,
-      tags: tags,
-    );
   }
 }

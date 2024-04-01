@@ -1,11 +1,11 @@
-import 'package:gtd_client/logic/serializable.dart';
+import 'package:gtd_client/logic/base_item.dart';
 
-class Tag extends Serializable<Tag> {
-  static final Tag instance = Tag(id: -1, name: '');
+class Tag extends BaseItem<Tag> {
+  static final Tag instance = Tag();
 
-  String name;
+  String? name;
 
-  Tag({required super.id, required this.name});
+  Tag({super.id, this.name});
 
   @override
   Map<int, Tag> fromJson(Map<String, dynamic> json) {
@@ -19,11 +19,8 @@ class Tag extends Serializable<Tag> {
 
   @override
   Map<String, dynamic> toJson() {
-    return {'nombre': name};
-  }
+    assert(name != null);
 
-  @override
-  Tag withId(int id) {
-    return Tag(id: id, name: name);
+    return {'nombre': name};
   }
 }

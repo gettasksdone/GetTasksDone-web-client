@@ -1,5 +1,5 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:gtd_client/widgets/stateful_solid_button.dart';
+import 'package:gtd_client/widgets/loading_solid_button.dart';
 import 'package:gtd_client/mixins/sign_in_screen_mixin.dart';
 import 'package:gtd_client/widgets/custom_form_field.dart';
 import 'package:gtd_client/providers/session_token.dart';
@@ -173,7 +173,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen>
                   ),
                   Padding(
                     padding: SignInScreenMixin.buttonPadding,
-                    child: StatefulSolidButton(
+                    child: LoadingSolidButton(
                       text: 'Registrarse',
                       size: SignInScreenMixin.buttonSize,
                       textSize: SignInScreenMixin.buttonFontSize,

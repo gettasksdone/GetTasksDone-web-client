@@ -1,6 +1,5 @@
 import 'package:gtd_client/utilities/extensions.dart';
 import 'package:gtd_client/widgets/solid_button.dart';
-import 'package:gtd_client/utilities/constants.dart';
 import 'package:flutter/material.dart';
 
 class SolidIconButton extends StatelessWidget {
@@ -47,7 +46,7 @@ class SolidIconButton extends StatelessWidget {
               color: finalInnerColor,
               size: innerSize != null ? innerSize! * 1.5 : null,
             ),
-            const SizedBox(width: smallPaddingAmount),
+            const SizedBox(width: 5.0),
             Text(
               text,
               style: TextStyle(

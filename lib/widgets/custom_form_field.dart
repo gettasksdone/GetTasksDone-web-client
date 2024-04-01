@@ -30,6 +30,8 @@ class CustomFormField extends StatefulWidget {
 }
 
 class _CustomFormFieldState extends State<CustomFormField> {
+  static const double _edgeWidth = 3.0;
+
   final GlobalKey<FormFieldState> _fieldKey = GlobalKey();
 
   FocusNode? _focusNode;
@@ -82,28 +84,28 @@ class _CustomFormFieldState extends State<CustomFormField> {
         enabledBorder: OutlineInputBorder(
           borderRadius: roundedCorners,
           borderSide: BorderSide(
-            width: edgeWidth,
+            width: _edgeWidth,
             color: colors.primary,
           ),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: roundedCorners,
           borderSide: BorderSide(
-            width: edgeWidth,
+            width: _edgeWidth,
             color: colors.primary.darken(20),
           ),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: roundedCorners,
           borderSide: BorderSide(
-            width: edgeWidth,
+            width: _edgeWidth,
             color: colors.error,
           ),
         ),
         focusedErrorBorder: OutlineInputBorder(
           borderRadius: roundedCorners,
           borderSide: BorderSide(
-            width: edgeWidth,
+            width: _edgeWidth,
             color: colors.error.darken(10),
           ),
         ),

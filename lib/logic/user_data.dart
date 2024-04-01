@@ -34,75 +34,51 @@ class UserData {
   Map<int, Note> get notes => _notes;
   Map<int, Tag> get tags => _tags;
 
-  CheckItem? getCheckItem(int id) {
-    if (_checkItems.containsKey(id)) {
-      return _checkItems[id];
-    }
-
-    return null;
+  CheckItem getCheckItem(int id) {
+    return _checkItems[id]!;
   }
 
-  Project? getProject(int id) {
-    if (_projects.containsKey(id)) {
-      return _projects[id];
-    }
-
-    return null;
+  Project getProject(int id) {
+    return _projects[id]!;
   }
 
-  Context? getContext(int id) {
-    if (_contexts.containsKey(id)) {
-      return _contexts[id];
-    }
-
-    return null;
+  Context getContext(int id) {
+    return _contexts[id]!;
   }
 
-  Tag? getTag(int id) {
-    if (_tags.containsKey(id)) {
-      return _tags[id];
-    }
-
-    return null;
+  Tag getTag(int id) {
+    return _tags[id]!;
   }
 
-  Task? getTask(int id) {
-    if (_tasks.containsKey(id)) {
-      return _tasks[id];
-    }
-
-    return null;
+  Task getTask(int id) {
+    return _tasks[id]!;
   }
 
-  Note? getNote(int id) {
-    if (_notes.containsKey(id)) {
-      return _notes[id];
-    }
-
-    return null;
+  Note getNote(int id) {
+    return _notes[id]!;
   }
 
-  void addCheckItem(int id, CheckItem checkItem) {
+  void putCheckItem(int id, CheckItem checkItem) {
     _checkItems[id] = checkItem;
   }
 
-  void addProject(int id, Project project) {
+  void putProject(int id, Project project) {
     _projects[id] = project;
   }
 
-  void addContext(int id, Context context) {
+  void putContext(int id, Context context) {
     _contexts[id] = context;
   }
 
-  void addTag(int id, Tag tag) {
+  void putTag(int id, Tag tag) {
     _tags[id] = tag;
   }
 
-  void addTask(int id, Task task) {
+  void putTask(int id, Task task) {
     _tasks[id] = task;
   }
 
-  void addNote(int id, Note note) {
+  void putNote(int id, Note note) {
     _notes[id] = note;
   }
 

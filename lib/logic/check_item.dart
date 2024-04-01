@@ -1,13 +1,12 @@
-import 'package:gtd_client/logic/serializable.dart';
+import 'package:gtd_client/logic/base_item.dart';
 
-class CheckItem extends Serializable<CheckItem> {
-  static final CheckItem instance = CheckItem(id: -1, content: '');
+class CheckItem extends BaseItem<CheckItem> {
+  static final CheckItem instance = CheckItem();
 
-  String content;
+  String? content;
   bool checked;
 
-  CheckItem({required super.id, required this.content, bool? checked})
-      : checked = checked ?? false;
+  CheckItem({super.id, this.content, this.checked = false});
 
   @override
   Map<int, CheckItem> fromJson(Map<String, dynamic> json) {
@@ -22,14 +21,11 @@ class CheckItem extends Serializable<CheckItem> {
 
   @override
   Map<String, dynamic> toJson() {
+    assert(content != null);
+
     return {
       'esta_marcado': checked,
       'contenido': content,
     };
-  }
-
-  @override
-  CheckItem withId(int id) {
-    return CheckItem(id: id, content: content, checked: checked);
   }
 }

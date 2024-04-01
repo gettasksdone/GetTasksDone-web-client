@@ -1,11 +1,11 @@
-import 'package:gtd_client/logic/serializable.dart';
+import 'package:gtd_client/logic/base_item.dart';
 
-class Context extends Serializable<Context> {
-  static final Context instance = Context(id: -1, name: '');
+class Context extends BaseItem<Context> {
+  static final Context instance = Context();
 
-  String name;
+  String? name;
 
-  Context({required super.id, required this.name});
+  Context({super.id, this.name});
 
   @override
   Map<int, Context> fromJson(Map<String, dynamic> json) {
@@ -19,11 +19,8 @@ class Context extends Serializable<Context> {
 
   @override
   Map<String, dynamic> toJson() {
-    return {'nombre': name};
-  }
+    assert(name != null);
 
-  @override
-  Context withId(int id) {
-    return Context(id: id, name: name);
+    return {'nombre': name};
   }
 }

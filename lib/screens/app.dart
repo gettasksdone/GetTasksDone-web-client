@@ -1,4 +1,4 @@
-import 'package:gtd_client/widgets/stateful_solid_button.dart';
+import 'package:gtd_client/widgets/loading_solid_button.dart';
 import 'package:gtd_client/providers/completed_registry.dart';
 import 'package:gtd_client/widgets/solid_icon_button.dart';
 import 'package:gtd_client/providers/session_token.dart';
@@ -21,13 +21,11 @@ class _AppScreenState extends ConsumerState<AppScreen> {
     'Contextos': Icons.landscape_outlined,
     'Proyectos': Icons.personal_video,
     'Etiquetas': Icons.label,
-    'Tareas': Icons.inbox,
   };
   static const Map<String, Widget> _views = {
     'Proyectos': ProjectsView(),
     'Contextos': Placeholder(),
     'Etiquetas': Placeholder(),
-    'Tareas': Placeholder(),
   };
 
   String _viewKey = 'Proyectos';
@@ -102,7 +100,7 @@ class _AppScreenState extends ConsumerState<AppScreen> {
                   const Spacer(),
                   Padding(
                     padding: const EdgeInsets.all(20.0),
-                    child: StatefulSolidButton(
+                    child: LoadingSolidButton(
                       textSize: 25.0,
                       color: Colors.red,
                       text: 'Cerrar sesión',

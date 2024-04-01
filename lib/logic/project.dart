@@ -1,64 +1,63 @@
-import 'package:gtd_client/logic/complex_element.dart';
+import 'package:gtd_client/logic/complex_item.dart';
 import 'package:gtd_client/logic/note.dart';
 import 'package:gtd_client/logic/task.dart';
 import 'package:gtd_client/logic/tag.dart';
 
-class Project extends ComplexElement<Project> {
-  static final Project instance = Project(
-    id: -1,
-    finish: DateTime.now(),
-    start: DateTime.now(),
-    description: '',
-    state: '',
-    name: '',
-  );
+class Project extends ComplexItem<Project> {
+  static final Project instance = Project();
 
-  final List<int> _tasks;
+  final Set<int> _tasks;
 
-  String description;
-  DateTime _finish;
-  DateTime _start;
-  String state;
-  String name;
+  String? description;
+  DateTime? _finish;
+  DateTime? _start;
+  String? state;
+  String? name;
 
   Project({
-    required super.id,
+    super.id,
     super.notes,
     super.tags,
-    required this.description,
-    required DateTime finish,
-    required DateTime start,
-    required this.state,
-    required this.name,
-    List<int>? tasks,
-  })  : _tasks = tasks ?? [],
+    this.description,
+    DateTime? finish,
+    Set<int>? tasks,
+    DateTime? start,
+    this.state,
+    this.name,
+  })  : _tasks = tasks ?? {},
         _finish = finish,
         _start = start {
-    assert(!_finish.isBefore(_start));
+    if ((_finish != null) && (_start != null)) {
+      assert(!_finish!.isBefore(_start!));
+    }
   }
 
-  DateTime get finishDate => _finish;
-  DateTime get startDate => _start;
-  List<int> get tasks => _tasks;
+  DateTime get finishDate => _finish!;
+  DateTime get startDate => _start!;
+  Set<int> get tasks => _tasks;
 
   void setStart(DateTime start) {
-    assert(start.isBefore(_finish));
+    if (_finish != null) {
+      assert(start.isBefore(_finish!));
+    }
 
     _start = start;
   }
 
   void setFinish(DateTime finish) {
-    assert(finish.isAfter(_start));
+    if (_start != null) {
+      assert(finish.isAfter(_start!));
+    }
 
     _finish = finish;
   }
 
-  void addTask(int task) {
-    _tasks.add(task);
+  void addTask(int id) {
+    _tasks.add(id);
   }
 
-  void removeTask(int task) {
-    _tasks.remove(task);
+  void removeTask(int id) {
+    _tasks.remove(id);
   }
 
   @override
@@ -69,15 +68,15 @@ class Project extends ComplexElement<Project> {
         tags: Tag.instance
             .fromJsonList(json['etiquetas'] as List<dynamic>)
             .keys
-            .toList(),
+            .toSet(),
         tasks: Task.instance
             .fromJsonList(json['tareas'] as List<dynamic>)
             .keys
-            .toList(),
+            .toSet(),
         notes: Note.instance
             .fromJsonList(json['notas'] as List<dynamic>)
             .keys
-            .toList(),
+            .toSet(),
         start: DateTime.parse(json['inicio']),
         finish: DateTime.parse(json['fin']),
         description: json['descripcion'],
@@ -89,6 +88,12 @@ class Project extends ComplexElement<Project> {
 
   @override
   Map<String, dynamic> toJson() {
+    assert(description != null);
+    assert(_finish != null);
+    assert(_start != null);
+    assert(state != null);
+    assert(name != null);
+
     return {
       'nombre': name,
       'inicio': _start,
@@ -96,20 +101,5 @@ class Project extends ComplexElement<Project> {
       'descripcion': description,
       'estado': state,
     };
-  }
-
-  @override
-  Project withId(int id) {
-    return Project(
-      id: id,
-      description: description,
-      finish: _finish,
-      start: _start,
-      tasks: _tasks,
-      state: state,
-      notes: notes,
-      name: name,
-      tags: tags,
-    );
   }
 }

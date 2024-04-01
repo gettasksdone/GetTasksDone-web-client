@@ -1,7 +1,7 @@
 import 'package:gtd_client/modals/custom_date_picker.dart';
 import 'package:gtd_client/widgets/custom_form_field.dart';
-import 'package:gtd_client/widgets/custom_note_list.dart';
-import 'package:gtd_client/widgets/custom_tag_list.dart';
+import 'package:gtd_client/widgets/notes_list.dart';
+import 'package:gtd_client/widgets/tags_list.dart';
 import 'package:gtd_client/utilities/extensions.dart';
 import 'package:gtd_client/utilities/validators.dart';
 import 'package:gtd_client/widgets/custom_modal.dart';
@@ -15,7 +15,7 @@ import 'package:flutter/material.dart';
 void showModal(BuildContext context, Project? selectedProject) {
   final TextStyle titleStyle = TextStyle(
     color: context.colorScheme.onSecondary,
-    fontSize: elementCardFontSize,
+    fontSize: cardElementFontSize,
     fontWeight: FontWeight.w600,
   );
   final bool hasProject = selectedProject != null;
@@ -113,7 +113,7 @@ void showModal(BuildContext context, Project? selectedProject) {
                     children: [
                       Padding(
                         padding: rowPadding,
-                        child: CustomTagList(
+                        child: TagsList(
                           tags: tags,
                           onTagAdded: (int? id) {
                             if (id != null) {
@@ -254,7 +254,7 @@ void showModal(BuildContext context, Project? selectedProject) {
                 const SizedBox(width: paddingAmount),
                 Expanded(
                   flex: modalNotesFlex,
-                  child: CustomNoteList(
+                  child: NotesList(
                     notes: notes,
                     onNoteDeleted: (i) {
                       if (notes[i].id != -1) {
