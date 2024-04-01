@@ -25,8 +25,8 @@ class TagsList extends StatefulWidget {
 }
 
 class _TagsListState extends State<TagsList> {
+  static final UserData _userData = UserData();
   static const double _tagTextSize = 17.0;
-  final UserData _userData = UserData();
 
   @override
   Widget build(BuildContext context) {

@@ -1,10 +1,12 @@
 import 'package:gtd_client/utilities/extensions.dart';
 import 'package:gtd_client/utilities/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class CustomFormField extends StatefulWidget {
+  late final List<TextInputFormatter>? _onlyNumeric;
   final String? Function(String?)? validator;
-  final TextInputType? _keyboardType;
+  late final TextInputType? _keyboardType;
   final bool _gotAutofillHint;
   final String? autofillHint;
   final String? initialValue;
@@ -13,7 +15,7 @@ class CustomFormField extends StatefulWidget {
   final String? label;
   final bool expands;
 
-  const CustomFormField({
+  CustomFormField({
     super.key,
     this.autofillHint,
     this.initialValue,
@@ -22,16 +24,24 @@ class CustomFormField extends StatefulWidget {
     this.label,
     this.multiline = false,
     this.expands = false,
-  })  : _keyboardType = multiline ? TextInputType.multiline : null,
-        _gotAutofillHint = autofillHint != null;
+    bool numeric = false,
+  }) : _gotAutofillHint = autofillHint != null {
+    if (numeric) {
+      _onlyNumeric = [FilteringTextInputFormatter.digitsOnly];
+      _keyboardType = TextInputType.number;
+
+      return;
+    }
+
+    _keyboardType = multiline ? TextInputType.multiline : null;
+    _onlyNumeric = null;
+  }
 
   @override
   State<CustomFormField> createState() => _CustomFormFieldState();
 }
 
 class _CustomFormFieldState extends State<CustomFormField> {
-  static const double _edgeWidth = 3.0;
-
   final GlobalKey<FormFieldState> _fieldKey = GlobalKey();
 
   FocusNode? _focusNode;
@@ -66,6 +76,7 @@ class _CustomFormFieldState extends State<CustomFormField> {
       initialValue: widget.initialValue,
       keyboardType: widget._keyboardType,
       minLines: widget.expands ? null : 1,
+      inputFormatters: widget._onlyNumeric,
       textAlignVertical: TextAlignVertical.top,
       style: TextStyle(color: colors.onPrimary),
       maxLines: widget.multiline || widget.expands ? null : 1,
@@ -84,28 +95,28 @@ class _CustomFormFieldState extends State<CustomFormField> {
         enabledBorder: OutlineInputBorder(
           borderRadius: roundedCorners,
           borderSide: BorderSide(
-            width: _edgeWidth,
+            width: edgeWidth,
             color: colors.primary,
           ),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: roundedCorners,
           borderSide: BorderSide(
-            width: _edgeWidth,
+            width: edgeWidth,
             color: colors.primary.darken(20),
           ),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: roundedCorners,
           borderSide: BorderSide(
-            width: _edgeWidth,
+            width: edgeWidth,
             color: colors.error,
           ),
         ),
         focusedErrorBorder: OutlineInputBorder(
           borderRadius: roundedCorners,
           borderSide: BorderSide(
-            width: _edgeWidth,
+            width: edgeWidth,
             color: colors.error.darken(10),
           ),
         ),

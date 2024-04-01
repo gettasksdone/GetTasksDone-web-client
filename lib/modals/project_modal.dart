@@ -8,15 +8,12 @@ import 'package:gtd_client/utilities/constants.dart';
 import 'package:gtd_client/widgets/notes_list.dart';
 import 'package:gtd_client/widgets/tasks_list.dart';
 import 'package:gtd_client/widgets/tags_list.dart';
-import 'package:gtd_client/logic/user_data.dart';
 import 'package:gtd_client/logic/project.dart';
 import 'package:flutter/material.dart';
 
-const int _notesFlex = 2;
-
-const int _tasksFlex = 5;
-
 const int _fieldsFlex = 3;
+const int _notesFlex = 2;
+const int _tasksFlex = 5;
 
 void showModal(BuildContext context, Project? selectedProject) {
   final TextStyle titleStyle = TextStyle(
@@ -26,13 +23,12 @@ void showModal(BuildContext context, Project? selectedProject) {
   );
   final bool existingProject = selectedProject != null;
   final Project project = selectedProject ?? Project();
-  final UserData userData = UserData();
 
   final NotesListController notesController = NotesListController(
-    notes: project.notes.map((id) => userData.getNote(id)).toList(),
+    noteIds: project.notes,
   );
   final TasksListController tasksController = TasksListController(
-    tasks: project.tasks.map((id) => userData.getTask(id)).toList(),
+    taskIds: project.tasks,
   );
   final TagsListController tagsController = TagsListController(
     tags: project.tags,

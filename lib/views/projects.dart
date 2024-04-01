@@ -20,7 +20,7 @@ class ProjectsView extends ConsumerStatefulWidget {
 }
 
 class _ProjectsViewState extends ConsumerState<ProjectsView> {
-  final UserData userData = UserData();
+  static final UserData userData = UserData();
 
   Future<Map<int, Project>> _getProjects() async {
     final http.Response response = await http.get(

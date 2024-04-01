@@ -4,15 +4,18 @@ import 'package:gtd_client/widgets/delete_button.dart';
 import 'package:gtd_client/utilities/validators.dart';
 import 'package:gtd_client/utilities/extensions.dart';
 import 'package:gtd_client/utilities/constants.dart';
+import 'package:gtd_client/logic/user_data.dart';
 import 'package:gtd_client/logic/note.dart';
 import 'package:flutter/material.dart';
 
 class NotesListController {
   final Set<int> deletedNotes = {};
   final Set<int> editedNotes = {};
-  final List<Note> notes;
+  late final List<Note> notes;
 
-  NotesListController({required this.notes});
+  NotesListController({required Set<int> noteIds}) {
+    notes = noteIds.map((id) => UserData().getNote(id)).toList();
+  }
 }
 
 class NotesList extends StatefulWidget {
