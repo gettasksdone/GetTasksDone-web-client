@@ -1,16 +1,22 @@
 import 'package:gtd_client/modals/custom_date_picker.dart';
 import 'package:gtd_client/widgets/custom_form_field.dart';
-import 'package:gtd_client/widgets/notes_list.dart';
-import 'package:gtd_client/widgets/tags_list.dart';
-import 'package:gtd_client/utilities/extensions.dart';
 import 'package:gtd_client/utilities/validators.dart';
+import 'package:gtd_client/utilities/extensions.dart';
 import 'package:gtd_client/widgets/custom_modal.dart';
 import 'package:gtd_client/widgets/solid_button.dart';
 import 'package:gtd_client/utilities/constants.dart';
+import 'package:gtd_client/widgets/notes_list.dart';
+import 'package:gtd_client/widgets/tasks_list.dart';
+import 'package:gtd_client/widgets/tags_list.dart';
 import 'package:gtd_client/logic/user_data.dart';
 import 'package:gtd_client/logic/project.dart';
-import 'package:gtd_client/logic/note.dart';
 import 'package:flutter/material.dart';
+
+const int _notesFlex = 2;
+
+const int _tasksFlex = 5;
+
+const int _fieldsFlex = 3;
 
 void showModal(BuildContext context, Project? selectedProject) {
   final TextStyle titleStyle = TextStyle(
@@ -18,46 +24,27 @@ void showModal(BuildContext context, Project? selectedProject) {
     fontSize: cardElementFontSize,
     fontWeight: FontWeight.w600,
   );
-  final bool hasProject = selectedProject != null;
+  final bool existingProject = selectedProject != null;
+  final Project project = selectedProject ?? Project();
   final UserData userData = UserData();
-  final Set<int> removedNoteIds = {};
-  final Set<int> editedNoteIds = {};
-  final List<Note> notes;
-  final List<int> tasks;
-  final List<int> tags;
 
-  String? description;
-  DateTime finishDate;
-  DateTime startDate;
-  String? state;
-  String? name;
-
-  if (hasProject) {
-    notes = selectedProject.notes.map((i) => userData.getNote(i)!).toList();
-    description = selectedProject.description;
-    finishDate = selectedProject.finishDate;
-    startDate = selectedProject.startDate;
-    state = selectedProject.state;
-    tasks = selectedProject.tasks;
-    name = selectedProject.name;
-    tags = selectedProject.tags;
-  } else {
-    final DateTime currentTime = DateTime.now();
-
-    finishDate = currentTime;
-    startDate = currentTime;
-    tasks = [];
-    notes = [];
-    tags = [];
-  }
+  final NotesListController notesController = NotesListController(
+    notes: project.notes.map((id) => userData.getNote(id)).toList(),
+  );
+  final TasksListController tasksController = TasksListController(
+    tasks: project.tasks.map((id) => userData.getTask(id)).toList(),
+  );
+  final TagsListController tagsController = TagsListController(
+    tags: project.tags,
+  );
 
   showDialog(
     context: context,
     builder: (context) {
       return StatefulBuilder(
         builder: (context, dialogSetState) {
-          final String parsedStartDate = startDate.toCustomFormat;
-          final String parsedEndDate = finishDate.toCustomFormat;
+          final String parsedStartDate = project.startDate.toCustomFormat;
+          final String parsedEndDate = project.finishDate.toCustomFormat;
 
           return CustomModal(
             titleWidget: Align(
@@ -66,23 +53,22 @@ void showModal(BuildContext context, Project? selectedProject) {
                 child: Row(
                   children: [
                     Expanded(
-                      flex: modalFieldsFlex,
+                      flex: _fieldsFlex,
                       child: CustomFormField(
                         label: 'Nombre',
                         hintText: 'nombre',
-                        initialValue: name,
+                        initialValue: project.name,
                         validator: (String? input) => notEmptyValidator(
                           input,
-                          'Introduzca nombre del proyecto',
                           () => dialogSetState(() {
-                            name = input!;
+                            project.name = input;
                           }),
                         ),
                       ),
                     ),
                     const SizedBox(width: paddingAmount),
                     Expanded(
-                      flex: modalNotesFlex,
+                      flex: _notesFlex,
                       child: Center(
                         child: Text(
                           'Notas',
@@ -92,7 +78,7 @@ void showModal(BuildContext context, Project? selectedProject) {
                     ),
                     const SizedBox(width: paddingAmount),
                     Expanded(
-                      flex: modalTasksFlex,
+                      flex: _tasksFlex,
                       child: Center(
                         child: Text(
                           'Tareas',
@@ -107,43 +93,24 @@ void showModal(BuildContext context, Project? selectedProject) {
             bodyWidget: Row(
               children: [
                 Expanded(
-                  flex: modalFieldsFlex,
+                  flex: _fieldsFlex,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       Padding(
                         padding: rowPadding,
-                        child: TagsList(
-                          tags: tags,
-                          onTagAdded: (int? id) {
-                            if (id != null) {
-                              dialogSetState(
-                                () {
-                                  tags.add(id);
-                                },
-                              );
-                            }
-                          },
-                          onTagRemoved: (int id) {
-                            dialogSetState(
-                              () {
-                                tags.remove(id);
-                              },
-                            );
-                          },
-                        ),
+                        child: TagsList(controller: tagsController),
                       ),
                       Padding(
                         padding: rowPadding,
                         child: CustomFormField(
                           label: 'Estado',
                           hintText: 'estado',
-                          initialValue: state,
+                          initialValue: project.state,
                           validator: (String? input) => notEmptyValidator(
                             input,
-                            'Introduzca estado del proyecto',
                             () => dialogSetState(() {
-                              state = input!;
+                              project.state = input;
                             }),
                           ),
                         ),
@@ -155,12 +122,11 @@ void showModal(BuildContext context, Project? selectedProject) {
                             expands: true,
                             label: 'Descripción',
                             hintText: 'descripción',
-                            initialValue: description,
+                            initialValue: project.description,
                             validator: (String? input) => notEmptyValidator(
                               input,
-                              'Introduzca descripción del proyecto',
                               () => dialogSetState(() {
-                                description = input!;
+                                project.description = input!;
                               }),
                             ),
                           ),
@@ -175,15 +141,15 @@ void showModal(BuildContext context, Project? selectedProject) {
                                 size: modalButtonSize,
                                 text: 'Inicio $parsedStartDate',
                                 onPressed: () async {
-                                  final DateTime? result =
+                                  final DateTime? date =
                                       await showCustomDatePicker(
                                     context: context,
-                                    finishDate: finishDate,
+                                    finishDate: project.finishDate,
                                   );
 
-                                  if (result != null) {
+                                  if (date != null) {
                                     dialogSetState(() {
-                                      startDate = result;
+                                      project.setStart(date);
                                     });
                                   }
                                 },
@@ -195,15 +161,15 @@ void showModal(BuildContext context, Project? selectedProject) {
                                 size: modalButtonSize,
                                 text: 'Final $parsedEndDate',
                                 onPressed: () async {
-                                  final DateTime? result =
+                                  final DateTime? date =
                                       await showCustomDatePicker(
                                     context: context,
-                                    startDate: startDate,
+                                    startDate: project.startDate,
                                   );
 
-                                  if (result != null) {
+                                  if (date != null) {
                                     dialogSetState(() {
-                                      finishDate = result;
+                                      project.setFinish(date);
                                     });
                                   }
                                 },
@@ -219,7 +185,7 @@ void showModal(BuildContext context, Project? selectedProject) {
                               color: Colors.green,
                               size: modalButtonSize,
                               withWidget: Text(
-                                hasProject ? 'Guardar' : 'Crear',
+                                existingProject ? 'Guardar' : 'Crear',
                                 style: const TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.w600,
@@ -229,8 +195,9 @@ void showModal(BuildContext context, Project? selectedProject) {
                               onPressed: () {},
                             ),
                           ),
-                          if (hasProject) const SizedBox(width: paddingAmount),
-                          if (hasProject)
+                          if (existingProject)
+                            const SizedBox(width: paddingAmount),
+                          if (existingProject)
                             Expanded(
                               child: SolidButton(
                                 color: Colors.red,
@@ -253,43 +220,13 @@ void showModal(BuildContext context, Project? selectedProject) {
                 ),
                 const SizedBox(width: paddingAmount),
                 Expanded(
-                  flex: modalNotesFlex,
-                  child: NotesList(
-                    notes: notes,
-                    onNoteDeleted: (i) {
-                      if (notes[i].id != -1) {
-                        removedNoteIds.add(notes[i].id);
-                      }
-
-                      dialogSetState(() {
-                        notes.removeAt(i);
-                      });
-                    },
-                    onNoteCreated: () {
-                      dialogSetState(() {
-                        notes.add(Note(
-                          id: -1,
-                          content: '',
-                        ));
-                      });
-                    },
-                    onNoteEdited: (i, input) {
-                      if (notes[i].content != input) {
-                        if (notes[i].id != -1) {
-                          editedNoteIds.add(notes[i].id);
-                        }
-
-                        dialogSetState(() {
-                          notes[i].content = input ?? '';
-                        });
-                      }
-                    },
-                  ),
+                  flex: _notesFlex,
+                  child: NotesList(controller: notesController),
                 ),
                 const SizedBox(width: paddingAmount),
-                const Expanded(
-                  flex: modalTasksFlex,
-                  child: Placeholder(),
+                Expanded(
+                  flex: _tasksFlex,
+                  child: TasksList(controller: tasksController),
                 ),
               ],
             ),

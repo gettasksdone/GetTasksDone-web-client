@@ -1,11 +1,11 @@
 import 'package:gtd_client/widgets/custom_progress_indicator.dart';
 import 'package:gtd_client/widgets/solid_icon_button.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:gtd_client/widgets/card_element.dart';
 import 'package:gtd_client/modals/project_modal.dart';
 import 'package:gtd_client/utilities/extensions.dart';
 import 'package:gtd_client/utilities/constants.dart';
 import 'package:gtd_client/utilities/headers.dart';
-import 'package:gtd_client/widgets/card_element.dart';
 import 'package:gtd_client/logic/user_data.dart';
 import 'package:gtd_client/logic/project.dart';
 import 'package:http/http.dart' as http;
@@ -125,12 +125,12 @@ class _ProjectsViewState extends ConsumerState<ProjectsView> {
                                     cells: [
                                       CardCellData(
                                         icon: Icons.folder,
-                                        text: entry.value.name,
+                                        text: entry.value.name!,
                                       ),
                                       CardCellData(
                                         width: 150.0,
                                         icon: Icons.push_pin,
-                                        text: entry.value.state,
+                                        text: entry.value.state!,
                                       ),
                                       CardCellData(
                                         icon: Icons.calendar_today,

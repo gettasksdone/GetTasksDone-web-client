@@ -5,18 +5,18 @@ import 'package:gtd_client/utilities/colors.dart';
 import 'package:gtd_client/logic/user_data.dart';
 import 'package:flutter/material.dart';
 
-class TagListController {
+class TagsListController {
   late final Set<int> availableTags;
   final Set<int> tags;
 
-  TagListController({required this.tags}) {
+  TagsListController({required this.tags}) {
     availableTags =
         UserData().tags.keys.where((id) => !tags.contains(id)).toSet();
   }
 }
 
 class TagsList extends StatefulWidget {
-  final TagListController controller;
+  final TagsListController controller;
 
   const TagsList({super.key, required this.controller});
 
@@ -30,7 +30,7 @@ class _TagsListState extends State<TagsList> {
 
   @override
   Widget build(BuildContext context) {
-    final TagListController controller = widget.controller;
+    final TagsListController controller = widget.controller;
     final ColorScheme colors = context.colorScheme;
 
     return SizedBox(

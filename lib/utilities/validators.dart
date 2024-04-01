@@ -1,12 +1,8 @@
 import 'dart:ui';
 
-String? notEmptyValidator(
-  String? input,
-  String errorMessage,
-  VoidCallback onValid,
-) {
+String? notEmptyValidator(String? input, VoidCallback onValid) {
   if (input == null || input.isEmpty) {
-    return errorMessage;
+    return 'Rellene este campo';
   }
 
   onValid();

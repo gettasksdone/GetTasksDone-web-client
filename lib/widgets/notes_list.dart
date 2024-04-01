@@ -1,6 +1,7 @@
 import 'package:gtd_client/widgets/custom_form_field.dart';
 import 'package:gtd_client/widgets/solid_icon_button.dart';
 import 'package:gtd_client/widgets/delete_button.dart';
+import 'package:gtd_client/utilities/validators.dart';
 import 'package:gtd_client/utilities/extensions.dart';
 import 'package:gtd_client/utilities/constants.dart';
 import 'package:gtd_client/logic/note.dart';
@@ -11,7 +12,7 @@ class NotesListController {
   final Set<int> editedNotes = {};
   final List<Note> notes;
 
-  NotesListController(List<Note>? notes) : notes = notes ?? [];
+  NotesListController({required this.notes});
 }
 
 class NotesList extends StatefulWidget {
@@ -62,8 +63,9 @@ class _NotesListState extends State<NotesList> {
                           onPressed: () {
                             setState(() {
                               if (controller.notes[i].id != -1) {
-                                controller.deletedNotes
-                                    .add(controller.notes[i].id);
+                                controller.deletedNotes.add(
+                                  controller.notes[i].id,
+                                );
                               }
 
                               controller.notes.removeAt(i);
@@ -76,17 +78,21 @@ class _NotesListState extends State<NotesList> {
                   CustomFormField(
                     multiline: true,
                     initialValue: controller.notes[i].content,
-                    validator: (String? input) {
-                      setState(() {
-                        if (controller.notes[i].id != -1) {
-                          controller.editedNotes.add(controller.notes[i].id);
+                    validator: (String? input) => notEmptyValidator(
+                      input,
+                      () {
+                        if (controller.notes[i].content != input) {
+                          setState(() {
+                            if (controller.notes[i].id != -1) {
+                              controller.editedNotes
+                                  .add(controller.notes[i].id);
+                            }
+
+                            controller.notes[i].content = input;
+                          });
                         }
-
-                        controller.notes[i].content = input;
-                      });
-
-                      return null;
-                    },
+                      },
+                    ),
                   ),
                 ],
               ),
