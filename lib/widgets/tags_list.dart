@@ -9,6 +9,16 @@ class TagsListController {
   late final Set<int> availableTags;
   final Set<int> tags;
 
+  void addTag(int id) {
+    tags.add(id);
+    availableTags.remove(id);
+  }
+
+  void removeTag(int id) {
+    tags.remove(id);
+    availableTags.add(id);
+  }
+
   TagsListController({required this.tags}) {
     availableTags =
         UserData().tags.keys.where((id) => !tags.contains(id)).toSet();
@@ -66,8 +76,7 @@ class _TagsListState extends State<TagsList> {
                       const SizedBox(width: 5.0),
                       DeleteButton(onPressed: () {
                         setState(() {
-                          controller.tags.remove(id);
-                          controller.availableTags.add(id);
+                          controller.removeTag(id);
                         });
                       }),
                     ],
@@ -86,8 +95,7 @@ class _TagsListState extends State<TagsList> {
                 onChanged: (int? id) {
                   if (id != null) {
                     setState(() {
-                      controller.tags.add(id);
-                      controller.availableTags.remove(id);
+                      controller.addTag(id);
                     });
                   }
                 },

@@ -1,6 +1,7 @@
 import 'package:gtd_client/modals/custom_date_picker.dart';
 import 'package:gtd_client/widgets/custom_form_field.dart';
 import 'package:gtd_client/widgets/solid_icon_button.dart';
+import 'package:gtd_client/widgets/check_items_list.dart';
 import 'package:gtd_client/widgets/solid_button.dart';
 import 'package:gtd_client/utilities/validators.dart';
 import 'package:gtd_client/utilities/extensions.dart';
@@ -12,8 +13,10 @@ import 'package:gtd_client/logic/task.dart';
 import 'package:flutter/material.dart';
 
 class TasksListController {
+  final List<CheckItemsListController> taskCheckItemsControllers = [];
   final List<NotesListController> taskNotesControllers = [];
   final List<TagsListController> taskTagsControllers = [];
+
   final Set<int> _deletedTasks = {};
   final Set<int> _editedTasks = {};
   late final List<Task> tasks;
@@ -22,6 +25,9 @@ class TasksListController {
   Set<int> get editedTasks => _editedTasks;
 
   void addTask() {
+    taskCheckItemsControllers.add(
+      CheckItemsListController(checkItemIds: {}),
+    );
     taskNotesControllers.add(NotesListController(noteIds: {}));
     taskTagsControllers.add(TagsListController(tags: {}));
     tasks.add(Task(expiration: DateTime.now()));
@@ -34,6 +40,7 @@ class TasksListController {
   }
 
   void removeTask(int index) {
+    taskCheckItemsControllers.removeAt(index);
     taskNotesControllers.removeAt(index);
     taskTagsControllers.removeAt(index);
 
@@ -48,6 +55,9 @@ class TasksListController {
     tasks = taskIds.map((id) => UserData().getTask(id)).toList();
 
     for (final Task task in tasks) {
+      taskCheckItemsControllers.add(
+        CheckItemsListController(checkItemIds: task.checkItems),
+      );
       taskNotesControllers.add(NotesListController(noteIds: task.notes));
       taskTagsControllers.add(TagsListController(tags: task.tags));
     }
@@ -281,6 +291,9 @@ class _TasksListState extends State<TasksList> {
                           ),
                         ),
                       ),
+                    ),
+                    CheckItemsList(
+                      controller: controller.taskCheckItemsControllers[i],
                     ),
                   ],
                 ),

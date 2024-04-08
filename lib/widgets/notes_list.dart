@@ -13,6 +13,26 @@ class NotesListController {
   final Set<int> editedNotes = {};
   late final List<Note> notes;
 
+  void addNote() {
+    notes.add(Note());
+  }
+
+  void setNoteAsEdited(int index) {
+    if (notes[index].id != -1) {
+      editedNotes.add(notes[index].id);
+    }
+  }
+
+  void removeNote(int index) {
+    if (notes[index].id != -1) {
+      deletedNotes.add(
+        notes[index].id,
+      );
+    }
+
+    notes.removeAt(index);
+  }
+
   NotesListController({required Set<int> noteIds}) {
     notes = noteIds.map((id) => UserData().getNote(id)).toList();
   }
@@ -65,13 +85,7 @@ class _NotesListState extends State<NotesList> {
                         DeleteButton(
                           onPressed: () {
                             setState(() {
-                              if (controller.notes[i].id != -1) {
-                                controller.deletedNotes.add(
-                                  controller.notes[i].id,
-                                );
-                              }
-
-                              controller.notes.removeAt(i);
+                              controller.removeNote(i);
                             });
                           },
                         ),
@@ -86,10 +100,7 @@ class _NotesListState extends State<NotesList> {
                       () {
                         if (controller.notes[i].content != input) {
                           setState(() {
-                            if (controller.notes[i].id != -1) {
-                              controller.editedNotes
-                                  .add(controller.notes[i].id);
-                            }
+                            controller.setNoteAsEdited(i);
 
                             controller.notes[i].content = input;
                           });
@@ -109,7 +120,7 @@ class _NotesListState extends State<NotesList> {
         icon: Icons.add_box_outlined,
         onPressed: () {
           setState(() {
-            controller.notes.add(Note());
+            controller.addNote();
           });
         },
       ),
