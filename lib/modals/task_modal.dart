@@ -1,18 +1,24 @@
+import 'package:gtd_client/widgets/loading_solid_button.dart';
 import 'package:gtd_client/modals/custom_date_picker.dart';
 import 'package:gtd_client/widgets/custom_form_field.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gtd_client/utilities/extensions.dart';
 import 'package:gtd_client/utilities/validators.dart';
 import 'package:gtd_client/widgets/custom_modal.dart';
 import 'package:gtd_client/widgets/solid_button.dart';
 import 'package:gtd_client/utilities/constants.dart';
+import 'package:gtd_client/utilities/headers.dart';
 import 'package:gtd_client/logic/user_data.dart';
 import 'package:gtd_client/logic/task.dart';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'dart:convert';
 
-void showModal(BuildContext context, Task? selectedTask) {
+void showModal(BuildContext context, WidgetRef ref, Task? selectedTask) {
   final ColorScheme colors = context.colorScheme;
   final bool existingTask = selectedTask != null;
   final Task task = selectedTask ?? Task();
+  final UserData userData = UserData();
 
   final String? taskDescription = task.description;
 
@@ -109,7 +115,7 @@ void showModal(BuildContext context, Task? selectedTask) {
                                 });
                               }
                             },
-                            items: UserData().contexts.entries.map(
+                            items: userData.contexts.entries.map(
                               (entry) {
                                 return DropdownMenuItem<int>(
                                   value: entry.key,
@@ -147,35 +153,81 @@ void showModal(BuildContext context, Task? selectedTask) {
                 Row(
                   children: [
                     Expanded(
-                      child: SolidButton(
+                      child: LoadingSolidButton(
                         color: Colors.green,
                         size: modalButtonSize,
-                        withWidget: Text(
-                          existingTask ? 'Guardar' : 'Crear',
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w600,
-                            fontSize: modalButtonFontSize,
-                          ),
-                        ),
-                        onPressed: () {},
+                        textColor: Colors.white,
+                        textSize: modalButtonFontSize,
+                        text: existingTask ? 'Guardar' : 'Crear',
+                        onPressed: () async {
+                          task.description = '$name|$description';
+
+                          final String requestBody = jsonEncode(task.toJson());
+                          final Map<String, String> requestHeaders = headers(
+                            ref,
+                          );
+
+                          final http.Response response;
+                          final String url;
+
+                          if (existingTask) {
+                            url = '$serverUrl/task/update/${task.id}';
+
+                            response = await http.patch(
+                              Uri.parse(url),
+                              headers: requestHeaders,
+                              body: requestBody,
+                            );
+                          } else {
+                            url =
+                                '$serverUrl/task/create?ProjectID=${userData.inboxId}';
+
+                            response = await http.post(
+                              Uri.parse(url),
+                              headers: requestHeaders,
+                              body: requestBody,
+                            );
+                          }
+
+                          debugPrint(
+                              '$url call status code: ${response.statusCode}');
+
+                          if (response.statusCode == 200) {
+                            if (!existingTask) {
+                              task.setId(int.parse(response.body));
+
+                              userData.getInboxProject().tasks.add(task.id);
+                            }
+
+                            userData.putTask(task.id, task);
+                          }
+                        },
                       ),
                     ),
                     if (existingTask) const SizedBox(width: paddingAmount),
                     if (existingTask)
                       Expanded(
-                        child: SolidButton(
+                        child: LoadingSolidButton(
                           color: Colors.red,
                           size: modalButtonSize,
-                          withWidget: const Text(
-                            'Borrar',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w600,
-                              fontSize: modalButtonFontSize,
-                            ),
-                          ),
-                          onPressed: () {},
+                          textColor: Colors.white,
+                          textSize: modalButtonFontSize,
+                          text: 'Borrar',
+                          onPressed: () async {
+                            final http.Response response = await http.delete(
+                              Uri.parse('$serverUrl/task/delete/${task.id}'),
+                              headers: headers(ref),
+                              body: jsonEncode(task.toJson()),
+                            );
+
+                            debugPrint(
+                                '/task/delete/${task.id} call status code: ${response.statusCode}');
+
+                            if (response.statusCode == 200) {
+                              userData.getInboxProject().tasks.remove(task.id);
+                              userData.removeTask(task.id);
+                            }
+                          },
                         ),
                       ),
                   ],

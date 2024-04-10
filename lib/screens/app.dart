@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gtd_client/utilities/extensions.dart';
 import 'package:gtd_client/utilities/constants.dart';
 import 'package:gtd_client/providers/username.dart';
-import 'package:gtd_client/views/projects.dart';
+import 'package:gtd_client/views/inbox.dart';
 import 'package:flutter/material.dart';
 
 class AppScreen extends ConsumerStatefulWidget {
@@ -17,18 +17,22 @@ class AppScreen extends ConsumerStatefulWidget {
 }
 
 class _AppScreenState extends ConsumerState<AppScreen> {
+  static const String _inboxKey = 'Bandeja de entrada';
   static const Map<String, IconData> _icons = {
     'Contextos': Icons.landscape_outlined,
+    'Agendado': Icons.next_plan_outlined,
     'Proyectos': Icons.personal_video,
-    'Etiquetas': Icons.label,
+    _inboxKey: Icons.inbox,
   };
   static const Map<String, Widget> _views = {
-    'Proyectos': ProjectsView(),
+    'Proyectos': Placeholder(),
     'Contextos': Placeholder(),
-    'Etiquetas': Placeholder(),
+    'Agendado': Placeholder(),
+    _inboxKey: InboxView(),
   };
 
-  String _viewKey = 'Proyectos';
+  String _viewKey = _inboxKey;
+  int _inboxCount = 0;
 
   void _setView(String viewKey) {
     setState(() {
@@ -89,7 +93,7 @@ class _AppScreenState extends ConsumerState<AppScreen> {
                     Padding(
                       padding: rowPadding,
                       child: SolidIconButton(
-                        text: key,
+                        text: key == _inboxKey ? '$key $_inboxCount' : key,
                         innerSize: 22.0,
                         icon: _icons[key]!,
                         color: buttonColor(key),

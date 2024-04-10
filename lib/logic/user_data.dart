@@ -4,6 +4,7 @@ import 'package:gtd_client/logic/project.dart';
 import 'package:gtd_client/logic/note.dart';
 import 'package:gtd_client/logic/task.dart';
 import 'package:gtd_client/logic/tag.dart';
+import 'dart:convert';
 
 class UserData {
   static final UserData _instance = UserData._userData();
@@ -14,6 +15,8 @@ class UserData {
   Map<int, Task> _tasks;
   Map<int, Note> _notes;
   Map<int, Tag> _tags;
+
+  int? _inboxProjectId;
 
   UserData._userData()
       : _checkItems = {},
@@ -33,6 +36,8 @@ class UserData {
   Map<int, Task> get tasks => _tasks;
   Map<int, Note> get notes => _notes;
   Map<int, Tag> get tags => _tags;
+
+  int get inboxId => _inboxProjectId!;
 
   CheckItem getCheckItem(int id) {
     return _checkItems[id]!;
@@ -58,51 +63,54 @@ class UserData {
     return _notes[id]!;
   }
 
-  void putCheckItem(int id, CheckItem checkItem) {
-    _checkItems[id] = checkItem;
-  }
-
-  void putProject(int id, Project project) {
-    _projects[id] = project;
-  }
-
-  void putContext(int id, Context context) {
-    _contexts[id] = context;
-  }
-
-  void putTag(int id, Tag tag) {
-    _tags[id] = tag;
-  }
-
   void putTask(int id, Task task) {
     _tasks[id] = task;
-  }
-
-  void putNote(int id, Note note) {
-    _notes[id] = note;
-  }
-
-  void removeCheckItem(int id) {
-    _checkItems.remove(id);
-  }
-
-  void removeProject(int id) {
-    _projects.remove(id);
-  }
-
-  void removeContext(int id) {
-    _contexts.remove(id);
-  }
-
-  void removeTag(int id) {
-    _tags.remove(id);
   }
 
   void removeTask(int id) {
     _tasks.remove(id);
   }
 
-  void removeNote(int id) {
-    _notes.remove(id);
+  Map<int, Project> decodeProjects(String response) {
+    final List<Map<String, dynamic>> json = jsonDecode(response);
+
+    for (final Map<String, dynamic> projectJson in json) {
+      final Map<int, Project> project = Project.instance.fromJson(projectJson);
+
+      _projects.addAll(project);
+
+      _tags.addAll(Tag.instance.fromJsonList(projectJson["etiquetas"]));
+      _notes.addAll(Note.instance.fromJsonList(projectJson["notas"]));
+
+      for (final Map<String, dynamic> taskJson in projectJson["tareas"]) {
+        final Map<int, Task> task = Task.instance.fromJson(taskJson);
+
+        _tasks.addAll(task);
+
+        _tags.addAll(Tag.instance.fromJsonList(taskJson["etiquetas"]));
+        _notes.addAll(Note.instance.fromJsonList(taskJson["notas"]));
+        _checkItems.addAll(CheckItem.instance.fromJsonList(
+          taskJson["checkItems"],
+        ));
+      }
+    }
+
+    return _projects;
+  }
+
+  Project getInboxProject() {
+    if (_inboxProjectId != null) {
+      return getProject(_inboxProjectId!);
+    }
+
+    for (final MapEntry<int, Project> entry in _projects.entries) {
+      if (entry.value.name == "inbox") {
+        _inboxProjectId = entry.key;
+
+        return entry.value;
+      }
+    }
+
+    throw UnimplementedError('No inbox project found');
   }
 }
