@@ -14,6 +14,11 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'dart:convert';
 
+// Supposed to be patched by Flutter
+const double _modalWidth = 600.0;
+const double _dropdownWidth =
+    (_modalWidth - (2.0 * cardPaddingAmount) - paddingAmount) * 0.5;
+
 void showModal(BuildContext context, WidgetRef ref, Task? selectedTask) {
   final ColorScheme colors = context.colorScheme;
   final bool existingTask = selectedTask != null;
@@ -22,22 +27,65 @@ void showModal(BuildContext context, WidgetRef ref, Task? selectedTask) {
 
   final String? taskDescription = task.description;
 
+  String? description;
+  String? name;
+
+  if (taskDescription != null) {
+    final List<String> parts = taskDescription.split('|');
+
+    description = parts[1];
+    name = parts[0];
+  }
+
+  Future<void> onGreenButton() async {
+    task.description = '$name|$description';
+
+    final String requestBody = jsonEncode(task.toJson());
+    final Map<String, String> requestHeaders = headers(
+      ref,
+    );
+
+    final http.Response response;
+    final String url;
+
+    if (existingTask) {
+      url = '$serverUrl/task/update/${task.id}';
+
+      response = await http.patch(
+        Uri.parse(url),
+        headers: requestHeaders,
+        body: requestBody,
+      );
+    } else {
+      url = '$serverUrl/task/create?ProjectID=${userData.inboxId}';
+
+      response = await http.post(
+        Uri.parse(url),
+        headers: requestHeaders,
+        body: requestBody,
+      );
+    }
+
+    debugPrint('$url call status code: ${response.statusCode}');
+
+    if (response.statusCode == 200) {
+      if (!existingTask) {
+        task.setId(int.parse(response.body));
+
+        userData.getInboxProject().tasks.add(task.id);
+      }
+
+      userData.putTask(task.id, task);
+    }
+  }
+
   showDialog(
     context: context,
     builder: (context) {
       return StatefulBuilder(
         builder: (context, dialogSetState) {
-          String? description;
-          String? name;
-
-          if (taskDescription != null) {
-            final List<String> parts = taskDescription.split('|');
-
-            description = parts[1];
-            name = parts[0];
-          }
-
           return CustomModal(
+            size: const Size(_modalWidth, 500.0),
             titleWidget: Align(
               alignment: Alignment.bottomCenter,
               child: CustomFormField(
@@ -55,18 +103,20 @@ void showModal(BuildContext context, WidgetRef ref, Task? selectedTask) {
             bodyWidget: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Padding(
-                  padding: rowPadding,
-                  child: CustomFormField(
-                    multiline: true,
-                    label: 'Descripción',
-                    hintText: 'descripción',
-                    initialValue: description,
-                    validator: (String? input) => notEmptyValidator(
-                      input,
-                      () => dialogSetState(() {
-                        description = input;
-                      }),
+                Expanded(
+                  child: Padding(
+                    padding: rowPadding,
+                    child: CustomFormField(
+                      expands: true,
+                      label: 'Descripción',
+                      hintText: 'descripción',
+                      initialValue: description,
+                      validator: (String? input) => notEmptyValidator(
+                        input,
+                        () => dialogSetState(() {
+                          description = input;
+                        }),
+                      ),
                     ),
                   ),
                 ),
@@ -76,59 +126,67 @@ void showModal(BuildContext context, WidgetRef ref, Task? selectedTask) {
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        Expanded(
-                          child: DropdownButtonFormField(
-                            menuMaxHeight: 400.0,
-                            value: task.contextId,
+                        DropdownMenu(
+                          width: _dropdownWidth,
+                          initialSelection: task.contextId,
+                          label: Text(
+                            'Contexto',
                             style: TextStyle(color: colors.onTertiary),
-                            decoration: InputDecoration(
-                              labelText: 'Contexto',
-                              labelStyle: TextStyle(
-                                color: colors.onTertiary,
-                              ),
-                              border: OutlineInputBorder(
-                                borderRadius: roundedCorners,
-                                borderSide: BorderSide(
-                                  width: edgeWidth,
-                                  color: colors.primary,
-                                ),
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: roundedCorners,
-                                borderSide: BorderSide(
-                                  width: edgeWidth,
-                                  color: colors.primary,
-                                ),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: roundedCorners,
-                                borderSide: BorderSide(
-                                  width: edgeWidth,
-                                  color: colors.primary.darken(20),
-                                ),
+                          ),
+                          onSelected: (int? id) {
+                            dialogSetState(() {
+                              task.contextId = id;
+                            });
+                          },
+                          menuStyle: MenuStyle(
+                            backgroundColor: WidgetStatePropertyAll(
+                              context.theme.canvasColor,
+                            ),
+                          ),
+                          inputDecorationTheme: InputDecorationTheme(
+                            border: OutlineInputBorder(
+                              borderRadius: roundedCorners,
+                              borderSide: BorderSide(
+                                width: edgeWidth,
+                                color: colors.primary,
                               ),
                             ),
-                            onChanged: (int? id) {
-                              if (id != null) {
-                                dialogSetState(() {
-                                  task.contextId = id;
-                                });
-                              }
-                            },
-                            items: userData.contexts.entries.map(
-                              (entry) {
-                                return DropdownMenuItem<int>(
-                                  value: entry.key,
-                                  child: Text(entry.value.name!),
-                                );
-                              },
-                            ).toList(),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: roundedCorners,
+                              borderSide: BorderSide(
+                                width: edgeWidth,
+                                color: colors.primary,
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: roundedCorners,
+                              borderSide: BorderSide(
+                                width: edgeWidth,
+                                color: colors.primary.darken(20),
+                              ),
+                            ),
                           ),
+                          dropdownMenuEntries: userData.contexts.entries.map(
+                            (entry) {
+                              return DropdownMenuEntry<int>(
+                                value: entry.key,
+                                label: entry.value.name!,
+                                labelWidget: Text(
+                                  entry.value.name!,
+                                  style: TextStyle(
+                                    color: colors.onPrimary,
+                                  ),
+                                ),
+                                style: TextButton.styleFrom(
+                                  backgroundColor: context.theme.canvasColor,
+                                ),
+                              );
+                            },
+                          ).toList(),
                         ),
                         const SizedBox(width: paddingAmount),
                         Expanded(
                           child: SolidButton(
-                            size: modalButtonSize,
                             text: existingTask
                                 ? 'Expiración ${task.expiration!.toCustomFormat}'
                                 : 'Fecha de expiración',
@@ -138,11 +196,9 @@ void showModal(BuildContext context, WidgetRef ref, Task? selectedTask) {
                                 startDate: task.created,
                               );
 
-                              if (date != null) {
-                                dialogSetState(() {
-                                  task.setExpiration(date);
-                                });
-                              }
+                              dialogSetState(() {
+                                task.setExpiration(date);
+                              });
                             },
                           ),
                         ),
@@ -159,49 +215,11 @@ void showModal(BuildContext context, WidgetRef ref, Task? selectedTask) {
                         textColor: Colors.white,
                         textSize: modalButtonFontSize,
                         text: existingTask ? 'Guardar' : 'Crear',
-                        onPressed: () async {
-                          task.description = '$name|$description';
-
-                          final String requestBody = jsonEncode(task.toJson());
-                          final Map<String, String> requestHeaders = headers(
-                            ref,
-                          );
-
-                          final http.Response response;
-                          final String url;
-
-                          if (existingTask) {
-                            url = '$serverUrl/task/update/${task.id}';
-
-                            response = await http.patch(
-                              Uri.parse(url),
-                              headers: requestHeaders,
-                              body: requestBody,
-                            );
-                          } else {
-                            url =
-                                '$serverUrl/task/create?ProjectID=${userData.inboxId}';
-
-                            response = await http.post(
-                              Uri.parse(url),
-                              headers: requestHeaders,
-                              body: requestBody,
-                            );
-                          }
-
-                          debugPrint(
-                              '$url call status code: ${response.statusCode}');
-
-                          if (response.statusCode == 200) {
-                            if (!existingTask) {
-                              task.setId(int.parse(response.body));
-
-                              userData.getInboxProject().tasks.add(task.id);
-                            }
-
-                            userData.putTask(task.id, task);
-                          }
-                        },
+                        onPressed: name == null ||
+                                description == null ||
+                                task.contextId == null
+                            ? null
+                            : onGreenButton,
                       ),
                     ),
                     if (existingTask) const SizedBox(width: paddingAmount),

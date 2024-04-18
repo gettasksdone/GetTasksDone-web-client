@@ -1,6 +1,5 @@
 import 'package:gtd_client/logic/complex_item.dart';
 import 'package:gtd_client/logic/check_item.dart';
-import 'package:gtd_client/logic/context.dart';
 import 'package:gtd_client/logic/note.dart';
 import 'package:gtd_client/logic/tag.dart';
 
@@ -13,8 +12,8 @@ class Task extends ComplexItem<Task> {
   DateTime? _expiration;
   String? description;
   int? contextId;
-  String? state;
-  int? priority;
+  String state;
+  int priority;
 
   Task({
     super.id,
@@ -22,8 +21,8 @@ class Task extends ComplexItem<Task> {
     super.tags,
     this.description,
     this.contextId,
-    this.priority,
-    this.state,
+    this.state = "ninguno",
+    this.priority = 0,
     Set<int>? checkItems,
     DateTime? expiration,
     DateTime? created,
@@ -66,7 +65,7 @@ class Task extends ComplexItem<Task> {
         expiration: json.containsKey('vencimiento')
             ? DateTime.parse(json['vencimiento'])
             : null,
-        contextId: Context.instance.fromJson(json['contexto']).keys.first,
+        contextId: Task.instance.fromJson(json['contexto']).keys.first,
         created: DateTime.parse(json['creacion']),
         description: json['descripcion'],
         priority: json['prioridad'],
@@ -79,15 +78,13 @@ class Task extends ComplexItem<Task> {
   Map<String, dynamic> toJson() {
     assert(description != null);
     assert(contextId != null);
-    assert(priority != null);
-    assert(state != null);
 
     return {
       'contexto': {'id': contextId},
       'descripcion': description,
       'vencimiento': _expiration,
       'prioridad': priority,
-      'creacion': created,
+      'creacion': created.toIso8601String(),
       'estado': state,
     };
   }

@@ -67,14 +67,18 @@ class UserData {
     _tasks[id] = task;
   }
 
+  void putContext(int id, Context context) {
+    _contexts[id] = context;
+  }
+
   void removeTask(int id) {
     _tasks.remove(id);
   }
 
   Map<int, Project> decodeProjects(String response) {
-    final List<Map<String, dynamic>> json = jsonDecode(response);
+    final Iterable<dynamic> json = jsonDecode(response);
 
-    for (final Map<String, dynamic> projectJson in json) {
+    for (final projectJson in json) {
       final Map<int, Project> project = Project.instance.fromJson(projectJson);
 
       _projects.addAll(project);
@@ -96,6 +100,12 @@ class UserData {
     }
 
     return _projects;
+  }
+
+  Map<int, Context> decodeContexts(String response) {
+    _contexts.addAll(Context.instance.decodeList(response));
+
+    return _contexts;
   }
 
   Project getInboxProject() {

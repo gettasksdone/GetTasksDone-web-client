@@ -1,16 +1,19 @@
 import 'package:gtd_client/utilities/extensions.dart';
 import 'package:gtd_client/utilities/constants.dart';
 import 'package:flutter/material.dart';
+import 'dart:math';
 
 class CustomModal extends StatelessWidget {
   final GlobalKey _formKey = GlobalKey<FormState>();
   final Widget titleWidget;
   final Widget bodyWidget;
+  final Size? size;
 
   CustomModal({
     super.key,
     required this.titleWidget,
     required this.bodyWidget,
+    this.size,
   });
 
   @override
@@ -22,15 +25,15 @@ class CustomModal extends StatelessWidget {
       backgroundColor: context.theme.canvasColor,
       shape: const RoundedRectangleBorder(borderRadius: roundedCorners),
       child: SizedBox(
-        width: 1200.0,
-        height: 700.0,
+        width: size?.width ?? 1200.0,
+        height: max(size?.height ?? 700.0, 200.0),
         child: Form(
           key: _formKey,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               SizedBox(
-                height: 110.0,
+                height: 100.0,
                 child: Container(
                   decoration: BoxDecoration(
                     color: colors.secondary,

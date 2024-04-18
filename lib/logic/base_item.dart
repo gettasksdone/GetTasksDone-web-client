@@ -8,7 +8,7 @@ abstract class BaseItem<T> {
   int get id => _id;
 
   void setId(int id) {
-    assert(_id != -1);
+    assert(_id == -1);
 
     _id = id;
   }

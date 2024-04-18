@@ -85,6 +85,7 @@ class _CustomFormFieldState extends State<CustomFormField> {
           ? widget.autofillHint == AutofillHints.password
           : false,
       decoration: InputDecoration(
+        alignLabelWithHint: true,
         hintText: widget.hintText,
         labelStyle: TextStyle(color: colors.onPrimary),
         label: widget.label != null ? Text(widget.label!) : null,
