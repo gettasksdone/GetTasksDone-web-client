@@ -16,7 +16,7 @@ import 'dart:convert';
 void showModal(
   BuildContext buildContext,
   WidgetRef ref,
-  VoidCallback callback,
+  VoidCallback setParentState,
   Context? selectedContext,
 ) {
   final bool existingContext = selectedContext != null;
@@ -26,9 +26,7 @@ void showModal(
 
   Future<void> onGreenButton() async {
     final String requestBody = jsonEncode(context.toJson());
-    final Map<String, String> requestHeaders = headers(
-      ref,
-    );
+    final Map<String, String> requestHeaders = headers(ref);
 
     final http.Response response;
     final String url;
@@ -63,7 +61,7 @@ void showModal(
       if (buildContext.mounted) {
         buildContext.pop();
 
-        callback();
+        setParentState();
       }
     }
   }
@@ -128,14 +126,24 @@ void showModal(
                               Uri.parse(
                                   '$serverUrl/context/delete/${context.id}'),
                               headers: headers(ref),
-                              body: jsonEncode(context.toJson()),
                             );
 
                             debugPrint(
-                                '/context/delete/${context.id} call status code: ${response.statusCode}');
+                              '/context/delete/${context.id} call status code: ${response.statusCode}',
+                            );
 
                             if (response.statusCode == 200) {
-                              // TODO: Do not delete if used
+                              userData.clear();
+                              userData.loadUserData(
+                                ref,
+                                await UserData.getUserDataResponse(ref),
+                              );
+
+                              if (buildContext.mounted) {
+                                buildContext.pop();
+
+                                setParentState();
+                              }
                             }
                           },
                         ),

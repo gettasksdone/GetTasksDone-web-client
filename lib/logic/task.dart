@@ -1,10 +1,20 @@
 import 'package:gtd_client/logic/complex_item.dart';
 import 'package:gtd_client/logic/check_item.dart';
+import 'package:gtd_client/logic/context.dart';
 import 'package:gtd_client/logic/note.dart';
 import 'package:gtd_client/logic/tag.dart';
+import 'package:intl/intl.dart';
 
 class Task extends ComplexItem<Task> {
+  static const String waiting = 'esperando';
+  static const String someDay = 'algun día';
+  static const String done = 'completado';
+  static const String start = 'empezar';
+  static const List<String> selectableStates = [start, waiting, someDay];
   static final Task instance = Task();
+  static final DateFormat _backEndDateFormat = DateFormat(
+    'yyyy-MM-dd hh:mm:ss',
+  );
 
   final Set<int> _checkItems;
   final DateTime created;
@@ -21,7 +31,7 @@ class Task extends ComplexItem<Task> {
     super.tags,
     this.description,
     this.contextId,
-    this.state = "ninguno",
+    this.state = start,
     this.priority = 0,
     Set<int>? checkItems,
     DateTime? expiration,
@@ -62,10 +72,11 @@ class Task extends ComplexItem<Task> {
             .fromJsonList(json['notas'] as List<dynamic>)
             .keys
             .toSet(),
-        expiration: json.containsKey('vencimiento')
-            ? DateTime.parse(json['vencimiento'])
-            : null,
-        contextId: Task.instance.fromJson(json['contexto']).keys.first,
+        expiration:
+            json.containsKey('vencimiento') && (json['vencimiento'] != null)
+                ? DateTime.parse(json['vencimiento'])
+                : null,
+        contextId: Context.instance.fromJson(json['contexto']).keys.first,
         created: DateTime.parse(json['creacion']),
         description: json['descripcion'],
         priority: json['prioridad'],
@@ -82,9 +93,10 @@ class Task extends ComplexItem<Task> {
     return {
       'contexto': {'id': contextId},
       'descripcion': description,
-      'vencimiento': _expiration,
+      'vencimiento':
+          _expiration != null ? _backEndDateFormat.format(_expiration!) : null,
       'prioridad': priority,
-      'creacion': created.toIso8601String(),
+      'creacion': _backEndDateFormat.format(created),
       'estado': state,
     };
   }

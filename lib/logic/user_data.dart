@@ -1,9 +1,15 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:gtd_client/providers/inbox_count.dart';
+import 'package:gtd_client/utilities/constants.dart';
+import 'package:gtd_client/utilities/headers.dart';
 import 'package:gtd_client/logic/check_item.dart';
 import 'package:gtd_client/logic/context.dart';
 import 'package:gtd_client/logic/project.dart';
 import 'package:gtd_client/logic/note.dart';
 import 'package:gtd_client/logic/task.dart';
 import 'package:gtd_client/logic/tag.dart';
+import 'package:http/http.dart' as http;
+import 'package:flutter/material.dart';
 import 'dart:convert';
 
 class UserData {
@@ -16,10 +22,12 @@ class UserData {
   Map<int, Note> _notes;
   Map<int, Tag> _tags;
 
+  Map<int, int> _taskToProject;
   int? _inboxProjectId;
 
   UserData._userData()
-      : _checkItems = {},
+      : _taskToProject = {},
+        _checkItems = {},
         _projects = {},
         _contexts = {},
         _tasks = {},
@@ -63,16 +71,59 @@ class UserData {
     return _notes[id]!;
   }
 
-  void putTask(int id, Task task) {
-    _tasks[id] = task;
+  int getProjectIdOfTask(int id) {
+    return _taskToProject[id]!;
+  }
+
+  void putTask(WidgetRef ref, int taskId, Task task, int projectId) {
+    final bool existingTask = _taskToProject.containsKey(taskId);
+
+    if (existingTask && (_taskToProject[taskId]! != projectId)) {
+      changeProjectOfTask(taskId, projectId);
+    }
+
+    _taskToProject[taskId] = projectId;
+    _tasks[taskId] = task;
+
+    if (taskInInbox(task)) {
+      ref
+          .read(inboxCountProvider.notifier)
+          .set(ref.watch(inboxCountProvider) + 1);
+    }
   }
 
   void putContext(int id, Context context) {
     _contexts[id] = context;
   }
 
-  void removeTask(int id) {
+  void changeProjectOfTask(int taskId, int projectId) {
+    _projects[_taskToProject[taskId]!]!.removeTask(taskId);
+    _projects[projectId]!.addTask(taskId);
+
+    _taskToProject[taskId] = projectId;
+  }
+
+  void removeTask(WidgetRef ref, int id) {
+    _projects[_taskToProject[id]]!.removeTask(id);
+    _taskToProject.remove(id);
+
+    if (taskInInbox(_tasks[id]!)) {
+      ref
+          .read(inboxCountProvider.notifier)
+          .set(ref.watch(inboxCountProvider) - 1);
+    }
+
     _tasks.remove(id);
+  }
+
+  void clear() {
+    _taskToProject = {};
+    _checkItems = {};
+    _projects = {};
+    _contexts = {};
+    _tasks = {};
+    _notes = {};
+    _tags = {};
   }
 
   Map<int, Project> decodeProjects(String response) {
@@ -90,6 +141,8 @@ class UserData {
         final Map<int, Task> task = Task.instance.fromJson(taskJson);
 
         _tasks.addAll(task);
+
+        _taskToProject[task.entries.first.key] = project.entries.first.key;
 
         _tags.addAll(Tag.instance.fromJsonList(taskJson["etiquetas"]));
         _notes.addAll(Note.instance.fromJsonList(taskJson["notas"]));
@@ -123,4 +176,42 @@ class UserData {
 
     throw UnimplementedError('No inbox project found');
   }
+
+  static Future<List<String>> getUserDataResponse(WidgetRef ref) async {
+    final Map<String, String> requestHeaders = headers(ref);
+    final List<String> responses = [];
+
+    http.Response response = await http.get(
+      Uri.parse('$serverUrl/project/authed'),
+      headers: requestHeaders,
+    );
+
+    debugPrint('/project/authed call status code: ${response.statusCode}');
+
+    responses.add(response.body);
+
+    response = await http.get(
+      Uri.parse('$serverUrl/context/authed'),
+      headers: requestHeaders,
+    );
+
+    debugPrint('/context/authed call status code: ${response.statusCode}');
+
+    responses.add(response.body);
+
+    return responses;
+  }
+
+  void loadUserData(WidgetRef ref, List<String> responses) {
+    decodeProjects(responses[0]);
+    decodeContexts(responses[1]);
+
+    ref.read(inboxCountProvider.notifier).set(
+        getInboxProject().tasks.where((id) => taskInInbox(_tasks[id]!)).length);
+  }
+
+  bool taskInInbox(Task task) =>
+      (task.expiration == null) &&
+      (task.state == Task.start) &&
+      (task.priority == 0);
 }
