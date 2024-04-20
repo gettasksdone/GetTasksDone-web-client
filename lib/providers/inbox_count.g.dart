@@ -6,7 +6,7 @@ part of 'inbox_count.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$inboxCountHash() => r'c5b24d7108fb56de963e04836be9ecaf3ea65d21';
+String _$inboxCountHash() => r'60937a508ec26644a89e105adf2589a90a25645d';
 
 /// See also [InboxCount].
 @ProviderFor(InboxCount)

@@ -88,7 +88,7 @@ void showModal(
         userData.getProject(projectId).addTask(task.id);
       }
 
-      userData.putTask(ref, task.id, task, projectId);
+      userData.putTask(ref, task, projectId);
 
       if (context.mounted) {
         context.pop();

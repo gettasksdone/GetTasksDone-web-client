@@ -21,4 +21,12 @@ class InboxCount extends _$InboxCount {
 
     ref.invalidateSelf();
   }
+
+  void addOne() {
+    set(_count + 1);
+  }
+
+  void substractOne() {
+    set(_count - 1);
+  }
 }

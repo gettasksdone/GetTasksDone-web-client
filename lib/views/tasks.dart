@@ -1,8 +1,8 @@
 import 'package:gtd_client/widgets/solid_icon_button.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:gtd_client/widgets/card_element.dart';
 import 'package:gtd_client/utilities/extensions.dart';
 import 'package:gtd_client/utilities/constants.dart';
+import 'package:gtd_client/widgets/task_card.dart';
 import 'package:gtd_client/modals/task_modal.dart';
 import 'package:gtd_client/logic/user_data.dart';
 import 'package:gtd_client/logic/task.dart';
@@ -95,23 +95,9 @@ class _TasksViewState extends ConsumerState<TasksView> {
                         child: ListView(
                           children: [
                             for (final MapEntry<int, Task> entry in tasks)
-                              CardElement(
-                                cells: [
-                                  CardCellData(
-                                    icon: Icons.folder,
-                                    text:
-                                        entry.value.description!.split('|')[0],
-                                  ),
-                                  CardCellData(
-                                    width: 150.0,
-                                    icon: Icons.push_pin,
-                                    text: entry.value.state,
-                                  ),
-                                  CardCellData(
-                                    icon: Icons.calendar_today,
-                                    text: entry.value.created.toCustomFormat,
-                                  ),
-                                ],
+                              TaskCard(
+                                task: entry.value,
+                                setParentState: () => setState(() {}),
                                 onPressed: () => _editTask(
                                   context,
                                   entry.value,

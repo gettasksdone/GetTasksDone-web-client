@@ -37,9 +37,12 @@ class _AppScreenState extends ConsumerState<AppScreen> {
   static final Map<String, Widget> _views = {
     _inboxKey: TasksView(showTask: _userData.taskInInbox),
     'Esperando': TasksView(showTask: (task) => task.state == Task.waiting),
-    'Agendado': TasksView(showTask: (task) => task.expiration != null),
+    'Agendado': TasksView(
+        showTask: (task) =>
+            (task.state != Task.done) && (task.expiration != null)),
     'Algún día': TasksView(showTask: (task) => task.state == Task.someDay),
-    'Importante': TasksView(showTask: (task) => task.priority != 0),
+    'Importante': TasksView(
+        showTask: (task) => (task.state != Task.done) && (task.priority != 0)),
     'Completado': TasksView(showTask: (task) => task.state == Task.done),
     'Contextos': const ContextsView(),
     'Proyectos': const Placeholder(),
