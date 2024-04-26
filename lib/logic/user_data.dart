@@ -1,15 +1,11 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gtd_client/providers/inbox_count.dart';
-import 'package:gtd_client/utilities/constants.dart';
-import 'package:gtd_client/utilities/headers.dart';
 import 'package:gtd_client/logic/check_item.dart';
 import 'package:gtd_client/logic/context.dart';
 import 'package:gtd_client/logic/project.dart';
 import 'package:gtd_client/logic/note.dart';
 import 'package:gtd_client/logic/task.dart';
 import 'package:gtd_client/logic/tag.dart';
-import 'package:http/http.dart' as http;
-import 'package:flutter/material.dart';
 import 'dart:convert';
 
 class UserData {
@@ -179,31 +175,6 @@ class UserData {
     }
 
     throw UnimplementedError('No inbox project found');
-  }
-
-  static Future<List<String>> getUserDataResponse(WidgetRef ref) async {
-    final Map<String, String> requestHeaders = headers(ref);
-    final List<String> responses = [];
-
-    http.Response response = await http.get(
-      Uri.parse('$serverUrl/project/authed'),
-      headers: requestHeaders,
-    );
-
-    debugPrint('/project/authed call status code: ${response.statusCode}');
-
-    responses.add(response.body);
-
-    response = await http.get(
-      Uri.parse('$serverUrl/context/authed'),
-      headers: requestHeaders,
-    );
-
-    debugPrint('/context/authed call status code: ${response.statusCode}');
-
-    responses.add(response.body);
-
-    return responses;
   }
 
   void loadUserData(WidgetRef ref, List<String> responses) {

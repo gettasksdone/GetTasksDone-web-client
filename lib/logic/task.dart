@@ -22,6 +22,7 @@ class Task extends ComplexItem<Task> {
   DateTime? _expiration;
   String? description;
   int? contextId;
+  String? title;
   String state;
   int priority;
 
@@ -31,6 +32,7 @@ class Task extends ComplexItem<Task> {
     super.tags,
     this.description,
     this.contextId,
+    this.title,
     this.state = start,
     this.priority = 0,
     Set<int>? checkItems,
@@ -80,6 +82,7 @@ class Task extends ComplexItem<Task> {
         created: DateTime.parse(json['creacion']),
         description: json['descripcion'],
         priority: json['prioridad'],
+        title: json['titulo'],
         state: json['estado'],
       ),
     };
@@ -89,14 +92,16 @@ class Task extends ComplexItem<Task> {
   Map<String, dynamic> toJson() {
     assert(description != null);
     assert(contextId != null);
+    assert(title != null);
 
     return {
-      'contexto': {'id': contextId},
-      'descripcion': description,
       'vencimiento':
           _expiration != null ? _backEndDateFormat.format(_expiration!) : null,
-      'prioridad': priority,
       'creacion': _backEndDateFormat.format(created),
+      'contexto': {'id': contextId},
+      'descripcion': description,
+      'prioridad': priority,
+      'titulo': title,
       'estado': state,
     };
   }

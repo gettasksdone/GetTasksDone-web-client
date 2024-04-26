@@ -12,6 +12,7 @@ import 'package:gtd_client/logic/user_data.dart';
 import 'package:gtd_client/views/contexts.dart';
 import 'package:gtd_client/views/tasks.dart';
 import 'package:gtd_client/logic/task.dart';
+import 'package:gtd_client/logic/api.dart';
 import 'package:flutter/material.dart';
 
 class AppScreen extends ConsumerStatefulWidget {
@@ -146,7 +147,7 @@ class _AppScreenState extends ConsumerState<AppScreen> {
     }
 
     return FutureBuilder(
-      future: UserData.getUserDataResponse(ref),
+      future: getUserDataResponse(ref),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           _userData.loadUserData(ref, snapshot.data!);

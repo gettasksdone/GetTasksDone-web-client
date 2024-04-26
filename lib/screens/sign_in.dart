@@ -9,11 +9,10 @@ import 'package:gtd_client/utilities/extensions.dart';
 import 'package:gtd_client/widgets/show_up_text.dart';
 import 'package:gtd_client/utilities/constants.dart';
 import 'package:gtd_client/providers/username.dart';
-import 'package:gtd_client/utilities/headers.dart';
+import 'package:gtd_client/logic/api.dart';
 import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import 'dart:convert';
 
 class SignInScreen extends ConsumerStatefulWidget {
   const SignInScreen({super.key});
@@ -31,18 +30,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen>
       return;
     }
 
-    final http.Response response = await http.post(
-      Uri.parse('$serverUrl/auth/login'),
-      headers: contentType,
-      body: jsonEncode(
-        <String, dynamic>{
-          'username': username,
-          'password': password,
-        },
-      ),
-    );
-
-    debugPrint('/auth/login call status code: ${response.statusCode}');
+    final http.Response response = await postAuthLogin(username!, password!);
 
     if (response.statusCode == 200) {
       final String sessionToken = response.body;
@@ -54,22 +42,13 @@ class _SignInScreenState extends ConsumerState<SignInScreen>
         value: sessionToken,
       );
 
-      final http.Response userDataRespone = await http.get(
-        Uri.parse('$serverUrl/userData/authed'),
-        headers: {
-          'Authorization': 'Bearer $sessionToken',
-        }..addAll(contentType),
-      );
-
-      debugPrint(
-        '/userData/authed call status code: ${userDataRespone.statusCode}',
-      );
+      final int statusCode = await getUserDataAuthed(sessionToken);
 
       ref.read(usernameProvider.notifier).set(username);
       ref.read(sessionTokenProvider.notifier).set(sessionToken);
 
       if (context.mounted) {
-        switch (userDataRespone.statusCode) {
+        switch (statusCode) {
           case 200:
             ref.read(completedRegistryProvider.notifier).set(true);
             break;

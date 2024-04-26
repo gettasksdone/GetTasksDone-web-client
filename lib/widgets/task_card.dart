@@ -6,6 +6,7 @@ import 'package:gtd_client/utilities/extensions.dart';
 import 'package:gtd_client/utilities/constants.dart';
 import 'package:gtd_client/logic/user_data.dart';
 import 'package:gtd_client/logic/task.dart';
+import 'package:gtd_client/logic/api.dart';
 import 'package:flutter/material.dart';
 
 class TaskCard extends ConsumerStatefulWidget {
@@ -50,36 +51,47 @@ class _TaskCardState extends ConsumerState<TaskCard> {
                   width: 2.0,
                   color: colors.onSecondary,
                 ),
-                onChanged: (bool? value) {
-                  setState(() {
-                    final InboxCount provider =
-                        ref.read(inboxCountProvider.notifier);
+                onChanged: (bool? value) async {
+                  bool updateCount = false;
 
-                    if (value!) {
-                      if (_userData.taskInInbox(widget.task)) {
-                        provider.substractOne();
+                  if (value!) {
+                    updateCount = _userData.taskInInbox(widget.task);
+
+                    widget.task.state = Task.done;
+                  } else {
+                    widget.task.state = Task.start;
+
+                    updateCount = _userData.taskInInbox(widget.task);
+                  }
+
+                  await patchTask(
+                    ref,
+                    widget.task,
+                    null,
+                    () => setState(() {
+                      final InboxCount provider =
+                          ref.read(inboxCountProvider.notifier);
+
+                      if (updateCount) {
+                        if (value) {
+                          provider.substractOne();
+                        } else {
+                          provider.addOne();
+                        }
                       }
 
-                      widget.task.state = Task.done;
-                    } else {
-                      widget.task.state = Task.start;
+                      _userData.updateTask(ref, widget.task, null);
 
-                      if (_userData.taskInInbox(widget.task)) {
-                        provider.addOne();
-                      }
-                    }
-
-                    _userData.updateTask(ref, widget.task, null);
-
-                    widget.setParentState();
-                  });
+                      widget.setParentState();
+                    }),
+                  );
                 },
               ),
               const SizedBox(width: paddingAmount),
               Expanded(
                 child: TextWithIcon(
                   icon: Icons.folder,
-                  text: widget.task.description!.split('|')[0],
+                  text: widget.task.title!,
                 ),
               ),
               const SizedBox(width: paddingAmount),

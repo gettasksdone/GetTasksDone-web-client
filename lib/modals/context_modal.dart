@@ -5,13 +5,11 @@ import 'package:gtd_client/utilities/extensions.dart';
 import 'package:gtd_client/utilities/validators.dart';
 import 'package:gtd_client/widgets/custom_modal.dart';
 import 'package:gtd_client/utilities/constants.dart';
-import 'package:gtd_client/utilities/headers.dart';
 import 'package:gtd_client/logic/user_data.dart';
 import 'package:gtd_client/logic/context.dart';
+import 'package:gtd_client/logic/api.dart';
 import 'package:go_router/go_router.dart';
-import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import 'dart:convert';
 
 void showModal(
   BuildContext buildContext,
@@ -25,45 +23,39 @@ void showModal(
   final UserData userData = UserData();
 
   Future<void> onGreenButton() async {
-    final String requestBody = jsonEncode(context.toJson());
-    final Map<String, String> requestHeaders = headers(ref);
-
-    final http.Response response;
-    final String url;
-
     if (existingContext) {
-      url = '$serverUrl/context/update/${context.id}';
+      await patchContext(
+        ref,
+        context,
+        () {
+          userData.putContext(context.id, context);
 
-      response = await http.patch(
-        Uri.parse(url),
-        headers: requestHeaders,
-        body: requestBody,
-      );
-    } else {
-      url = '$serverUrl/context/createContext';
+          if (buildContext.mounted) {
+            buildContext.pop();
 
-      response = await http.post(
-        Uri.parse(url),
-        headers: requestHeaders,
-        body: requestBody,
+            setParentState();
+          }
+        },
       );
+
+      return;
     }
 
-    debugPrint('$url call status code: ${response.statusCode}');
+    await postContext(
+      ref,
+      context,
+      (int id) {
+        context.setId(id);
 
-    if (response.statusCode == 200) {
-      if (!existingContext) {
-        context.setId(int.parse(response.body));
-      }
+        userData.putContext(context.id, context);
 
-      userData.putContext(context.id, context);
+        if (buildContext.mounted) {
+          buildContext.pop();
 
-      if (buildContext.mounted) {
-        buildContext.pop();
-
-        setParentState();
-      }
-    }
+          setParentState();
+        }
+      },
+    );
   }
 
   showDialog(
@@ -122,29 +114,23 @@ void showModal(
                           textSize: modalButtonFontSize,
                           text: 'Borrar',
                           onPressed: () async {
-                            final http.Response response = await http.delete(
-                              Uri.parse(
-                                  '$serverUrl/context/delete/${context.id}'),
-                              headers: headers(ref),
+                            await deleteContext(
+                              ref,
+                              context.id,
+                              () async {
+                                userData.clear();
+                                userData.loadUserData(
+                                  ref,
+                                  await getUserDataResponse(ref),
+                                );
+
+                                if (buildContext.mounted) {
+                                  buildContext.pop();
+
+                                  setParentState();
+                                }
+                              },
                             );
-
-                            debugPrint(
-                              '/context/delete/${context.id} call status code: ${response.statusCode}',
-                            );
-
-                            if (response.statusCode == 200) {
-                              userData.clear();
-                              userData.loadUserData(
-                                ref,
-                                await UserData.getUserDataResponse(ref),
-                              );
-
-                              if (buildContext.mounted) {
-                                buildContext.pop();
-
-                                setParentState();
-                              }
-                            }
                           },
                         ),
                       ),

@@ -6,11 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gtd_client/utilities/extensions.dart';
 import 'package:gtd_client/widgets/show_up_text.dart';
 import 'package:gtd_client/utilities/constants.dart';
-import 'package:gtd_client/utilities/headers.dart';
+import 'package:gtd_client/logic/api.dart';
 import 'package:go_router/go_router.dart';
-import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import 'dart:convert';
 
 class CompleteRegistryScreen extends ConsumerStatefulWidget {
   const CompleteRegistryScreen({super.key});
@@ -36,31 +34,18 @@ class _CompleteRegistryScreenState extends ConsumerState<CompleteRegistryScreen>
       return;
     }
 
-    final http.Response response = await http.post(
-      Uri.parse('$serverUrl/userData/create'),
-      headers: headers(ref),
-      body: jsonEncode(
-        <String, dynamic>{
-          'nombre': _name,
-          'telefono': _phoneNumber!.replaceAll('+', ''),
-          'puesto': _jobTitle,
-          'departamento': _department,
-        },
-      ),
+    await postUserData(
+      ref,
+      _name!,
+      _phoneNumber!,
+      _jobTitle!,
+      _department!,
+      () => ref.read(completedRegistryProvider.notifier).set(true),
+      () => setState(() {
+        errorMessage = 'Hubo un error inesperado';
+        showError = true;
+      }),
     );
-
-    debugPrint('/userData/create call status code: ${response.statusCode}');
-
-    if (response.statusCode == 200) {
-      ref.read(completedRegistryProvider.notifier).set(true);
-
-      return;
-    }
-
-    setState(() {
-      errorMessage = 'Hubo un error inesperado';
-      showError = true;
-    });
   }
 
   String? _validateName(String? name) {

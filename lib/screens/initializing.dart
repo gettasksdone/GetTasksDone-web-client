@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gtd_client/utilities/extensions.dart';
 import 'package:gtd_client/utilities/constants.dart';
 import 'package:gtd_client/providers/username.dart';
-import 'package:http/http.dart' as http;
+import 'package:gtd_client/logic/api.dart';
 import 'package:flutter/material.dart';
 
 class InitializingScreen extends ConsumerWidget {
@@ -24,23 +24,7 @@ class InitializingScreen extends ConsumerWidget {
     debugPrint('Session token from storage: $sessionToken');
 
     if (sessionToken != null) {
-      int statusCode = 403;
-
-      try {
-        final http.Response response = await http.get(
-          Uri.parse('$serverUrl/userData/authed'),
-          headers: <String, String>{
-            'Content-Type': 'application/json; charset=UTF-8',
-            'Authorization': 'Bearer $sessionToken',
-          },
-        );
-
-        statusCode = response.statusCode;
-      } catch (exception) {
-        debugPrint('Exception occured trying to get userData: $exception');
-      }
-
-      debugPrint('Initial /userData/authed call status code: $statusCode');
+      final int statusCode = await getUserDataAuthed(sessionToken);
 
       switch (statusCode) {
         case 200:

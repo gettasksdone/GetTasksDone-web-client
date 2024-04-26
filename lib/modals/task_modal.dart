@@ -8,13 +8,11 @@ import 'package:gtd_client/utilities/validators.dart';
 import 'package:gtd_client/widgets/custom_modal.dart';
 import 'package:gtd_client/widgets/solid_button.dart';
 import 'package:gtd_client/utilities/constants.dart';
-import 'package:gtd_client/utilities/headers.dart';
 import 'package:gtd_client/logic/user_data.dart';
 import 'package:gtd_client/logic/task.dart';
+import 'package:gtd_client/logic/api.dart';
 import 'package:go_router/go_router.dart';
-import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import 'dart:convert';
 
 // Supposed to be patched by Flutter
 const double _modalWidth = 600.0;
@@ -38,64 +36,47 @@ void showModal(
     backgroundColor: context.theme.canvasColor,
   );
 
-  final String? taskDescription = task.description;
-
   int projectId =
       existingTask ? userData.getProjectIdOfTask(task.id) : userData.inboxId;
-  String? description;
-  String? name;
-
-  if (taskDescription != null) {
-    final List<String> parts = taskDescription.split('|');
-
-    description = parts[1];
-    name = parts[0];
-  }
 
   Future<void> onGreenButton() async {
-    task.description = '$name|$description';
-
-    final String requestBody = jsonEncode(task.toJson());
-    final Map<String, String> requestHeaders = headers(ref);
-
-    final http.Response response;
-    final String url;
-
     if (existingTask) {
-      url = '$serverUrl/task/update/${task.id}';
+      await patchTask(
+        ref,
+        task,
+        projectId,
+        () {
+          userData.putTask(ref, task, projectId);
 
-      response = await http.patch(
-        Uri.parse(url),
-        headers: requestHeaders,
-        body: requestBody,
-      );
-    } else {
-      url = '$serverUrl/task/create?ProjectID=$projectId';
+          if (context.mounted) {
+            context.pop();
 
-      response = await http.post(
-        Uri.parse(url),
-        headers: requestHeaders,
-        body: requestBody,
+            setParentState();
+          }
+        },
       );
+
+      return;
     }
 
-    debugPrint('$url call status code: ${response.statusCode}');
-
-    if (response.statusCode == 200) {
-      if (!existingTask) {
-        task.setId(int.parse(response.body));
+    await postTask(
+      ref,
+      task,
+      projectId,
+      (int id) {
+        task.setId(id);
 
         userData.getProject(projectId).addTask(task.id);
-      }
 
-      userData.putTask(ref, task, projectId);
+        userData.putTask(ref, task, projectId);
 
-      if (context.mounted) {
-        context.pop();
+        if (context.mounted) {
+          context.pop();
 
-        setParentState();
-      }
-    }
+          setParentState();
+        }
+      },
+    );
   }
 
   showDialog(
@@ -110,11 +91,11 @@ void showModal(
               child: CustomFormField(
                 label: 'Nombre',
                 hintText: 'nombre',
-                initialValue: name,
+                initialValue: task.title,
                 validator: (String? input) => notEmptyValidator(
                   input,
                   () => dialogSetState(() {
-                    name = input;
+                    task.title = input;
                   }),
                 ),
               ),
@@ -129,11 +110,11 @@ void showModal(
                       expands: true,
                       label: 'Descripción',
                       hintText: 'descripción',
-                      initialValue: description,
+                      initialValue: task.description,
                       validator: (String? input) => notEmptyValidator(
                         input,
                         () => dialogSetState(() {
-                          description = input;
+                          task.description = input;
                         }),
                       ),
                     ),
@@ -315,8 +296,8 @@ void showModal(
                         textColor: Colors.white,
                         textSize: modalButtonFontSize,
                         text: existingTask ? 'Guardar' : 'Crear',
-                        onPressed: name == null ||
-                                description == null ||
+                        onPressed: task.title == null ||
+                                task.description == null ||
                                 task.contextId == null
                             ? null
                             : onGreenButton,
@@ -332,23 +313,19 @@ void showModal(
                           textSize: modalButtonFontSize,
                           text: 'Borrar',
                           onPressed: () async {
-                            final http.Response response = await http.delete(
-                              Uri.parse('$serverUrl/task/delete/${task.id}'),
-                              headers: headers(ref),
+                            await deleteTask(
+                              ref,
+                              task.id,
+                              () {
+                                userData.removeTask(ref, task.id);
+
+                                if (context.mounted) {
+                                  context.pop();
+
+                                  setParentState();
+                                }
+                              },
                             );
-
-                            debugPrint(
-                                '/task/delete/${task.id} call status code: ${response.statusCode}');
-
-                            if (response.statusCode == 200) {
-                              userData.removeTask(ref, task.id);
-
-                              if (context.mounted) {
-                                context.pop();
-
-                                setParentState();
-                              }
-                            }
                           },
                         ),
                       ),

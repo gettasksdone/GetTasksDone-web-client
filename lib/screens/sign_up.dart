@@ -8,11 +8,10 @@ import 'package:gtd_client/utilities/extensions.dart';
 import 'package:gtd_client/widgets/show_up_text.dart';
 import 'package:gtd_client/utilities/constants.dart';
 import 'package:gtd_client/providers/username.dart';
-import 'package:gtd_client/utilities/headers.dart';
+import 'package:gtd_client/logic/api.dart';
 import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import 'dart:convert';
 
 class SignUpScreen extends ConsumerStatefulWidget {
   const SignUpScreen({super.key});
@@ -33,19 +32,11 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen>
       return;
     }
 
-    final http.Response response = await http.post(
-      Uri.parse('$serverUrl/auth/register'),
-      headers: contentType,
-      body: jsonEncode(
-        <String, dynamic>{
-          'username': username,
-          'password': password,
-          'email': _email,
-        },
-      ),
+    final http.Response response = await postAuthRegister(
+      username!,
+      password!,
+      _email!,
     );
-
-    debugPrint('/auth/register call status code: ${response.statusCode}');
 
     if (response.statusCode == 200) {
       debugPrint('Session token: ${response.body}');
