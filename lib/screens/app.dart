@@ -9,6 +9,7 @@ import 'package:gtd_client/utilities/extensions.dart';
 import 'package:gtd_client/utilities/constants.dart';
 import 'package:gtd_client/providers/username.dart';
 import 'package:gtd_client/logic/user_data.dart';
+import 'package:gtd_client/views/projects.dart';
 import 'package:gtd_client/views/contexts.dart';
 import 'package:gtd_client/views/tasks.dart';
 import 'package:gtd_client/logic/task.dart';
@@ -46,7 +47,7 @@ class _AppScreenState extends ConsumerState<AppScreen> {
         showTask: (task) => (task.state != Task.done) && (task.priority != 0)),
     'Completado': TasksView(showTask: (task) => task.state == Task.done),
     'Contextos': const ContextsView(),
-    'Proyectos': const Placeholder(),
+    'Proyectos': const ProjectsView(),
   };
 
   String _viewKey = _inboxKey;

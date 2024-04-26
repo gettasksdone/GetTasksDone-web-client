@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 const bool testNavigation = kDebugMode && false;
 
@@ -30,3 +31,11 @@ const EdgeInsets cardPadding = EdgeInsets.all(cardPaddingAmount);
 const EdgeInsets rowPadding = EdgeInsets.only(bottom: paddingAmount);
 
 const BorderRadius roundedCorners = BorderRadius.all(cornerRadius);
+
+const RoundedRectangleBorder roundedBorder = RoundedRectangleBorder(
+  borderRadius: roundedCorners,
+);
+
+final DateFormat backEndDateFormat = DateFormat(
+  'yyyy-MM-dd hh:mm:ss',
+);

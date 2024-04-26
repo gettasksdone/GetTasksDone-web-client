@@ -1,9 +1,13 @@
+import 'package:gtd_client/utilities/constants.dart';
 import 'package:gtd_client/logic/complex_item.dart';
 import 'package:gtd_client/logic/note.dart';
 import 'package:gtd_client/logic/task.dart';
 import 'package:gtd_client/logic/tag.dart';
 
 class Project extends ComplexItem<Project> {
+  static const String done = 'completado';
+  static const String start = 'empezar';
+  static const List<String> selectableStates = [start, done];
   static final Project instance = Project();
 
   final Set<int> _tasks;
@@ -11,7 +15,7 @@ class Project extends ComplexItem<Project> {
   String? description;
   DateTime? _finish;
   DateTime? _start;
-  String? state;
+  String state;
   String? name;
 
   Project({
@@ -22,8 +26,8 @@ class Project extends ComplexItem<Project> {
     DateTime? finish,
     Set<int>? tasks,
     DateTime? start,
-    this.state,
     this.name,
+    this.state = start,
   })  : _tasks = tasks ?? {},
         _finish = finish,
         _start = start {
@@ -32,8 +36,8 @@ class Project extends ComplexItem<Project> {
     }
   }
 
-  DateTime get finishDate => _finish!;
-  DateTime get startDate => _start!;
+  DateTime? get finishDate => _finish;
+  DateTime? get startDate => _start;
   Set<int> get tasks => _tasks;
 
   void setStart(DateTime start) {
@@ -91,13 +95,12 @@ class Project extends ComplexItem<Project> {
     assert(description != null);
     assert(_finish != null);
     assert(_start != null);
-    assert(state != null);
     assert(name != null);
 
     return {
       'nombre': name,
-      'inicio': _start,
-      'fin': _finish,
+      'inicio': backEndDateFormat.format(_start!),
+      'fin': backEndDateFormat.format(_finish!),
       'descripcion': description,
       'estado': state,
     };

@@ -34,10 +34,10 @@ class SolidButton extends StatelessWidget {
       onPressed: onPressed,
       style: TextButton.styleFrom(
         minimumSize: size,
+        shape: roundedBorder,
         disabledBackgroundColor: Colors.grey,
         backgroundColor: color ?? colors.primary,
         alignment: leftAligned ? Alignment.centerLeft : null,
-        shape: const RoundedRectangleBorder(borderRadius: roundedCorners),
       ),
       child: withWidget == null
           ? Text(

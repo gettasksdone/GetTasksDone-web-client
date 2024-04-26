@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:gtd_client/logic/project.dart';
 import 'package:gtd_client/utilities/constants.dart';
 import 'package:gtd_client/utilities/headers.dart';
 import 'package:gtd_client/logic/context.dart';
@@ -151,6 +152,65 @@ Future<void> deleteTask(
   VoidCallback onSucess,
 ) async {
   final String url = '$serverUrl/task/delete/$id';
+
+  final http.Response response = await http.delete(
+    Uri.parse(url),
+    headers: headers(ref),
+  );
+
+  _printStatusCode(url, response);
+
+  if (response.statusCode == 200) {
+    onSucess();
+  }
+}
+
+Future<void> postProject(
+  WidgetRef ref,
+  Project project,
+  void Function(int) onSucess,
+) async {
+  const String url = '$serverUrl/project/create';
+
+  final http.Response response = await http.post(
+    Uri.parse(url),
+    headers: headers(ref),
+    body: jsonEncode(project.toJson()),
+  );
+
+  _printStatusCode(url, response);
+
+  if (response.statusCode == 200) {
+    onSucess(int.parse(response.body));
+  }
+}
+
+Future<void> patchProject(
+  WidgetRef ref,
+  Project project,
+  VoidCallback onSucess,
+) async {
+  final String url = '$serverUrl/project/update/${project.id}';
+
+  final http.Response response = await http.patch(
+    Uri.parse(url),
+    headers: headers(ref),
+    body: jsonEncode(project.toJson()),
+  );
+
+  _printStatusCode(url, response);
+
+  if (response.statusCode == 200) {
+    onSucess();
+  }
+}
+
+Future<void> deleteProject(
+  WidgetRef ref,
+  int id,
+  VoidCallback onSucess,
+) async {
+  final String url = '$serverUrl/project/delete/$id';
 
   final http.Response response = await http.delete(
     Uri.parse(url),

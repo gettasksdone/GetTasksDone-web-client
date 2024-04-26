@@ -1,9 +1,9 @@
+import 'package:gtd_client/utilities/constants.dart';
 import 'package:gtd_client/logic/complex_item.dart';
 import 'package:gtd_client/logic/check_item.dart';
 import 'package:gtd_client/logic/context.dart';
 import 'package:gtd_client/logic/note.dart';
 import 'package:gtd_client/logic/tag.dart';
-import 'package:intl/intl.dart';
 
 class Task extends ComplexItem<Task> {
   static const String waiting = 'esperando';
@@ -12,9 +12,6 @@ class Task extends ComplexItem<Task> {
   static const String start = 'empezar';
   static const List<String> selectableStates = [start, waiting, someDay];
   static final Task instance = Task();
-  static final DateFormat _backEndDateFormat = DateFormat(
-    'yyyy-MM-dd hh:mm:ss',
-  );
 
   final Set<int> _checkItems;
   final DateTime created;
@@ -96,8 +93,8 @@ class Task extends ComplexItem<Task> {
 
     return {
       'vencimiento':
-          _expiration != null ? _backEndDateFormat.format(_expiration!) : null,
-      'creacion': _backEndDateFormat.format(created),
+          _expiration != null ? backEndDateFormat.format(_expiration!) : null,
+      'creacion': backEndDateFormat.format(created),
       'contexto': {'id': contextId},
       'descripcion': description,
       'prioridad': priority,

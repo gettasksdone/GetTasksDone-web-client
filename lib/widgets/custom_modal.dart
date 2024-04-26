@@ -21,9 +21,9 @@ class CustomModal extends StatelessWidget {
     final ColorScheme colors = context.colorScheme;
 
     return Dialog(
+      shape: roundedBorder,
       surfaceTintColor: Colors.transparent,
       backgroundColor: context.theme.canvasColor,
-      shape: const RoundedRectangleBorder(borderRadius: roundedCorners),
       child: SizedBox(
         width: size?.width ?? 1200.0,
         height: max(size?.height ?? 700.0, 200.0),

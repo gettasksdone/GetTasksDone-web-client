@@ -75,6 +75,10 @@ class UserData {
     final bool existingTask = _taskToProject.containsKey(task.id);
 
     if (existingTask && (_taskToProject[task.id]! != projectId)) {
+      if (_taskToProject[task.id] == _inboxProjectId) {
+        ref.read(inboxCountProvider.notifier).substractOne();
+      }
+
       changeProjectOfTask(task.id, projectId);
     }
 
@@ -88,6 +92,10 @@ class UserData {
 
   void putContext(int id, Context context) {
     _contexts[id] = context;
+  }
+
+  void putProject(int id, Project project) {
+    _projects[id] = project;
   }
 
   void updateTask(WidgetRef ref, Task task, int? projectId) {
@@ -105,15 +113,23 @@ class UserData {
     _taskToProject[taskId] = projectId;
   }
 
-  void removeTask(WidgetRef ref, int id) {
+  void removeTask(WidgetRef? ref, int id) {
     _projects[_taskToProject[id]]!.removeTask(id);
     _taskToProject.remove(id);
 
     if (taskInInbox(_tasks[id]!)) {
-      ref.read(inboxCountProvider.notifier).substractOne();
+      ref!.read(inboxCountProvider.notifier).substractOne();
     }
 
     _tasks.remove(id);
+  }
+
+  void removeProject(int id) {
+    for (final int id in _projects[id]!.tasks) {
+      removeTask(null, id);
+    }
+
+    _projects.remove(id);
   }
 
   void clear() {
@@ -188,5 +204,6 @@ class UserData {
   bool taskInInbox(Task task) =>
       (task.expiration == null) &&
       (task.state == Task.start) &&
-      (task.priority == 0);
+      (task.priority == 0) &&
+      (getProjectIdOfTask(task.id) == _inboxProjectId);
 }
