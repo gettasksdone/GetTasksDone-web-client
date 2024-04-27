@@ -33,6 +33,7 @@ class _AppScreenState extends ConsumerState<AppScreen> {
     'Algún día': Icons.landscape_outlined,
     'Importante': Icons.star,
     'Completado': Icons.check_circle_outline,
+    'Todas las tareas': Icons.all_inbox,
     'Contextos': Icons.pin_drop,
     'Proyectos': Icons.personal_video,
   };
@@ -46,6 +47,7 @@ class _AppScreenState extends ConsumerState<AppScreen> {
     'Importante': TasksView(
         showTask: (task) => (task.state != Task.done) && (task.priority != 0)),
     'Completado': TasksView(showTask: (task) => task.state == Task.done),
+    'Todas las tareas': TasksView(showTask: (task) => true),
     'Contextos': const ContextsView(),
     'Proyectos': const ProjectsView(),
   };
