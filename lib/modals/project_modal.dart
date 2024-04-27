@@ -15,9 +15,8 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 
 // Supposed to be patched by Flutter
-const double _modalWidth = 600.0;
 const double _totalCardPadding = 2.0 * cardPaddingAmount;
-const double _fullDropdownWidth = _modalWidth - _totalCardPadding;
+const double _totalPaddingAmount = 2.0 * paddingAmount;
 
 void showModal(
   BuildContext context,
@@ -76,8 +75,16 @@ void showModal(
     builder: (context) {
       return StatefulBuilder(
         builder: (context, dialogSetState) {
+          // Supposed to be patched by Flutter
+          final double fullDropdownWidth =
+              context.parentSize.width < modalSize.width
+                  ? context.parentSize.width -
+                      _totalCardPadding -
+                      _totalPaddingAmount
+                  : modalSize.width - _totalCardPadding;
+
           return CustomModal(
-            size: const Size(_modalWidth, 600.0),
+            size: modalSize,
             titleWidget: Align(
               alignment: Alignment.bottomCenter,
               child: CustomFormField(
@@ -169,7 +176,7 @@ void showModal(
                   child: IntrinsicHeight(
                     child: CustomDropdownMenu(
                       label: 'Estado',
-                      width: _fullDropdownWidth,
+                      width: fullDropdownWidth,
                       initialSelection: project.state,
                       onSelected: (String? state) {
                         if (state != null) {

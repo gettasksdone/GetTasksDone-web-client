@@ -16,6 +16,8 @@ const double cardElementFontSize = 20.0;
 
 const double modalButtonFontSize = 18.0;
 
+const Size modalSize = Size(600.0, 600.0);
+
 const Size modalButtonSize = Size(120.0, 60.0);
 
 const Size cardElementSize = Size(120.0, 80.0);

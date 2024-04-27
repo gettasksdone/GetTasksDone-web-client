@@ -22,6 +22,7 @@ class CustomModal extends StatelessWidget {
 
     return Dialog(
       shape: roundedBorder,
+      insetPadding: padding,
       surfaceTintColor: Colors.transparent,
       backgroundColor: context.theme.canvasColor,
       child: SizedBox(
