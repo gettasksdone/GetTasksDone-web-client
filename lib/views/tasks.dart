@@ -38,7 +38,7 @@ class _TasksViewState extends ConsumerState<TasksView> {
 
     final List<MapEntry<int, Task>> tasks = [];
 
-    for (final int id in _userData.getInboxProject().tasks) {
+    for (final int id in _userData.tasks.keys) {
       final Task task = _userData.getTask(id);
 
       if (widget.showTask(task)) {
