@@ -111,12 +111,13 @@ void showModal(
                       label: 'Descripción',
                       hintText: 'descripción',
                       initialValue: task.description,
-                      validator: (String? input) => notEmptyValidator(
-                        input,
-                        () => dialogSetState(() {
+                      validator: (String? input) {
+                        dialogSetState(() {
                           task.description = input;
-                        }),
-                      ),
+                        });
+
+                        return null;
+                      },
                     ),
                   ),
                 ),
@@ -296,9 +297,7 @@ void showModal(
                         textColor: Colors.white,
                         textSize: modalButtonFontSize,
                         text: existingTask ? 'Guardar' : 'Crear',
-                        onPressed: task.title == null ||
-                                task.description == null ||
-                                task.contextId == null
+                        onPressed: task.title == null || task.contextId == null
                             ? null
                             : onGreenButton,
                       ),

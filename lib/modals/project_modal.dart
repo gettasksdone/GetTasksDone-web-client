@@ -103,12 +103,13 @@ void showModal(
                       label: 'Descripción',
                       hintText: 'descripción',
                       initialValue: project.description,
-                      validator: (String? input) => notEmptyValidator(
-                        input,
-                        () => dialogSetState(() {
+                      validator: (String? input) {
+                        dialogSetState(() {
                           project.description = input;
-                        }),
-                      ),
+                        });
+
+                        return null;
+                      },
                     ),
                   ),
                 ),
@@ -202,12 +203,7 @@ void showModal(
                         textColor: Colors.white,
                         textSize: modalButtonFontSize,
                         text: existingProject ? 'Guardar' : 'Crear',
-                        onPressed: project.name == null ||
-                                project.description == null ||
-                                project.startDate == null ||
-                                project.finishDate == null
-                            ? null
-                            : onGreenButton,
+                        onPressed: project.name == null ? null : onGreenButton,
                       ),
                     ),
                     if (existingProject) const SizedBox(width: paddingAmount),
