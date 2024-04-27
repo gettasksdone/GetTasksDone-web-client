@@ -62,62 +62,65 @@ class _TasksViewState extends ConsumerState<TasksView> {
     });
 
     return Center(
-      child: SizedBox(
-        width: 700.0,
-        height: 600.0,
-        child: Container(
-          decoration: BoxDecoration(
-            color: colors.secondary,
-            borderRadius: roundedCorners,
-          ),
-          child: Padding(
-            padding: cardPadding,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Padding(
-                  padding: rowPadding,
-                  child: Text(
-                    'Tus tareas',
-                    style: TextStyle(fontSize: 23.0),
-                  ),
-                ),
-                Expanded(
-                  child: Padding(
+      child: Padding(
+        padding: viewPadding,
+        child: SizedBox(
+          width: 700.0,
+          height: 600.0,
+          child: Container(
+            decoration: BoxDecoration(
+              color: colors.secondary,
+              borderRadius: roundedCorners,
+            ),
+            child: Padding(
+              padding: cardPadding,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Padding(
                     padding: rowPadding,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: colors.tertiary,
-                        borderRadius: roundedCorners,
-                      ),
-                      child: Padding(
-                        padding: cardPadding,
-                        child: ListView(
-                          children: [
-                            for (final MapEntry<int, Task> entry in tasks)
-                              TaskCard(
-                                task: entry.value,
-                                setParentState: () => setState(() {}),
-                                onPressed: () => _editTask(
-                                  context,
-                                  entry.value,
+                    child: Text(
+                      'Tus tareas',
+                      style: TextStyle(fontSize: 23.0),
+                    ),
+                  ),
+                  Expanded(
+                    child: Padding(
+                      padding: rowPadding,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: colors.tertiary,
+                          borderRadius: roundedCorners,
+                        ),
+                        child: Padding(
+                          padding: cardPadding,
+                          child: ListView(
+                            children: [
+                              for (final MapEntry<int, Task> entry in tasks)
+                                TaskCard(
+                                  task: entry.value,
+                                  setParentState: () => setState(() {}),
+                                  onPressed: () => _editTask(
+                                    context,
+                                    entry.value,
+                                  ),
                                 ),
-                              ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-                SolidIconButton(
-                  center: true,
-                  size: cardElementSize,
-                  text: 'Agregar tarea',
-                  icon: Icons.add_box_outlined,
-                  innerSize: cardElementFontSize,
-                  onPressed: () => _createTask(context),
-                ),
-              ],
+                  SolidIconButton(
+                    center: true,
+                    size: cardElementSize,
+                    text: 'Agregar tarea',
+                    icon: Icons.add_box_outlined,
+                    innerSize: cardElementFontSize,
+                    onPressed: () => _createTask(context),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

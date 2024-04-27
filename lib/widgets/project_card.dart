@@ -64,33 +64,9 @@ class _TaskCardState extends ConsumerState<ProjectCard> {
             size: cardElementSize,
             color: colors.secondary,
             onPressed: widget.onPressed,
-            withWidget: Row(
-              children: [
-                Expanded(
-                  child: TextWithIcon(
-                    icon: Icons.personal_video,
-                    text: widget.project.name!,
-                  ),
-                ),
-                const SizedBox(width: paddingAmount),
-                SizedBox(
-                  width: 150.0,
-                  child: TextWithIcon(
-                    icon: Icons.push_pin,
-                    text: widget.project.state,
-                  ),
-                ),
-                const SizedBox(width: paddingAmount),
-                TextWithIcon(
-                  icon: Icons.calendar_today,
-                  text: widget.project.startDate!.toCustomFormat,
-                ),
-                const SizedBox(width: paddingAmount),
-                TextWithIcon(
-                  icon: Icons.calendar_today,
-                  text: widget.project.finishDate!.toCustomFormat,
-                ),
-              ],
+            withWidget: TextWithIcon(
+              icon: Icons.personal_video,
+              text: widget.project.name!,
             ),
           ),
           onExpansionChanged: (value) => setState(() {

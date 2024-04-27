@@ -66,7 +66,7 @@ class _CompleteRegistryScreenState extends ConsumerState<CompleteRegistryScreen>
 
   String? _validatePhoneNumber(String? phoneNumber) {
     if (phoneNumber == null || phoneNumber.isEmpty) {
-      return 'Por favor introduzca número de teléfono';
+      return null;
     }
 
     if (!RegExp(r'(^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$)')
@@ -110,16 +110,18 @@ class _CompleteRegistryScreenState extends ConsumerState<CompleteRegistryScreen>
     return Scaffold(
       body: Center(
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const SizedBox(height: 200.0),
             SizedBox(
-              width: 450.0,
+              width: SignInScreenMixin.formWidth,
               child: Column(
                 children: [
                   const Padding(
                     padding: SignInScreenMixin.doublePadding,
                     child: Text(
                       'Completar registro de usuario',
+                      maxLines: 2,
+                      textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 25.0,
                         fontWeight: FontWeight.bold,

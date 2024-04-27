@@ -94,19 +94,6 @@ class _TaskCardState extends ConsumerState<TaskCard> {
                   text: widget.task.title!,
                 ),
               ),
-              const SizedBox(width: paddingAmount),
-              SizedBox(
-                width: 150.0,
-                child: TextWithIcon(
-                  icon: Icons.push_pin,
-                  text: widget.task.state,
-                ),
-              ),
-              const SizedBox(width: paddingAmount),
-              TextWithIcon(
-                icon: Icons.calendar_today,
-                text: widget.task.created.toCustomFormat,
-              ),
             ],
           ),
         ),

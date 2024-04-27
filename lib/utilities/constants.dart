@@ -28,6 +28,8 @@ const EdgeInsets cardPadding = EdgeInsets.all(cardPaddingAmount);
 
 const EdgeInsets rowPadding = EdgeInsets.only(bottom: paddingAmount);
 
+const EdgeInsets viewPadding = EdgeInsets.symmetric(horizontal: paddingAmount);
+
 const BorderRadius roundedCorners = BorderRadius.all(cornerRadius);
 
 const RoundedRectangleBorder roundedBorder = RoundedRectangleBorder(

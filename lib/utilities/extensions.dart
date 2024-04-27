@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 
 extension BuildContextExtension on BuildContext {
   ThemeData get theme => Theme.of(this);
+  Size get parentSize => MediaQuery.sizeOf(this);
   ColorScheme get colorScheme => theme.colorScheme;
 }
 

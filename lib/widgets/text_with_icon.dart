@@ -19,11 +19,14 @@ class TextWithIcon extends StatelessWidget {
           color: colors.onPrimary,
         ),
         const SizedBox(width: 5.0),
-        Text(
-          text,
-          style: TextStyle(
-            color: colors.onPrimary,
-            fontSize: cardElementFontSize,
+        Expanded(
+          child: Text(
+            text,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              color: colors.onPrimary,
+              fontSize: cardElementFontSize,
+            ),
           ),
         ),
       ],

@@ -103,8 +103,8 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen>
     return Scaffold(
       body: Center(
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const SizedBox(height: SignInScreenMixin.topSpacing),
             const Padding(
               padding: SignInScreenMixin.rowPadding,
               child: SignInScreenMixin.titleWidget,

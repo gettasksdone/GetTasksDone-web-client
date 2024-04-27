@@ -11,8 +11,7 @@ mixin SignInScreenMixin<T extends StatefulWidget> on State<T> {
   static const double subtitleFontSize = 20.0;
   static const double buttonFontSize = 20.0;
   static const double errorFontSize = 18.0;
-  static const double topSpacing = 200.0;
-  static const double formWidth = 350.0;
+  static const double formWidth = 330.0;
   static const EdgeInsets buttonPadding = EdgeInsets.only(
     top: 35.0,
     bottom: 10.0,
