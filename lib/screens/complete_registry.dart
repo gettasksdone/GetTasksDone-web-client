@@ -37,7 +37,7 @@ class _CompleteRegistryScreenState extends ConsumerState<CompleteRegistryScreen>
     await postUserData(
       ref,
       _name!,
-      _phoneNumber!,
+      _phoneNumber,
       _jobTitle!,
       _department!,
       () => ref.read(completedRegistryProvider.notifier).set(true),
@@ -174,7 +174,6 @@ class _CompleteRegistryScreenState extends ConsumerState<CompleteRegistryScreen>
                       size: SignInScreenMixin.buttonSize,
                       textSize: SignInScreenMixin.buttonFontSize,
                       onPressed: (_name != null) &&
-                              (_phoneNumber != null) &&
                               (_jobTitle != null) &&
                               (_department != null)
                           ? () => _submitUserData(context)

@@ -227,7 +227,7 @@ Future<void> deleteProject(
 Future<void> postUserData(
   WidgetRef ref,
   String name,
-  String phoneNumber,
+  String? phoneNumber,
   String jobTitle,
   String department,
   VoidCallback onSucess,
@@ -241,7 +241,7 @@ Future<void> postUserData(
     body: jsonEncode(
       <String, dynamic>{
         'nombre': name,
-        'telefono': phoneNumber.replaceAll('+', ''),
+        'telefono': phoneNumber?.replaceAll('+', ''),
         'puesto': jobTitle,
         'departamento': department,
       },
