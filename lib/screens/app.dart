@@ -1,4 +1,5 @@
 import 'package:gtd_client/widgets/custom_progress_indicator.dart';
+import 'package:gtd_client/widgets/theme_segmented_button.dart';
 import 'package:gtd_client/widgets/loading_solid_button.dart';
 import 'package:gtd_client/providers/completed_registry.dart';
 import 'package:gtd_client/widgets/custom_split_view.dart';
@@ -66,6 +67,14 @@ class _AppScreenState extends ConsumerState<AppScreen> {
     if (!_bigScreen) {
       context.pop();
     }
+  }
+
+  Color _getButtonTextColor(ColorScheme colors, String buttonKey) {
+    if (_viewKey == buttonKey) {
+      return colors.onPrimary;
+    }
+
+    return colors.onSecondary;
   }
 
   Color _getButtonColor(ColorScheme colors, String buttonKey) {
@@ -144,6 +153,7 @@ class _AppScreenState extends ConsumerState<AppScreen> {
                         icon: _icons[key]!,
                         innerPadding: cardPadding,
                         color: _getButtonColor(colors, key),
+                        innerColor: _getButtonTextColor(colors, key),
                         text: key == _inboxKey
                             ? '$key ${ref.watch(inboxCountProvider)}'
                             : key,
@@ -152,6 +162,10 @@ class _AppScreenState extends ConsumerState<AppScreen> {
                     ),
                 ],
               ),
+            ),
+            const Padding(
+              padding: padding,
+              child: ThemeSegmentedButton(),
             ),
             Padding(
               padding: const EdgeInsets.all(20.0),

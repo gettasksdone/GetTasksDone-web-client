@@ -29,7 +29,7 @@ void showModal(
   final Task task = selectedTask ?? Task();
   final UserData userData = UserData();
 
-  final TextStyle dropdownTextStyle = TextStyle(color: colors.onPrimary);
+  final TextStyle dropdownTextStyle = TextStyle(color: colors.onSecondary);
   final ButtonStyle dropdownButtonStyle = TextButton.styleFrom(
     backgroundColor: context.theme.canvasColor,
   );

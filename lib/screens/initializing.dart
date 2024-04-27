@@ -14,6 +14,10 @@ class InitializingScreen extends ConsumerWidget {
   const InitializingScreen({super.key});
 
   Future<bool> _getInitialData(WidgetRef ref) async {
+    if (ref.watch(initializedAppProvider)) {
+      return true;
+    }
+
     await BackendConfiguration().initialize();
 
     if (testNavigation) {
@@ -59,7 +63,7 @@ class InitializingScreen extends ConsumerWidget {
     return FutureBuilder(
         future: _getInitialData(ref),
         builder: (context, snapshot) {
-          if (snapshot.hasData) {
+          if (snapshot.hasData && !ref.watch(initializedAppProvider)) {
             debugPrint('Finished initialization');
 
             ref.read(initializedAppProvider.notifier).done();

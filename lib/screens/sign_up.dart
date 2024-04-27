@@ -192,6 +192,22 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen>
                     visible: showError,
                     child: const SizedBox(height: paddingAmount),
                   ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text('¿Tienes cuenta? '),
+                      TextButton(
+                        onPressed: () => context.go('/sign_in'),
+                        style: TextButton.styleFrom(
+                          padding: const EdgeInsets.all(5.0),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(5.0),
+                          ),
+                        ),
+                        child: const Text('Inicia sesión'),
+                      ),
+                    ],
+                  ),
                 ],
               ),
             ),

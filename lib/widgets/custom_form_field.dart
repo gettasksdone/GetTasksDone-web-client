@@ -78,7 +78,7 @@ class _CustomFormFieldState extends State<CustomFormField> {
       minLines: widget.expands ? null : 1,
       inputFormatters: widget._onlyNumeric,
       textAlignVertical: TextAlignVertical.top,
-      style: TextStyle(color: colors.onPrimary),
+      style: TextStyle(color: colors.onSecondary),
       maxLines: widget.multiline || widget.expands ? null : 1,
       autofillHints: widget._gotAutofillHint ? [widget.autofillHint!] : null,
       obscureText: widget._gotAutofillHint
@@ -87,7 +87,7 @@ class _CustomFormFieldState extends State<CustomFormField> {
       decoration: InputDecoration(
         alignLabelWithHint: true,
         hintText: widget.hintText,
-        labelStyle: TextStyle(color: colors.onPrimary),
+        labelStyle: TextStyle(color: colors.onSecondary),
         label: widget.label != null ? Text(widget.label!) : null,
         contentPadding: const EdgeInsets.symmetric(
           vertical: 20.0,

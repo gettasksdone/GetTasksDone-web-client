@@ -1,4 +1,5 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:gtd_client/widgets/theme_segmented_button.dart';
 import 'package:gtd_client/widgets/loading_solid_button.dart';
 import 'package:gtd_client/providers/completed_registry.dart';
 import 'package:gtd_client/mixins/sign_in_screen_mixin.dart';
@@ -69,96 +70,108 @@ class _SignInScreenState extends ConsumerState<SignInScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Padding(
-              padding: SignInScreenMixin.rowPadding,
-              child: SignInScreenMixin.titleWidget,
-            ),
-            const Padding(
-              padding: SignInScreenMixin.doublePadding,
-              child: Text(
-                'Inicio de sesión',
-                style: TextStyle(fontSize: SignInScreenMixin.subtitleFontSize),
-              ),
-            ),
-            SizedBox(
-              width: SignInScreenMixin.formWidth,
-              child: Column(
-                children: [
-                  Form(
-                    key: formKey,
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: SignInScreenMixin.doublePadding,
-                          child: backendURLField,
-                        ),
-                        Padding(
-                          padding: SignInScreenMixin.doublePadding,
-                          child: CustomFormField(
-                            hintText: 'tu usuario',
-                            validator: validateUsername,
-                            label: 'Nombre de usuario',
-                            autofillHint: AutofillHints.username,
-                          ),
-                        ),
-                        CustomFormField(
-                          label: 'Contraseña',
-                          hintText: 'tu contraseña',
-                          validator: validatePassword,
-                          autofillHint: AutofillHints.password,
-                        ),
-                      ],
-                    ),
+      body: Stack(
+        children: [
+          Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Padding(
+                  padding: SignInScreenMixin.rowPadding,
+                  child: SignInScreenMixin.titleWidget,
+                ),
+                const Padding(
+                  padding: SignInScreenMixin.doublePadding,
+                  child: Text(
+                    'Inicio de sesión',
+                    style:
+                        TextStyle(fontSize: SignInScreenMixin.subtitleFontSize),
                   ),
-                  Padding(
-                    padding: SignInScreenMixin.buttonPadding,
-                    child: LoadingSolidButton(
-                      text: 'Inicia sesión',
-                      size: SignInScreenMixin.buttonSize,
-                      textSize: SignInScreenMixin.buttonFontSize,
-                      onPressed: (username != null) && (password != null)
-                          ? () => _submitSignIn(context)
-                          : null,
-                    ),
-                  ),
-                  ShowUpText(
-                    visible: showError,
-                    text: errorMessage,
-                    textStyle: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: context.colorScheme.error,
-                      fontSize: SignInScreenMixin.errorFontSize,
-                    ),
-                  ),
-                  Visibility(
-                    visible: showError,
-                    child: const SizedBox(height: paddingAmount),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                ),
+                SizedBox(
+                  width: SignInScreenMixin.formWidth,
+                  child: Column(
                     children: [
-                      const Text('¿Todavía no tienes cuenta? '),
-                      TextButton(
-                        onPressed: () => context.go('/sign_up'),
-                        style: TextButton.styleFrom(
-                          padding: const EdgeInsets.all(5.0),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(5.0),
-                          ),
+                      Form(
+                        key: formKey,
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: SignInScreenMixin.doublePadding,
+                              child: backendURLField,
+                            ),
+                            Padding(
+                              padding: SignInScreenMixin.doublePadding,
+                              child: CustomFormField(
+                                hintText: 'tu usuario',
+                                validator: validateUsername,
+                                label: 'Nombre de usuario',
+                                autofillHint: AutofillHints.username,
+                              ),
+                            ),
+                            CustomFormField(
+                              label: 'Contraseña',
+                              hintText: 'tu contraseña',
+                              validator: validatePassword,
+                              autofillHint: AutofillHints.password,
+                            ),
+                          ],
                         ),
-                        child: const Text('Regístrate'),
+                      ),
+                      Padding(
+                        padding: SignInScreenMixin.buttonPadding,
+                        child: LoadingSolidButton(
+                          text: 'Inicia sesión',
+                          size: SignInScreenMixin.buttonSize,
+                          textSize: SignInScreenMixin.buttonFontSize,
+                          onPressed: (username != null) && (password != null)
+                              ? () => _submitSignIn(context)
+                              : null,
+                        ),
+                      ),
+                      ShowUpText(
+                        visible: showError,
+                        text: errorMessage,
+                        textStyle: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: context.colorScheme.error,
+                          fontSize: SignInScreenMixin.errorFontSize,
+                        ),
+                      ),
+                      Visibility(
+                        visible: showError,
+                        child: const SizedBox(height: paddingAmount),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text('¿Todavía no tienes cuenta? '),
+                          TextButton(
+                            onPressed: () => context.go('/sign_up'),
+                            style: TextButton.styleFrom(
+                              padding: const EdgeInsets.all(5.0),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(5.0),
+                              ),
+                            ),
+                            child: const Text('Regístrate'),
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+          const Align(
+            alignment: Alignment.bottomCenter,
+            child: Padding(
+              padding: EdgeInsets.only(bottom: 30.0),
+              child: ThemeSegmentedButton(),
+            ),
+          ),
+        ],
       ),
     );
   }

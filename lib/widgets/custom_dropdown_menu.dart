@@ -27,7 +27,7 @@ class CustomDropdownMenu<T> extends StatelessWidget {
       initialSelection: initialSelection,
       label: Text(
         label,
-        style: TextStyle(color: colors.onTertiary),
+        style: TextStyle(color: colors.onSecondary),
       ),
       onSelected: onSelected,
       menuStyle: MenuStyle(

@@ -6,7 +6,7 @@ const bool testNavigation = kDebugMode && false;
 
 const String appName = 'Get Tasks Done';
 
-const double edgeWidth = 3.0;
+const double edgeWidth = 1.0;
 
 const double paddingAmount = 10.0;
 

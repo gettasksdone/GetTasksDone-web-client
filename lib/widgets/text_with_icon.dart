@@ -16,7 +16,7 @@ class TextWithIcon extends StatelessWidget {
       children: [
         Icon(
           icon,
-          color: colors.onPrimary,
+          color: colors.onSecondary,
         ),
         const SizedBox(width: 5.0),
         Expanded(
@@ -24,7 +24,7 @@ class TextWithIcon extends StatelessWidget {
             text,
             overflow: TextOverflow.ellipsis,
             style: TextStyle(
-              color: colors.onPrimary,
+              color: colors.onSecondary,
               fontSize: cardElementFontSize,
             ),
           ),
