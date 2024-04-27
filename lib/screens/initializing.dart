@@ -1,3 +1,4 @@
+import 'package:gtd_client/logic/backend_configuration.dart';
 import 'package:gtd_client/widgets/custom_progress_indicator.dart';
 import 'package:gtd_client/providers/completed_registry.dart';
 import 'package:gtd_client/providers/initialized_app.dart';
@@ -13,6 +14,8 @@ class InitializingScreen extends ConsumerWidget {
   const InitializingScreen({super.key});
 
   Future<bool> _getInitialData(WidgetRef ref) async {
+    await BackendConfiguration().initialize();
+
     if (testNavigation) {
       return true;
     }

@@ -1,3 +1,6 @@
+import 'package:gtd_client/logic/backend_configuration.dart';
+import 'package:gtd_client/widgets/custom_form_field.dart';
+import 'package:gtd_client/utilities/validators.dart';
 import 'package:gtd_client/utilities/constants.dart';
 import 'package:flutter/material.dart';
 
@@ -21,8 +24,20 @@ mixin SignInScreenMixin<T extends StatefulWidget> on State<T> {
       fontWeight: FontWeight.bold,
     ),
   );
+  static final BackendConfiguration _backendConfiguration =
+      BackendConfiguration();
 
   final GlobalKey formKey = GlobalKey<FormState>();
+
+  final CustomFormField backendURLField = CustomFormField(
+    label: 'URL del backend',
+    hintText: 'url del backend',
+    initialValue: _backendConfiguration.url,
+    validator: (String? input) => notEmptyValidator(
+      input,
+      () => _backendConfiguration.set(input!),
+    ),
+  );
 
   bool showError = false;
   String? errorMessage;

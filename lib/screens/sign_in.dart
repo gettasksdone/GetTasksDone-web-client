@@ -94,6 +94,10 @@ class _SignInScreenState extends ConsumerState<SignInScreen>
                       children: [
                         Padding(
                           padding: SignInScreenMixin.doublePadding,
+                          child: backendURLField,
+                        ),
+                        Padding(
+                          padding: SignInScreenMixin.doublePadding,
                           child: CustomFormField(
                             hintText: 'tu usuario',
                             validator: validateUsername,

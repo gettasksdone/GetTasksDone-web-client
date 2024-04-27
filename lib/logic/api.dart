@@ -1,12 +1,14 @@
+import 'package:gtd_client/logic/backend_configuration.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:gtd_client/logic/project.dart';
-import 'package:gtd_client/utilities/constants.dart';
 import 'package:gtd_client/utilities/headers.dart';
+import 'package:gtd_client/logic/project.dart';
 import 'package:gtd_client/logic/context.dart';
 import 'package:gtd_client/logic/task.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'dart:convert';
+
+final BackendConfiguration _backendConfiguration = BackendConfiguration();
 
 void _printStatusCode(String url, http.Response response) {
   debugPrint('$url call status code: ${response.statusCode}');
@@ -16,7 +18,7 @@ Future<List<String>> getUserDataResponse(WidgetRef ref) async {
   final Map<String, String> requestHeaders = headers(ref);
   final List<String> responses = [];
 
-  String url = '$serverUrl/project/authed';
+  String url = '${_backendConfiguration.url}/project/authed';
 
   http.Response response = await http.get(
     Uri.parse(url),
@@ -27,7 +29,7 @@ Future<List<String>> getUserDataResponse(WidgetRef ref) async {
 
   responses.add(utf8.decode(response.bodyBytes));
 
-  url = '$serverUrl/context/authed';
+  url = '${_backendConfiguration.url}/context/authed';
 
   response = await http.get(
     Uri.parse(url),
@@ -46,7 +48,7 @@ Future<void> postContext(
   Context context,
   void Function(int) onSucess,
 ) async {
-  const String url = '$serverUrl/context/createContext';
+  final String url = '${_backendConfiguration.url}/context/createContext';
 
   final http.Response response = await http.post(
     Uri.parse(url),
@@ -66,7 +68,8 @@ Future<void> patchContext(
   Context context,
   VoidCallback onSucess,
 ) async {
-  final String url = '$serverUrl/context/update/${context.id}';
+  final String url =
+      '${_backendConfiguration.url}/context/update/${context.id}';
 
   final http.Response response = await http.patch(
     Uri.parse(url),
@@ -86,7 +89,7 @@ Future<void> deleteContext(
   int id,
   VoidCallback onSucess,
 ) async {
-  final String url = '$serverUrl/context/delete/$id';
+  final String url = '${_backendConfiguration.url}/context/delete/$id';
 
   final http.Response response = await http.delete(
     Uri.parse(url),
@@ -106,7 +109,8 @@ Future<void> postTask(
   int projectId,
   void Function(int) onSucess,
 ) async {
-  final String url = '$serverUrl/task/create?ProjectID=$projectId';
+  final String url =
+      '${_backendConfiguration.url}/task/create?ProjectID=$projectId';
 
   final http.Response response = await http.post(
     Uri.parse(url),
@@ -127,7 +131,7 @@ Future<void> patchTask(
   int? projectId,
   VoidCallback onSucess,
 ) async {
-  String url = '$serverUrl/task/update/${task.id}';
+  String url = '${_backendConfiguration.url}/task/update/${task.id}';
 
   if (projectId != null) {
     url += '?ProjectID=$projectId';
@@ -151,7 +155,7 @@ Future<void> deleteTask(
   int id,
   VoidCallback onSucess,
 ) async {
-  final String url = '$serverUrl/task/delete/$id';
+  final String url = '${_backendConfiguration.url}/task/delete/$id';
 
   final http.Response response = await http.delete(
     Uri.parse(url),
@@ -170,7 +174,7 @@ Future<void> postProject(
   Project project,
   void Function(int) onSucess,
 ) async {
-  const String url = '$serverUrl/project/create';
+  final String url = '${_backendConfiguration.url}/project/create';
 
   final http.Response response = await http.post(
     Uri.parse(url),
@@ -190,7 +194,8 @@ Future<void> patchProject(
   Project project,
   VoidCallback onSucess,
 ) async {
-  final String url = '$serverUrl/project/update/${project.id}';
+  final String url =
+      '${_backendConfiguration.url}/project/update/${project.id}';
 
   final http.Response response = await http.patch(
     Uri.parse(url),
@@ -210,7 +215,7 @@ Future<void> deleteProject(
   int id,
   VoidCallback onSucess,
 ) async {
-  final String url = '$serverUrl/project/delete/$id';
+  final String url = '${_backendConfiguration.url}/project/delete/$id';
 
   final http.Response response = await http.delete(
     Uri.parse(url),
@@ -233,7 +238,7 @@ Future<void> postUserData(
   VoidCallback onSucess,
   VoidCallback otherwise,
 ) async {
-  const String url = '$serverUrl/userData/create';
+  final String url = '${_backendConfiguration.url}/userData/create';
 
   final http.Response response = await http.post(
     Uri.parse(url),
@@ -258,7 +263,7 @@ Future<void> postUserData(
 }
 
 Future<int> getUserDataAuthed(String sessionToken) async {
-  const String url = '$serverUrl/userData/authed';
+  final String url = '${_backendConfiguration.url}/userData/authed';
 
   int statusCode = 403;
 
@@ -283,7 +288,7 @@ Future<int> getUserDataAuthed(String sessionToken) async {
 }
 
 Future<http.Response> postAuthLogin(String username, String password) async {
-  const String url = '$serverUrl/auth/login';
+  final String url = '${_backendConfiguration.url}/auth/login';
 
   final http.Response response = await http.post(
     Uri.parse(url),
@@ -306,7 +311,7 @@ Future<http.Response> postAuthRegister(
   String password,
   String email,
 ) async {
-  const String url = '$serverUrl/auth/register';
+  final String url = '${_backendConfiguration.url}/auth/register';
 
   final http.Response response = await http.post(
     Uri.parse(url),

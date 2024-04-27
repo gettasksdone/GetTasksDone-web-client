@@ -7,7 +7,7 @@ part 'session_token.g.dart';
 @Riverpod(keepAlive: true)
 class SessionToken extends _$SessionToken {
   static const FlutterSecureStorage _storage = FlutterSecureStorage();
-  static const String key = 'session_token';
+  static const String _key = 'session_token';
 
   String? _token;
 
@@ -21,8 +21,8 @@ class SessionToken extends _$SessionToken {
   }
 
   static Future<String?> readFromStorage() async {
-    if (await _storage.containsKey(key: key)) {
-      return await _storage.read(key: key);
+    if (await _storage.containsKey(key: _key)) {
+      return await _storage.read(key: _key);
     }
 
     return null;
@@ -34,9 +34,9 @@ class SessionToken extends _$SessionToken {
     ref.invalidateSelf();
 
     if (token != null) {
-      await _storage.write(key: key, value: token);
+      await _storage.write(key: _key, value: token);
     } else {
-      await _storage.delete(key: key);
+      await _storage.delete(key: _key);
     }
   }
 }

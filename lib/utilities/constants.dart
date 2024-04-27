@@ -4,8 +4,6 @@ import 'package:intl/intl.dart';
 
 const bool testNavigation = kDebugMode && false;
 
-const String serverUrl = 'https://lopezgeraghty.com:8080';
-
 const String appName = 'Get Tasks Done';
 
 const double edgeWidth = 3.0;
