@@ -80,6 +80,8 @@ class UserData {
       }
 
       changeProjectOfTask(task.id, projectId);
+    } else if (!existingTask) {
+      _projects[projectId]!.addTask(task.id);
     }
 
     _taskToProject[task.id] = projectId;

@@ -22,11 +22,11 @@ void showModal(
   BuildContext context,
   WidgetRef ref,
   VoidCallback setParentState,
-  Task? selectedTask,
+  Task task,
+  int? withProjectId,
 ) {
   final ColorScheme colors = context.colorScheme;
-  final bool existingTask = selectedTask != null;
-  final Task task = selectedTask ?? Task();
+  final bool existingTask = task.id != -1;
   final UserData userData = UserData();
 
   final TextStyle dropdownTextStyle = TextStyle(color: colors.onSecondary);
@@ -34,8 +34,7 @@ void showModal(
     backgroundColor: context.theme.canvasColor,
   );
 
-  int projectId =
-      existingTask ? userData.getProjectIdOfTask(task.id) : userData.inboxId;
+  int projectId = withProjectId ?? userData.inboxId;
 
   Future<void> onGreenButton() async {
     if (existingTask) {
@@ -63,8 +62,6 @@ void showModal(
       projectId,
       (int id) {
         task.setId(id);
-
-        userData.getProject(projectId).addTask(task.id);
 
         userData.putTask(ref, task, projectId);
 

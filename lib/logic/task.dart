@@ -87,7 +87,6 @@ class Task extends ComplexItem<Task> {
 
   @override
   Map<String, dynamic> toJson() {
-    assert(description != null);
     assert(contextId != null);
     assert(title != null);
 

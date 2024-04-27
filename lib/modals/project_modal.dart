@@ -122,6 +122,36 @@ void showModal(
                 ),
                 Padding(
                   padding: rowPadding,
+                  child: IntrinsicHeight(
+                    child: CustomDropdownMenu(
+                      label: 'Estado',
+                      width: fullDropdownWidth,
+                      initialSelection: project.state,
+                      onSelected: (String? state) {
+                        if (state != null) {
+                          dialogSetState(() {
+                            project.state = state;
+                          });
+                        }
+                      },
+                      entries: Project.selectableStates
+                          .map(
+                            (entry) => DropdownMenuEntry<String>(
+                              value: entry,
+                              label: entry,
+                              style: dropdownButtonStyle,
+                              labelWidget: Text(
+                                entry,
+                                style: dropdownTextStyle,
+                              ),
+                            ),
+                          )
+                          .toList(),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: rowPadding,
                   child: SizedBox(
                     height: 45.0,
                     child: Row(
@@ -168,36 +198,6 @@ void showModal(
                           ),
                         ),
                       ],
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: rowPadding,
-                  child: IntrinsicHeight(
-                    child: CustomDropdownMenu(
-                      label: 'Estado',
-                      width: fullDropdownWidth,
-                      initialSelection: project.state,
-                      onSelected: (String? state) {
-                        if (state != null) {
-                          dialogSetState(() {
-                            project.state = state;
-                          });
-                        }
-                      },
-                      entries: Project.selectableStates
-                          .map(
-                            (entry) => DropdownMenuEntry<String>(
-                              value: entry,
-                              label: entry,
-                              style: dropdownButtonStyle,
-                              labelWidget: Text(
-                                entry,
-                                style: dropdownTextStyle,
-                              ),
-                            ),
-                          )
-                          .toList(),
                     ),
                   ),
                 ),

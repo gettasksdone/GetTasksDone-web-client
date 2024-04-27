@@ -4,12 +4,14 @@ import 'package:flutter/material.dart';
 class CustomSplitView extends StatelessWidget {
   static const double _appBarHeight = 50.0;
   static const double _menuWidth = 350.0;
+  final Widget floatingActionButton;
   final bool bigScreen;
   final Widget view;
   final Widget menu;
 
   const CustomSplitView({
     super.key,
+    required this.floatingActionButton,
     required this.bigScreen,
     required this.view,
     required this.menu,
@@ -22,6 +24,7 @@ class CustomSplitView extends StatelessWidget {
 
     if (bigScreen) {
       widgetTree = Scaffold(
+        floatingActionButton: floatingActionButton,
         body: Stack(
           children: [
             Column(
@@ -39,6 +42,7 @@ class CustomSplitView extends StatelessWidget {
       );
     } else {
       widgetTree = Scaffold(
+        floatingActionButton: floatingActionButton,
         appBar: AppBar(
           toolbarHeight: _appBarHeight,
           backgroundColor: context.theme.canvasColor,

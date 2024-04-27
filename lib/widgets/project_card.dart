@@ -1,6 +1,4 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gtd_client/widgets/text_with_icon.dart';
-import 'package:gtd_client/widgets/solid_button.dart';
 import 'package:gtd_client/utilities/extensions.dart';
 import 'package:gtd_client/utilities/constants.dart';
 import 'package:gtd_client/widgets/task_card.dart';
@@ -9,25 +7,27 @@ import 'package:gtd_client/logic/project.dart';
 import 'package:gtd_client/logic/task.dart';
 import 'package:flutter/material.dart';
 
-class ProjectCard extends ConsumerStatefulWidget {
-  final void Function(Task)? onTaskPresed;
+class ProjectCard extends StatefulWidget {
+  final void Function(Task)? onTaskPressed;
   final VoidCallback setParentState;
-  final VoidCallback? onPressed;
+  final VoidCallback? onAddTask;
+  final VoidCallback? onEdit;
   final Project project;
 
   const ProjectCard({
     super.key,
     required this.setParentState,
     required this.project,
-    this.onTaskPresed,
-    this.onPressed,
+    this.onTaskPressed,
+    this.onAddTask,
+    this.onEdit,
   });
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _TaskCardState();
+  State<ProjectCard> createState() => _ProjectCardState();
 }
 
-class _TaskCardState extends ConsumerState<ProjectCard> {
+class _ProjectCardState extends State<ProjectCard> {
   static final UserData _userData = UserData();
 
   bool _expanded = false;
@@ -35,7 +35,7 @@ class _TaskCardState extends ConsumerState<ProjectCard> {
   @override
   Widget build(BuildContext context) {
     final ColorScheme colors = context.colorScheme;
-    final Color darkerSecondary = colors.secondary.darken(10);
+    final Color canvasColor = context.theme.canvasColor;
 
     return Padding(
       padding: rowPadding,
@@ -44,9 +44,48 @@ class _TaskCardState extends ConsumerState<ProjectCard> {
         child: ExpansionTile(
           shape: roundedBorder,
           collapsedShape: roundedBorder,
-          backgroundColor: darkerSecondary,
-          collapsedBackgroundColor: darkerSecondary,
-          tilePadding: const EdgeInsets.only(right: paddingAmount),
+          backgroundColor: canvasColor,
+          collapsedBackgroundColor: canvasColor,
+          onExpansionChanged: (value) => setState(() {
+            _expanded = value;
+          }),
+          title: Row(
+            children: [
+              Expanded(
+                child: TextWithIcon(
+                  icon: Icons.personal_video,
+                  text: widget.project.name!,
+                ),
+              ),
+              IconButton(
+                onPressed: widget.onEdit,
+                icon: Icon(
+                  Icons.edit,
+                  color: colors.onTertiary,
+                ),
+                style: IconButton.styleFrom(
+                  shape: roundedBorder,
+                  backgroundColor: colors.tertiary,
+                ),
+              ),
+              const SizedBox(width: paddingAmount),
+              IconButton(
+                onPressed: widget.onAddTask,
+                icon: Icon(
+                  Icons.add_outlined,
+                  color: colors.onPrimary,
+                ),
+                style: IconButton.styleFrom(
+                  shape: roundedBorder,
+                  backgroundColor: colors.primary,
+                ),
+              ),
+            ],
+          ),
+          tilePadding: const EdgeInsets.symmetric(
+            horizontal: 20.0,
+            vertical: paddingAmount,
+          ),
           childrenPadding: const EdgeInsets.only(
             top: paddingAmount,
             left: paddingAmount,
@@ -59,26 +98,13 @@ class _TaskCardState extends ConsumerState<ProjectCard> {
             size: 27.0,
             color: colors.onSurface,
           ),
-          title: SolidButton(
-            leftAligned: true,
-            size: cardElementSize,
-            color: colors.secondary,
-            onPressed: widget.onPressed,
-            withWidget: TextWithIcon(
-              icon: Icons.personal_video,
-              text: widget.project.name!,
-            ),
-          ),
-          onExpansionChanged: (value) => setState(() {
-            _expanded = value;
-          }),
           children: widget.project.tasks.map((id) {
             final Task task = _userData.getTask(id);
 
             return TaskCard(
               task: task,
               setParentState: widget.setParentState,
-              onPressed: () => widget.onTaskPresed!(task),
+              onPressed: () => widget.onTaskPressed!(task),
             );
           }).toList(),
         ),

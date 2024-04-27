@@ -92,9 +92,6 @@ class Project extends ComplexItem<Project> {
 
   @override
   Map<String, dynamic> toJson() {
-    assert(description != null);
-    assert(_finish != null);
-    assert(_start != null);
     assert(name != null);
 
     return {

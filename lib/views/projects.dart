@@ -34,7 +34,25 @@ class _ProjectsViewState extends ConsumerState<ProjectsView> {
 
   void _editTask(BuildContext context, Task task) {
     setState(() {
-      task_modal.showModal(context, ref, () => setState(() {}), task);
+      task_modal.showModal(
+        context,
+        ref,
+        () => setState(() {}),
+        task,
+        _userData.getProjectIdOfTask(task.id),
+      );
+    });
+  }
+
+  void _createTask(BuildContext context, int projectId) {
+    setState(() {
+      task_modal.showModal(
+        context,
+        ref,
+        () => setState(() {}),
+        Task(),
+        projectId,
+      );
     });
   }
 
@@ -105,11 +123,15 @@ class _ProjectsViewState extends ConsumerState<ProjectsView> {
                                 ProjectCard(
                                   project: entry.value,
                                   setParentState: () => setState(() {}),
-                                  onPressed: () => _editProject(
+                                  onAddTask: () => _createTask(
+                                    context,
+                                    entry.key,
+                                  ),
+                                  onEdit: () => _editProject(
                                     context,
                                     entry.value,
                                   ),
-                                  onTaskPresed: (Task task) => _editTask(
+                                  onTaskPressed: (Task task) => _editTask(
                                     context,
                                     task,
                                   ),

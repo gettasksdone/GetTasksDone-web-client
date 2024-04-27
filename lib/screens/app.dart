@@ -4,6 +4,7 @@ import 'package:gtd_client/widgets/loading_solid_button.dart';
 import 'package:gtd_client/providers/completed_registry.dart';
 import 'package:gtd_client/widgets/custom_split_view.dart';
 import 'package:gtd_client/widgets/solid_icon_button.dart';
+import 'package:gtd_client/modals/inbox_task_modal.dart';
 import 'package:gtd_client/providers/session_token.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gtd_client/providers/inbox_count.dart';
@@ -41,14 +42,24 @@ class _AppScreenState extends ConsumerState<AppScreen> {
     'Proyectos': Icons.personal_video,
   };
   static final Map<String, Widget> _views = {
-    _inboxKey: TasksView(showTask: _userData.taskInInbox),
-    'Esperando': TasksView(showTask: (task) => task.state == Task.waiting),
+    _inboxKey: TasksView(inboxView: true, showTask: _userData.taskInInbox),
+    'Esperando': TasksView(
+      taskBuilder: () => Task(state: Task.waiting),
+      showTask: (task) => task.state == Task.waiting,
+    ),
     'Agendado': TasksView(
-        showTask: (task) =>
-            (task.state != Task.done) && (task.expiration != null)),
-    'Algún día': TasksView(showTask: (task) => task.state == Task.someDay),
+      taskBuilder: () => Task(expiration: DateTime.now()),
+      showTask: (task) =>
+          (task.state != Task.done) && (task.expiration != null),
+    ),
+    'Algún día': TasksView(
+      taskBuilder: () => Task(state: Task.someDay),
+      showTask: (task) => task.state == Task.someDay,
+    ),
     'Importante': TasksView(
-        showTask: (task) => (task.state != Task.done) && (task.priority != 0)),
+      taskBuilder: () => Task(priority: 1),
+      showTask: (task) => (task.state != Task.done) && (task.priority != 0),
+    ),
     'Completado': TasksView(showTask: (task) => task.state == Task.done),
     'Todas las tareas': TasksView(showTask: (task) => true),
     'Contextos': const ContextsView(),
@@ -85,6 +96,12 @@ class _AppScreenState extends ConsumerState<AppScreen> {
     return Colors.transparent;
   }
 
+  void _createInboxTask(BuildContext context) {
+    setState(() {
+      showModal(context, ref, () => setState(() {}));
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     if (!_initialized) {
@@ -112,7 +129,17 @@ class _AppScreenState extends ConsumerState<AppScreen> {
 
     return CustomSplitView(
       bigScreen: _bigScreen,
-      view: _views[_viewKey]!,
+      // FloatingActionButton changes the view's position
+      view: Padding(
+        padding: const EdgeInsets.only(bottom: 50.0),
+        child: _views[_viewKey]!,
+      ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: colors.primary,
+        foregroundColor: colors.onPrimary,
+        onPressed: () => _createInboxTask(context),
+        child: const Icon(Icons.add),
+      ),
       menu: Padding(
         padding: padding,
         child: Column(
