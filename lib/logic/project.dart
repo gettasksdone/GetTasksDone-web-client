@@ -65,6 +65,21 @@ class Project extends ComplexItem<Project> {
   }
 
   @override
+  Project copy() {
+    return Project(
+      id: id,
+      description: description,
+      tasks: Set.from(_tasks),
+      notes: Set.from(notes),
+      tags: Set.from(tags),
+      finish: _finish,
+      start: _start,
+      state: state,
+      name: name,
+    );
+  }
+
+  @override
   Map<int, Project> fromJson(Map<String, dynamic> json) {
     return {
       json['id']: Project(

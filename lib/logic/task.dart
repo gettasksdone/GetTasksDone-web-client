@@ -55,6 +55,23 @@ class Task extends ComplexItem<Task> {
   }
 
   @override
+  Task copy() {
+    return Task(
+      id: id,
+      checkItems: Set.from(_checkItems),
+      description: description,
+      expiration: _expiration,
+      notes: Set.from(notes),
+      tags: Set.from(tags),
+      contextId: contextId,
+      priority: priority,
+      created: created,
+      state: state,
+      title: title,
+    );
+  }
+
+  @override
   Map<int, Task> fromJson(Map<String, dynamic> json) {
     return {
       json['id']: Task(

@@ -18,7 +18,7 @@ class ContextsView extends ConsumerStatefulWidget {
 class _ContextsViewState extends ConsumerState<ContextsView> {
   void _editContext(BuildContext buildContext, Context context) {
     setState(() {
-      showModal(buildContext, ref, () => setState(() {}), context);
+      showModal(buildContext, ref, () => setState(() {}), context.copy());
     });
   }
 

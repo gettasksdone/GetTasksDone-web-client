@@ -8,6 +8,11 @@ class Tag extends BaseItem<Tag> {
   Tag({super.id, this.name});
 
   @override
+  Tag copy() {
+    return Tag(id: id, name: name);
+  }
+
+  @override
   Map<int, Tag> fromJson(Map<String, dynamic> json) {
     return {
       json['id']: Tag(

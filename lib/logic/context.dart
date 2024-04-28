@@ -8,6 +8,11 @@ class Context extends BaseItem<Context> {
   Context({super.id, this.name});
 
   @override
+  Context copy() {
+    return Context(id: id, name: name);
+  }
+
+  @override
   Map<int, Context> fromJson(Map<String, dynamic> json) {
     return {
       json['id']: Context(

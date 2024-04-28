@@ -11,6 +11,11 @@ class Note extends BaseItem<Note> {
       : created = created ?? DateTime.now();
 
   @override
+  Note copy() {
+    return Note(id: id, content: content, created: created);
+  }
+
+  @override
   Map<int, Note> fromJson(Map<String, dynamic> json) {
     return {
       json['id']: Note(

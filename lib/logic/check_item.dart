@@ -9,6 +9,11 @@ class CheckItem extends BaseItem<CheckItem> {
   CheckItem({super.id, this.content, this.checked = false});
 
   @override
+  CheckItem copy() {
+    return CheckItem(id: id, content: content, checked: checked);
+  }
+
+  @override
   Map<int, CheckItem> fromJson(Map<String, dynamic> json) {
     return {
       json['id']: CheckItem(

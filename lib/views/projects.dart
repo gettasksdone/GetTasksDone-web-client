@@ -22,7 +22,12 @@ class _ProjectsViewState extends ConsumerState<ProjectsView> {
 
   void _editProject(BuildContext context, Project project) {
     setState(() {
-      project_modal.showModal(context, ref, () => setState(() {}), project);
+      project_modal.showModal(
+        context,
+        ref,
+        () => setState(() {}),
+        project.copy(),
+      );
     });
   }
 
@@ -38,7 +43,7 @@ class _ProjectsViewState extends ConsumerState<ProjectsView> {
         context,
         ref,
         () => setState(() {}),
-        task,
+        task.copy(),
         _userData.getProjectIdOfTask(task.id),
       );
     });

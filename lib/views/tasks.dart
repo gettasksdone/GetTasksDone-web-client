@@ -34,7 +34,7 @@ class _TasksViewState extends ConsumerState<TasksView> {
         context,
         ref,
         () => setState(() {}),
-        task,
+        task.copy(),
         _userData.getProjectIdOfTask(task.id),
       );
     });

@@ -13,6 +13,8 @@ abstract class BaseItem<T> {
     _id = id;
   }
 
+  T copy();
+
   Map<int, T> decodeList(String body) {
     return fromJsonList(jsonDecode(body) as List<dynamic>);
   }
