@@ -30,9 +30,6 @@ void showModal(
   final UserData userData = UserData();
 
   final TextStyle dropdownTextStyle = TextStyle(color: colors.onSecondary);
-  final ButtonStyle dropdownButtonStyle = TextButton.styleFrom(
-    backgroundColor: context.theme.canvasColor,
-  );
 
   Future<void> onGreenButton() async {
     if (existingProject) {
@@ -139,10 +136,16 @@ void showModal(
                             (entry) => DropdownMenuEntry<String>(
                               value: entry,
                               label: entry,
-                              style: dropdownButtonStyle,
                               labelWidget: Text(
                                 entry,
                                 style: dropdownTextStyle,
+                              ),
+                              style: TextButton.styleFrom(
+                                backgroundColor: context.theme.canvasColor,
+                                fixedSize: Size(
+                                  fullDropdownWidth,
+                                  dropdownOptionHeight,
+                                ),
                               ),
                             ),
                           )

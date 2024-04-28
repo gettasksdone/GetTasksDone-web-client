@@ -26,9 +26,6 @@ void showModal(
   final Task task = Task();
 
   final TextStyle dropdownTextStyle = TextStyle(color: colors.onSecondary);
-  final ButtonStyle dropdownButtonStyle = TextButton.styleFrom(
-    backgroundColor: context.theme.canvasColor,
-  );
 
   Future<void> onCreate() async {
     await postTask(
@@ -116,10 +113,16 @@ void showModal(
                           return DropdownMenuEntry<int>(
                             value: entry.key,
                             label: entry.value.name!,
-                            style: dropdownButtonStyle,
                             labelWidget: Text(
                               entry.value.name!,
                               style: dropdownTextStyle,
+                            ),
+                            style: TextButton.styleFrom(
+                              backgroundColor: context.theme.canvasColor,
+                              fixedSize: Size(
+                                fullDropdownWidth,
+                                dropdownOptionHeight,
+                              ),
                             ),
                           );
                         },

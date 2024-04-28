@@ -2,6 +2,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:gtd_client/widgets/loading_solid_button.dart';
 import 'package:gtd_client/mixins/sign_in_screen_mixin.dart';
 import 'package:gtd_client/widgets/custom_form_field.dart';
+import 'package:gtd_client/widgets/backend_url_field.dart';
 import 'package:gtd_client/providers/session_token.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gtd_client/utilities/extensions.dart';
@@ -127,9 +128,9 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen>
                     key: formKey,
                     child: Column(
                       children: [
-                        Padding(
+                        const Padding(
                           padding: SignInScreenMixin.doublePadding,
-                          child: backendURLField,
+                          child: BackendUrlField(),
                         ),
                         Padding(
                           padding: SignInScreenMixin.doublePadding,

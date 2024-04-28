@@ -30,9 +30,6 @@ void showModal(
   final UserData userData = UserData();
 
   final TextStyle dropdownTextStyle = TextStyle(color: colors.onSecondary);
-  final ButtonStyle dropdownButtonStyle = TextButton.styleFrom(
-    backgroundColor: context.theme.canvasColor,
-  );
 
   int projectId = withProjectId ?? userData.inboxId;
 
@@ -88,6 +85,16 @@ void showModal(
                   : modalSize.width - _totalCardPadding;
           final double dropdownWidth =
               (fullDropdownWidth - paddingAmount) * 0.5;
+
+          final ButtonStyle fullDropdownButtonStyle = TextButton.styleFrom(
+            backgroundColor: context.theme.canvasColor,
+            fixedSize: Size(fullDropdownWidth, dropdownOptionHeight),
+          );
+
+          final ButtonStyle dropdownButtonStyle = TextButton.styleFrom(
+            backgroundColor: context.theme.canvasColor,
+            fixedSize: Size(dropdownWidth, dropdownOptionHeight),
+          );
 
           return CustomModal(
             size: modalSize,
@@ -145,7 +152,7 @@ void showModal(
                             (entry) => DropdownMenuEntry<String>(
                               value: entry,
                               label: entry,
-                              style: dropdownButtonStyle,
+                              style: fullDropdownButtonStyle,
                               labelWidget: Text(
                                 entry,
                                 style: dropdownTextStyle,
@@ -158,7 +165,7 @@ void showModal(
                                 DropdownMenuEntry<String>(
                                   value: Task.done,
                                   label: Task.done,
-                                  style: dropdownButtonStyle,
+                                  style: fullDropdownButtonStyle,
                                   labelWidget: Text(
                                     Task.done,
                                     style: dropdownTextStyle,

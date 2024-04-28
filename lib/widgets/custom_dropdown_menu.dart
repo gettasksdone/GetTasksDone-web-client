@@ -24,12 +24,12 @@ class CustomDropdownMenu<T> extends StatelessWidget {
 
     return DropdownMenu(
       width: width,
+      onSelected: onSelected,
       initialSelection: initialSelection,
       label: Text(
         label,
         style: TextStyle(color: colors.onSecondary),
       ),
-      onSelected: onSelected,
       menuStyle: MenuStyle(
         backgroundColor: WidgetStatePropertyAll(
           context.theme.canvasColor,

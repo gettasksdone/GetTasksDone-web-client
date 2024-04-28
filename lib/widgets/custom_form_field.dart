@@ -7,9 +7,11 @@ class CustomFormField extends StatefulWidget {
   late final List<TextInputFormatter>? _onlyNumeric;
   final String? Function(String?)? validator;
   late final TextInputType? _keyboardType;
+  final TextEditingController? controller;
   final bool _gotAutofillHint;
   final String? autofillHint;
   final String? initialValue;
+  final FocusNode? focusNode;
   final String? hintText;
   final bool multiline;
   final String? label;
@@ -19,6 +21,8 @@ class CustomFormField extends StatefulWidget {
     super.key,
     this.autofillHint,
     this.initialValue,
+    this.controller,
+    this.focusNode,
     this.validator,
     this.hintText,
     this.label,
@@ -49,7 +53,7 @@ class _CustomFormFieldState extends State<CustomFormField> {
   @override
   void initState() {
     super.initState();
-    _focusNode = FocusNode();
+    _focusNode = widget.focusNode ?? FocusNode();
 
     _focusNode!.addListener(() {
       if (!_focusNode!.hasFocus & (_fieldKey.currentState != null)) {
@@ -73,6 +77,7 @@ class _CustomFormFieldState extends State<CustomFormField> {
       focusNode: _focusNode,
       expands: widget.expands,
       validator: widget.validator,
+      controller: widget.controller,
       initialValue: widget.initialValue,
       keyboardType: widget._keyboardType,
       minLines: widget.expands ? null : 1,
