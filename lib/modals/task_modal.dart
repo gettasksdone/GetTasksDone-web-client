@@ -86,11 +86,6 @@ void showModal(
           final double dropdownWidth =
               (fullDropdownWidth - paddingAmount) * 0.5;
 
-          final ButtonStyle fullDropdownButtonStyle = TextButton.styleFrom(
-            backgroundColor: context.theme.canvasColor,
-            fixedSize: Size(fullDropdownWidth, dropdownOptionHeight),
-          );
-
           final ButtonStyle dropdownButtonStyle = TextButton.styleFrom(
             backgroundColor: context.theme.canvasColor,
             fixedSize: Size(dropdownWidth, dropdownOptionHeight),
@@ -100,16 +95,62 @@ void showModal(
             size: modalSize,
             titleWidget: Align(
               alignment: Alignment.bottomCenter,
-              child: CustomFormField(
-                label: 'Nombre',
-                hintText: 'nombre',
-                initialValue: task.title,
-                validator: (String? input) => notEmptyValidator(
-                  input,
-                  () => dialogSetState(() {
-                    task.title = input;
-                  }),
-                ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Flexible(
+                    flex: 4,
+                    child: CustomFormField(
+                      label: 'Nombre',
+                      hintText: 'nombre',
+                      initialValue: task.title,
+                      validator: (String? input) => notEmptyValidator(
+                        input,
+                        () => dialogSetState(() {
+                          task.title = input;
+                        }),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: paddingAmount),
+                  Flexible(
+                    flex: 2,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: colors.tertiary,
+                        borderRadius: roundedCorners,
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: paddingAmount,
+                          vertical: paddingAmount / 2.0,
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Expanded(
+                                child: Text(
+                              'Importante',
+                              overflow: TextOverflow.ellipsis,
+                            )),
+                            Switch(
+                              value: task.priority != 0,
+                              onChanged: (bool value) {
+                                dialogSetState(() {
+                                  if (value) {
+                                    task.priority = 1;
+                                  } else {
+                                    task.priority = 0;
+                                  }
+                                });
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
             bodyWidget: Column(
@@ -136,43 +177,71 @@ void showModal(
                 Padding(
                   padding: rowPadding,
                   child: IntrinsicHeight(
-                    child: CustomDropdownMenu(
-                      label: 'Estado',
-                      width: fullDropdownWidth,
-                      initialSelection: task.state,
-                      onSelected: (String? state) {
-                        if (state != null) {
-                          dialogSetState(() {
-                            task.state = state;
-                          });
-                        }
-                      },
-                      entries: Task.selectableStates
-                          .map(
-                            (entry) => DropdownMenuEntry<String>(
-                              value: entry,
-                              label: entry,
-                              style: fullDropdownButtonStyle,
-                              labelWidget: Text(
-                                entry,
-                                style: dropdownTextStyle,
-                              ),
-                            ),
-                          )
-                          .toList()
-                        ..addAll(task.state == Task.done
-                            ? [
-                                DropdownMenuEntry<String>(
-                                  value: Task.done,
-                                  label: Task.done,
-                                  style: fullDropdownButtonStyle,
+                    child: Row(
+                      children: [
+                        CustomDropdownMenu(
+                          label: 'Estado',
+                          width: dropdownWidth,
+                          initialSelection: task.state,
+                          onSelected: (String? state) {
+                            if (state != null) {
+                              dialogSetState(() {
+                                task.state = state;
+                              });
+                            }
+                          },
+                          entries: Task.selectableStates
+                              .map(
+                                (entry) => DropdownMenuEntry<String>(
+                                  value: entry,
+                                  label: entry,
+                                  style: dropdownButtonStyle,
                                   labelWidget: Text(
-                                    Task.done,
+                                    entry,
                                     style: dropdownTextStyle,
                                   ),
                                 ),
-                              ]
-                            : []),
+                              )
+                              .toList()
+                            ..addAll(task.state == Task.done
+                                ? [
+                                    DropdownMenuEntry<String>(
+                                      value: Task.done,
+                                      label: Task.done,
+                                      style: dropdownButtonStyle,
+                                      labelWidget: Text(
+                                        Task.done,
+                                        style: dropdownTextStyle,
+                                      ),
+                                    ),
+                                  ]
+                                : []),
+                        ),
+                        const SizedBox(width: paddingAmount),
+                        CustomDropdownMenu(
+                          label: 'Contexto',
+                          width: dropdownWidth,
+                          initialSelection: task.contextId,
+                          onSelected: (int? id) {
+                            dialogSetState(() {
+                              task.contextId = id;
+                            });
+                          },
+                          entries: userData.contexts.entries.map(
+                            (entry) {
+                              return DropdownMenuEntry<int>(
+                                value: entry.key,
+                                label: entry.value.name!,
+                                style: dropdownButtonStyle,
+                                labelWidget: Text(
+                                  entry.value.name!,
+                                  style: dropdownTextStyle,
+                                ),
+                              );
+                            },
+                          ).toList(),
+                        ),
+                      ],
                     ),
                   ),
                 ),
@@ -210,77 +279,6 @@ void showModal(
                               );
                             },
                           ).toList(),
-                        ),
-                        const SizedBox(width: paddingAmount),
-                        CustomDropdownMenu(
-                          label: 'Contexto',
-                          width: dropdownWidth,
-                          initialSelection: task.contextId,
-                          onSelected: (int? id) {
-                            dialogSetState(() {
-                              task.contextId = id;
-                            });
-                          },
-                          entries: userData.contexts.entries.map(
-                            (entry) {
-                              return DropdownMenuEntry<int>(
-                                value: entry.key,
-                                label: entry.value.name!,
-                                style: dropdownButtonStyle,
-                                labelWidget: Text(
-                                  entry.value.name!,
-                                  style: dropdownTextStyle,
-                                ),
-                              );
-                            },
-                          ).toList(),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: rowPadding,
-                  child: IntrinsicHeight(
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Expanded(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: colors.secondary,
-                              borderRadius: roundedCorners,
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: paddingAmount,
-                                vertical: paddingAmount / 2.0,
-                              ),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  const Expanded(
-                                      child: Text(
-                                    'Importante',
-                                    overflow: TextOverflow.ellipsis,
-                                  )),
-                                  Switch(
-                                    value: task.priority != 0,
-                                    onChanged: (bool value) {
-                                      dialogSetState(() {
-                                        if (value) {
-                                          task.priority = 1;
-                                        } else {
-                                          task.priority = 0;
-                                        }
-                                      });
-                                    },
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
                         ),
                         const SizedBox(width: paddingAmount),
                         Expanded(

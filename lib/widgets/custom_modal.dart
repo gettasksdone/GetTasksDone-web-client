@@ -34,7 +34,7 @@ class CustomModal extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               SizedBox(
-                height: 100.0,
+                height: 80.0,
                 child: Container(
                   decoration: BoxDecoration(
                     color: colors.secondary,
