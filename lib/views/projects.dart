@@ -68,21 +68,6 @@ class _ProjectsViewState extends ConsumerState<ProjectsView> {
       }
     }
 
-    projects.sort((entryA, entryB) {
-      final DateTime dateCreatedA = entryA.value.finishDate!;
-      final DateTime dateCreatedB = entryB.value.finishDate!;
-
-      if (dateCreatedA.isBefore(dateCreatedB)) {
-        return -1;
-      }
-
-      if (dateCreatedB.isBefore(dateCreatedA)) {
-        return 1;
-      }
-
-      return 0;
-    });
-
     return Center(
       child: Padding(
         padding: viewPadding,

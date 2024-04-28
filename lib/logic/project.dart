@@ -81,8 +81,12 @@ class Project extends ComplexItem<Project> {
             .fromJsonList(json['notas'] as List<dynamic>)
             .keys
             .toSet(),
-        start: DateTime.parse(json['inicio']),
-        finish: DateTime.parse(json['fin']),
+        start: json.containsKey('inicio') && (json['inicio'] != null)
+            ? DateTime.parse(json['inicio'])
+            : null,
+        finish: json.containsKey('fin') && (json['fin'] != null)
+            ? DateTime.parse(json['fin'])
+            : null,
         description: json['descripcion'],
         state: json['estado'],
         name: json['nombre'],
@@ -96,8 +100,8 @@ class Project extends ComplexItem<Project> {
 
     return {
       'nombre': name,
-      'inicio': backEndDateFormat.format(_start!),
-      'fin': backEndDateFormat.format(_finish!),
+      'inicio': _start != null ? backEndDateFormat.format(_start!) : null,
+      'fin': _finish != null ? backEndDateFormat.format(_finish!) : null,
       'descripcion': description,
       'estado': state,
     };

@@ -64,7 +64,10 @@ class _CustomFormFieldState extends State<CustomFormField> {
 
   @override
   void dispose() {
-    _focusNode!.dispose();
+    if (widget.focusNode == null) {
+      _focusNode!.dispose();
+    }
+
     super.dispose();
   }
 
