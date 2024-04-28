@@ -129,7 +129,6 @@ class _AppScreenState extends ConsumerState<AppScreen> {
 
     return CustomSplitView(
       bigScreen: _bigScreen,
-      // FloatingActionButton changes the view's position
       view: Padding(
         padding: const EdgeInsets.only(bottom: 50.0),
         child: _views[_viewKey]!,

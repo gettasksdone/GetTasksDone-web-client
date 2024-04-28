@@ -24,6 +24,7 @@ class CustomSplitView extends StatelessWidget {
 
     if (bigScreen) {
       widgetTree = Scaffold(
+        resizeToAvoidBottomInset: false,
         floatingActionButton: floatingActionButton,
         body: Stack(
           children: [
@@ -42,9 +43,11 @@ class CustomSplitView extends StatelessWidget {
       );
     } else {
       widgetTree = Scaffold(
+        resizeToAvoidBottomInset: false,
         floatingActionButton: floatingActionButton,
         appBar: AppBar(
           toolbarHeight: _appBarHeight,
+          forceMaterialTransparency: true,
           backgroundColor: context.theme.canvasColor,
         ),
         drawer: Drawer(

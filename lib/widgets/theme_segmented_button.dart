@@ -32,12 +32,12 @@ class ThemeSegmentedButtonState extends ConsumerState<ThemeSegmentedButton> {
           icon: Icon(Icons.terminal),
         ),
         ButtonSegment(
-          label: Text('Claro'),
+          label: Text('Día'),
           value: ThemeMode.light,
           icon: Icon(Icons.sunny),
         ),
         ButtonSegment(
-          label: Text('Oscuro'),
+          label: Text('Noche'),
           value: ThemeMode.dark,
           icon: Icon(Icons.bedtime),
         ),

@@ -69,10 +69,11 @@ class _SignInScreenState extends ConsumerState<SignInScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: [
-          Center(
+    return Stack(
+      children: [
+        Scaffold(
+          resizeToAvoidBottomInset: false,
+          body: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -164,15 +165,15 @@ class _SignInScreenState extends ConsumerState<SignInScreen>
               ],
             ),
           ),
-          const Align(
-            alignment: Alignment.bottomCenter,
-            child: Padding(
-              padding: EdgeInsets.only(bottom: 30.0),
-              child: ThemeSegmentedButton(),
-            ),
+        ),
+        const Align(
+          alignment: Alignment.bottomCenter,
+          child: Padding(
+            padding: EdgeInsets.only(bottom: 30.0),
+            child: ThemeSegmentedButton(),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
