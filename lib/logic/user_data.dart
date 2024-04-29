@@ -116,12 +116,12 @@ class UserData {
   }
 
   void removeTask(WidgetRef? ref, int id) {
-    _projects[_taskToProject[id]]!.removeTask(id);
-    _taskToProject.remove(id);
-
     if (taskInInbox(_tasks[id]!)) {
       ref!.read(inboxCountProvider.notifier).substractOne();
     }
+
+    _projects[_taskToProject[id]]!.removeTask(id);
+    _taskToProject.remove(id);
 
     _tasks.remove(id);
   }

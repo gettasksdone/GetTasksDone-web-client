@@ -1,12 +1,14 @@
-import 'package:gtd_client/providers/inbox_count.dart';
+import 'package:gtd_client/widgets/custom_dismissible.dart';
 import 'package:gtd_client/widgets/solid_icon_button.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:gtd_client/providers/inbox_count.dart';
 import 'package:gtd_client/utilities/extensions.dart';
 import 'package:gtd_client/utilities/constants.dart';
 import 'package:gtd_client/widgets/task_card.dart';
 import 'package:gtd_client/modals/task_modal.dart';
 import 'package:gtd_client/logic/user_data.dart';
 import 'package:gtd_client/logic/task.dart';
+import 'package:gtd_client/logic/api.dart';
 import 'package:flutter/material.dart';
 
 class TasksView extends ConsumerStatefulWidget {
@@ -120,12 +122,62 @@ class _TasksViewState extends ConsumerState<TasksView> {
                         child: ListView(
                           children: [
                             for (final MapEntry<int, Task> entry in tasks)
-                              TaskCard(
-                                task: entry.value,
-                                setParentState: () => setState(() {}),
-                                onPressed: () => _editTask(
-                                  context,
-                                  entry.value,
+                              CustomDismissible(
+                                dimissibleKey: ValueKey(entry.value),
+                                onRightSwipe: () async {
+                                  await deleteTask(
+                                    ref,
+                                    entry.key,
+                                    () {
+                                      _userData.removeTask(ref, entry.key);
+                                    },
+                                  );
+                                },
+                                onLeftSwipe: () async {
+                                  final Task task = entry.value;
+                                  final bool value = task.state != Task.done;
+
+                                  bool updateCount = false;
+
+                                  if (value) {
+                                    updateCount = _userData.taskInInbox(task);
+
+                                    task.state = Task.done;
+                                  } else {
+                                    task.state = Task.start;
+
+                                    updateCount = _userData.taskInInbox(task);
+                                  }
+
+                                  await patchTask(
+                                    ref,
+                                    task,
+                                    null,
+                                    () => setState(() {
+                                      final InboxCount provider =
+                                          ref.read(inboxCountProvider.notifier);
+
+                                      if (updateCount) {
+                                        if (value) {
+                                          provider.substractOne();
+                                        } else {
+                                          provider.addOne();
+                                        }
+                                      }
+
+                                      _userData.updateTask(ref, task, null);
+
+                                      setState(() {});
+                                    }),
+                                  );
+                                },
+                                child: TaskCard(
+                                  task: entry.value,
+                                  setParentState: () => setState(() {}),
+                                  onPressed: () => _editTask(
+                                    context,
+                                    entry.value,
+                                  ),
                                 ),
                               ),
                           ],

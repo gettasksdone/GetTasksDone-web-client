@@ -226,7 +226,6 @@ void showModal(
                           textSize: modalButtonFontSize,
                           text: 'Borrar',
                           onPressed: () async {
-                            // TODO: Error del servidor
                             await deleteProject(
                               ref,
                               project.id,

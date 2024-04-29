@@ -43,9 +43,10 @@ class _ProjectCardState extends State<ProjectCard> {
         minVerticalPadding: 0.0,
         child: ExpansionTile(
           shape: roundedBorder,
-          collapsedShape: roundedBorder,
           backgroundColor: canvasColor,
+          collapsedShape: roundedBorder,
           collapsedBackgroundColor: canvasColor,
+          enabled: widget.project.tasks.isNotEmpty,
           onExpansionChanged: (value) => setState(() {
             _expanded = value;
           }),

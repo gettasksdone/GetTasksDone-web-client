@@ -1,11 +1,13 @@
+import 'package:gtd_client/widgets/custom_dismissible.dart';
 import 'package:gtd_client/widgets/solid_icon_button.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:gtd_client/widgets/card_element.dart';
+import 'package:gtd_client/widgets/context_card.dart';
 import 'package:gtd_client/utilities/extensions.dart';
 import 'package:gtd_client/modals/context_modal.dart';
 import 'package:gtd_client/utilities/constants.dart';
 import 'package:gtd_client/logic/user_data.dart';
 import 'package:gtd_client/logic/context.dart';
+import 'package:gtd_client/logic/api.dart';
 import 'package:flutter/material.dart';
 
 class ContextsView extends ConsumerStatefulWidget {
@@ -16,6 +18,8 @@ class ContextsView extends ConsumerStatefulWidget {
 }
 
 class _ContextsViewState extends ConsumerState<ContextsView> {
+  static final UserData _userData = UserData();
+
   void _editContext(BuildContext buildContext, Context context) {
     setState(() {
       showModal(buildContext, ref, () => setState(() {}), context.copy());
@@ -69,16 +73,32 @@ class _ContextsViewState extends ConsumerState<ContextsView> {
                             children: [
                               for (final MapEntry<int, Context> entry
                                   in UserData().contexts.entries)
-                                CardElement(
-                                  cells: [
-                                    CardCellData(
-                                      icon: Icons.push_pin,
-                                      text: entry.value.name!,
+                                CustomDismissible(
+                                  dimissibleKey: ValueKey(entry.value),
+                                  onRightSwipe: () async {
+                                    await deleteContext(
+                                      ref,
+                                      entry.key,
+                                      () async {
+                                        final List<String> responses =
+                                            await getUserDataResponse(ref);
+
+                                        setState(() {
+                                          _userData.clear();
+                                          _userData.loadUserData(
+                                            ref,
+                                            responses,
+                                          );
+                                        });
+                                      },
+                                    );
+                                  },
+                                  child: ContextCard(
+                                    text: entry.value.name!,
+                                    onPressed: () => _editContext(
+                                      context,
+                                      entry.value,
                                     ),
-                                  ],
-                                  onPressed: () => _editContext(
-                                    context,
-                                    entry.value,
                                   ),
                                 ),
                             ],

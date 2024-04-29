@@ -40,7 +40,7 @@ class _TaskCardState extends ConsumerState<TaskCard> {
         color: colors.secondary,
         onPressed: widget.onPressed,
         withWidget: Padding(
-          padding: const EdgeInsets.all(4.0),
+          padding: cardInnerPadding,
           child: Row(
             children: [
               Checkbox(

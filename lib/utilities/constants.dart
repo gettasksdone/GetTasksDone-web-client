@@ -26,6 +26,8 @@ const Size cardElementSize = Size(120.0, 80.0);
 
 const Radius cornerRadius = Radius.circular(10.0);
 
+const EdgeInsets cardInnerPadding = EdgeInsets.all(4.0);
+
 const EdgeInsets padding = EdgeInsets.all(paddingAmount);
 
 const EdgeInsets cardPadding = EdgeInsets.all(cardPaddingAmount);

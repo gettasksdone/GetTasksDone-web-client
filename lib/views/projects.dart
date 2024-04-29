@@ -1,5 +1,6 @@
 import 'package:gtd_client/modals/project_modal.dart' as project_modal;
 import 'package:gtd_client/modals/task_modal.dart' as task_modal;
+import 'package:gtd_client/widgets/custom_dismissible.dart';
 import 'package:gtd_client/widgets/solid_icon_button.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gtd_client/widgets/project_card.dart';
@@ -8,6 +9,7 @@ import 'package:gtd_client/utilities/constants.dart';
 import 'package:gtd_client/logic/user_data.dart';
 import 'package:gtd_client/logic/project.dart';
 import 'package:gtd_client/logic/task.dart';
+import 'package:gtd_client/logic/api.dart';
 import 'package:flutter/material.dart';
 
 class ProjectsView extends ConsumerStatefulWidget {
@@ -110,20 +112,38 @@ class _ProjectsViewState extends ConsumerState<ProjectsView> {
                             children: [
                               for (final MapEntry<int, Project> entry
                                   in projects)
-                                ProjectCard(
-                                  project: entry.value,
-                                  setParentState: () => setState(() {}),
-                                  onAddTask: () => _createTask(
+                                CustomDismissible(
+                                  dimissibleKey: ValueKey(entry.value),
+                                  onLeftSwipe: () => _createTask(
                                     context,
                                     entry.key,
                                   ),
-                                  onEdit: () => _editProject(
-                                    context,
-                                    entry.value,
-                                  ),
-                                  onTaskPressed: (Task task) => _editTask(
-                                    context,
-                                    task,
+                                  onRightSwipe: () async {
+                                    await deleteProject(
+                                      ref,
+                                      entry.key,
+                                      () {
+                                        _userData.removeProject(entry.key);
+
+                                        setState(() {});
+                                      },
+                                    );
+                                  },
+                                  child: ProjectCard(
+                                    project: entry.value,
+                                    setParentState: () => setState(() {}),
+                                    onAddTask: () => _createTask(
+                                      context,
+                                      entry.key,
+                                    ),
+                                    onEdit: () => _editProject(
+                                      context,
+                                      entry.value,
+                                    ),
+                                    onTaskPressed: (Task task) => _editTask(
+                                      context,
+                                      task,
+                                    ),
                                   ),
                                 ),
                             ],
