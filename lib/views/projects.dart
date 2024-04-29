@@ -1,5 +1,5 @@
-import 'package:gtd_client/modals/project_modal.dart' as project_modal;
-import 'package:gtd_client/modals/task_modal.dart' as task_modal;
+import 'package:gtd_client/dialogs/project_modal.dart' as project_modal;
+import 'package:gtd_client/dialogs/task_modal.dart' as task_modal;
 import 'package:gtd_client/widgets/custom_dismissible.dart';
 import 'package:gtd_client/widgets/solid_icon_button.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

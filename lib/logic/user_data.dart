@@ -208,4 +208,7 @@ class UserData {
       (task.state == Task.start) &&
       (task.priority == 0) &&
       (getProjectIdOfTask(task.id) == _inboxProjectId);
+
+  Set<Task> getContextTasks(int id) =>
+      _tasks.values.where((task) => task.contextId == id).toSet();
 }

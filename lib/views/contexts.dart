@@ -3,7 +3,7 @@ import 'package:gtd_client/widgets/solid_icon_button.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gtd_client/widgets/context_card.dart';
 import 'package:gtd_client/utilities/extensions.dart';
-import 'package:gtd_client/modals/context_modal.dart';
+import 'package:gtd_client/dialogs/context_modal.dart';
 import 'package:gtd_client/utilities/constants.dart';
 import 'package:gtd_client/logic/user_data.dart';
 import 'package:gtd_client/logic/context.dart';
@@ -75,24 +75,29 @@ class _ContextsViewState extends ConsumerState<ContextsView> {
                                   in UserData().contexts.entries)
                                 CustomDismissible(
                                   dimissibleKey: ValueKey(entry.value),
-                                  onRightSwipe: () async {
-                                    await deleteContext(
-                                      ref,
-                                      entry.key,
-                                      () async {
-                                        final List<String> responses =
-                                            await getUserDataResponse(ref);
-
-                                        setState(() {
-                                          _userData.clear();
-                                          _userData.loadUserData(
+                                  onRightSwipe: _userData
+                                          .getContextTasks(entry.key)
+                                          .isNotEmpty
+                                      ? null
+                                      : () async {
+                                          await deleteContext(
                                             ref,
-                                            responses,
+                                            entry.key,
+                                            () async {
+                                              final List<String> responses =
+                                                  await getUserDataResponse(
+                                                      ref);
+
+                                              setState(() {
+                                                _userData.clear();
+                                                _userData.loadUserData(
+                                                  ref,
+                                                  responses,
+                                                );
+                                              });
+                                            },
                                           );
-                                        });
-                                      },
-                                    );
-                                  },
+                                        },
                                   child: ContextCard(
                                     text: entry.value.name!,
                                     onPressed: () => _editContext(

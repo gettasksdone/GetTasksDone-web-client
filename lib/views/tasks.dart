@@ -5,7 +5,7 @@ import 'package:gtd_client/providers/inbox_count.dart';
 import 'package:gtd_client/utilities/extensions.dart';
 import 'package:gtd_client/utilities/constants.dart';
 import 'package:gtd_client/widgets/task_card.dart';
-import 'package:gtd_client/modals/task_modal.dart';
+import 'package:gtd_client/dialogs/task_modal.dart';
 import 'package:gtd_client/logic/user_data.dart';
 import 'package:gtd_client/logic/task.dart';
 import 'package:gtd_client/logic/api.dart';

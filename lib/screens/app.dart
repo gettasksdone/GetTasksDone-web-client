@@ -1,5 +1,5 @@
-import 'package:gtd_client/modals/inbox_task_modal.dart' as task_modal;
-import 'package:gtd_client/modals/context_modal.dart' as context_modal;
+import 'package:gtd_client/dialogs/inbox_task_modal.dart' as task_modal;
+import 'package:gtd_client/dialogs/context_modal.dart' as context_modal;
 import 'package:gtd_client/widgets/custom_progress_indicator.dart';
 import 'package:gtd_client/widgets/theme_segmented_button.dart';
 import 'package:gtd_client/widgets/loading_solid_button.dart';

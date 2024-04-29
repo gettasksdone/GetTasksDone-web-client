@@ -1,6 +1,6 @@
 import 'package:gtd_client/widgets/custom_dropdown_menu.dart';
 import 'package:gtd_client/widgets/loading_solid_button.dart';
-import 'package:gtd_client/modals/custom_date_picker.dart';
+import 'package:gtd_client/dialogs/custom_date_picker.dart';
 import 'package:gtd_client/widgets/custom_form_field.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gtd_client/utilities/extensions.dart';

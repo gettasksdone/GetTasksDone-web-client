@@ -1,9 +1,11 @@
+import 'package:gtd_client/dialogs/delete_context_dialog.dart';
 import 'package:gtd_client/widgets/loading_solid_button.dart';
 import 'package:gtd_client/widgets/custom_form_field.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gtd_client/utilities/extensions.dart';
 import 'package:gtd_client/utilities/validators.dart';
 import 'package:gtd_client/widgets/custom_modal.dart';
+import 'package:gtd_client/widgets/solid_button.dart';
 import 'package:gtd_client/utilities/constants.dart';
 import 'package:gtd_client/logic/user_data.dart';
 import 'package:gtd_client/logic/context.dart';
@@ -109,31 +111,18 @@ void showModal(
                     if (existingContext) const SizedBox(width: paddingAmount),
                     if (existingContext)
                       Expanded(
-                        child: LoadingSolidButton(
+                        child: SolidButton(
                           color: Colors.red,
                           size: modalButtonSize,
                           textColor: Colors.white,
                           textSize: modalButtonFontSize,
                           text: 'Borrar',
-                          onPressed: () async {
-                            await deleteContext(
-                              ref,
-                              context.id,
-                              () async {
-                                userData.clear();
-                                userData.loadUserData(
-                                  ref,
-                                  await getUserDataResponse(ref),
-                                );
-
-                                if (buildContext.mounted) {
-                                  buildContext.pop();
-
-                                  setParentState();
-                                }
-                              },
-                            );
-                          },
+                          onPressed: () => showDeleteContextDialog(
+                            buildContext,
+                            ref,
+                            setParentState,
+                            context,
+                          ),
                         ),
                       ),
                   ],
