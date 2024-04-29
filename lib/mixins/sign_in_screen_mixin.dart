@@ -33,6 +33,10 @@ mixin SignInScreenMixin<T extends StatefulWidget> on State<T> {
       return 'Por favor introduzca usuario';
     }
 
+    if (username.contains(' ')) {
+      return 'El nombre de usuario no puede contener espacios';
+    }
+
     setState(() {
       this.username = username;
     });

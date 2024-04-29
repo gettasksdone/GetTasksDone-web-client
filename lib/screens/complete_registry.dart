@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gtd_client/utilities/extensions.dart';
 import 'package:gtd_client/widgets/show_up_text.dart';
 import 'package:gtd_client/utilities/constants.dart';
+import 'package:gtd_client/providers/new_user.dart';
 import 'package:gtd_client/logic/api.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
@@ -40,7 +41,10 @@ class _CompleteRegistryScreenState extends ConsumerState<CompleteRegistryScreen>
       _phoneNumber,
       _jobTitle!,
       _department!,
-      () => ref.read(completedRegistryProvider.notifier).set(true),
+      () {
+        ref.read(newUserProvider.notifier).set(true);
+        ref.read(completedRegistryProvider.notifier).set(true);
+      },
       () => setState(() {
         errorMessage = 'Hubo un error inesperado';
         showError = true;

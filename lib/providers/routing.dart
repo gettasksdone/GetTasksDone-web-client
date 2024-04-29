@@ -37,13 +37,15 @@ final Provider<GoRouter> routerProvider = Provider((ref) {
       }
 
       if (!ref.watch(initializedAppProvider)) {
-        debugPrint('Redirecting to /: Not initialized');
-        return '/';
+        if (state.matchedLocation != '/') {
+          debugPrint('Redirecting to /: Not initialized');
+          return '/';
+        }
+
+        return null;
       }
 
       if (ref.watch(sessionTokenProvider) == null) {
-        debugPrint('Redirecting to $_signInPath or $_signUpPath: Null token');
-
         if (state.matchedLocation == _signInPath) {
           return null;
         }
@@ -52,22 +54,28 @@ final Provider<GoRouter> routerProvider = Provider((ref) {
           return null;
         }
 
+        debugPrint('Redirecting to $_signInPath: Null token');
+
         return _signInPath;
       }
 
       if (!ref.watch(completedRegistryProvider)) {
-        debugPrint(
-          'Redirecting to $_completeRegistryPath: Missing additional info',
-        );
+        if (state.matchedLocation != _completeRegistryPath) {
+          debugPrint(
+            'Redirecting to $_completeRegistryPath: Missing additional info',
+          );
+          return _completeRegistryPath;
+        }
 
-        return state.matchedLocation == _completeRegistryPath
-            ? null
-            : _completeRegistryPath;
+        return null;
       }
 
-      debugPrint('Redirecting to $_appPath');
+      if (state.matchedLocation != _appPath) {
+        debugPrint('Redirecting to $_appPath');
+        return _appPath;
+      }
 
-      return state.matchedLocation == _appPath ? null : _appPath;
+      return null;
     },
     routes: [
       GoRoute(

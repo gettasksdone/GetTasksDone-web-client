@@ -16,4 +16,10 @@ class InitializedApp extends _$InitializedApp {
 
     ref.invalidateSelf();
   }
+
+  void reset() {
+    _initialized = false;
+
+    ref.invalidateSelf();
+  }
 }

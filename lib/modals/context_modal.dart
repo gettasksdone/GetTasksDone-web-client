@@ -15,8 +15,9 @@ void showModal(
   BuildContext buildContext,
   WidgetRef ref,
   VoidCallback setParentState,
-  Context? selectedContext,
-) {
+  Context? selectedContext, {
+  bool allowDismiss = true,
+}) {
   final bool existingContext = selectedContext != null;
   final Context context = selectedContext ?? Context();
   final ColorScheme colors = buildContext.colorScheme;
@@ -60,6 +61,7 @@ void showModal(
 
   showDialog(
     context: buildContext,
+    barrierDismissible: allowDismiss,
     builder: (buildContext) {
       return StatefulBuilder(
         builder: (buildContext, dialogSetState) {

@@ -1,16 +1,18 @@
+import 'package:gtd_client/modals/inbox_task_modal.dart' as task_modal;
+import 'package:gtd_client/modals/context_modal.dart' as context_modal;
 import 'package:gtd_client/widgets/custom_progress_indicator.dart';
 import 'package:gtd_client/widgets/theme_segmented_button.dart';
 import 'package:gtd_client/widgets/loading_solid_button.dart';
 import 'package:gtd_client/providers/completed_registry.dart';
 import 'package:gtd_client/widgets/custom_split_view.dart';
 import 'package:gtd_client/widgets/solid_icon_button.dart';
-import 'package:gtd_client/modals/inbox_task_modal.dart';
 import 'package:gtd_client/providers/session_token.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gtd_client/providers/inbox_count.dart';
 import 'package:gtd_client/utilities/extensions.dart';
 import 'package:gtd_client/utilities/constants.dart';
 import 'package:gtd_client/providers/username.dart';
+import 'package:gtd_client/providers/new_user.dart';
 import 'package:gtd_client/logic/user_data.dart';
 import 'package:gtd_client/views/projects.dart';
 import 'package:gtd_client/views/contexts.dart';
@@ -28,7 +30,7 @@ class AppScreen extends ConsumerStatefulWidget {
 }
 
 class _AppScreenState extends ConsumerState<AppScreen> {
-  static const String _inboxKey = 'Bandeja de entrada';
+  static const String _inboxKey = 'Tus tareas';
   static final UserData _userData = UserData();
   static const Map<String, IconData> _icons = {
     _inboxKey: Icons.inbox,
@@ -69,6 +71,7 @@ class _AppScreenState extends ConsumerState<AppScreen> {
   String _viewKey = _inboxKey;
   bool _initialized = false;
   bool _bigScreen = false;
+  bool _forceNewContext = false;
 
   void _setView(BuildContext context, String viewKey) {
     setState(() {
@@ -98,7 +101,7 @@ class _AppScreenState extends ConsumerState<AppScreen> {
 
   void _createInboxTask(BuildContext context) {
     setState(() {
-      showModal(context, ref, () => setState(() {}));
+      task_modal.showModal(context, ref, () => setState(() {}));
     });
   }
 
@@ -112,8 +115,10 @@ class _AppScreenState extends ConsumerState<AppScreen> {
             _userData.loadUserData(ref, snapshot.data!);
 
             WidgetsBinding.instance.addPostFrameCallback(
-              (timeStamp) => setState(() {
+              (_) => setState(() {
                 _initialized = true;
+                _forceNewContext =
+                    _userData.contexts.isEmpty && ref.watch(newUserProvider);
               }),
             );
           }
@@ -121,6 +126,24 @@ class _AppScreenState extends ConsumerState<AppScreen> {
           return const Scaffold(body: Center(child: CustomProgressIndicator()));
         },
       );
+    }
+
+    if (_forceNewContext) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        setState(() {
+          _forceNewContext = false;
+
+          context_modal.showModal(
+            allowDismiss: false,
+            context,
+            ref,
+            () => setState(() {
+              ref.read(newUserProvider.notifier).set(false);
+            }),
+            null,
+          );
+        });
+      });
     }
 
     final ColorScheme colors = context.colorScheme;
@@ -201,6 +224,8 @@ class _AppScreenState extends ConsumerState<AppScreen> {
                 text: 'Cerrar sesión',
                 size: const Size(100.0, 60.0),
                 onPressed: () async {
+                  _userData.clear();
+
                   ref.read(usernameProvider.notifier).set(null);
                   ref.read(sessionTokenProvider.notifier).set(null);
                   ref.read(completedRegistryProvider.notifier).set(false);

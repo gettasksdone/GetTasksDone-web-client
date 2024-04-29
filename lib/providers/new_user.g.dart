@@ -1,24 +1,24 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'theme_picker.dart';
+part of 'new_user.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$themePickerHash() => r'e0dca9e19ce68518bbc4b885833ea95c4b438521';
+String _$newUserHash() => r'eae24ea627966d4e4fd27b9d1fc8b3e0c9e5fe5c';
 
-/// See also [ThemePicker].
-@ProviderFor(ThemePicker)
-final themePickerProvider = NotifierProvider<ThemePicker, ThemeMode>.internal(
-  ThemePicker.new,
-  name: r'themePickerProvider',
+/// See also [NewUser].
+@ProviderFor(NewUser)
+final newUserProvider = NotifierProvider<NewUser, bool>.internal(
+  NewUser.new,
+  name: r'newUserProvider',
   debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$themePickerHash,
+      const bool.fromEnvironment('dart.vm.product') ? null : _$newUserHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef _$ThemePicker = Notifier<ThemeMode>;
+typedef _$NewUser = Notifier<bool>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
