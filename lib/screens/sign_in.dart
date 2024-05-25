@@ -1,14 +1,19 @@
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:gtd_client/widgets/theme_segmented_button.dart';
+import 'package:gtd_client/widgets/loading_solid_button.dart';
+import 'package:gtd_client/providers/completed_registry.dart';
 import 'package:gtd_client/mixins/sign_in_screen_mixin.dart';
-import 'package:gtd_client/widgets/account_form_field.dart';
-import 'package:gtd_client/widgets/clear_svg_button.dart';
-import 'package:gtd_client/widgets/gradient_button.dart';
+import 'package:gtd_client/widgets/backend_url_field.dart';
+import 'package:gtd_client/widgets/custom_form_field.dart';
 import 'package:gtd_client/providers/session_token.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gtd_client/utilities/extensions.dart';
+import 'package:gtd_client/widgets/show_up_text.dart';
 import 'package:gtd_client/utilities/constants.dart';
-import 'package:gtd_client/providers/account.dart';
+import 'package:gtd_client/providers/username.dart';
+import 'package:gtd_client/logic/api.dart';
 import 'package:go_router/go_router.dart';
-import 'package:flutter/foundation.dart';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 
 class SignInScreen extends ConsumerStatefulWidget {
@@ -20,169 +25,141 @@ class SignInScreen extends ConsumerStatefulWidget {
 
 class _SignInScreenState extends ConsumerState<SignInScreen>
     with SignInScreenMixin {
-  static const double _subTitleFontSize = 25.0;
-
-  void _submitLogin(BuildContext context) async {
-    if (kDebugMode) {
-      ref.read(sessionTokenProvider.notifier).set('session_token');
-      ref.read(accountProvider.notifier).set('account@account.acc');
-
-      if (context.mounted) {
-        context.go('/app');
-      }
+  Future<void> _submitSignIn(BuildContext context) async {
+    if (testNavigation) {
+      context.go('/app');
 
       return;
+    }
+
+    final http.Response response = await postAuthLogin(username!, password!);
+
+    if (response.statusCode == 200) {
+      final String sessionToken = response.body;
+
+      debugPrint('Session token: $sessionToken');
+
+      const FlutterSecureStorage().write(
+        key: 'session_token',
+        value: sessionToken,
+      );
+
+      final int statusCode = await getUserDataAuthed(sessionToken);
+
+      ref.read(usernameProvider.notifier).set(username);
+      ref.read(sessionTokenProvider.notifier).set(sessionToken);
+
+      if (context.mounted) {
+        switch (statusCode) {
+          case 200:
+            ref.read(completedRegistryProvider.notifier).set(true);
+            break;
+          case 404:
+            break;
+          default:
+            debugPrint('Reached default case');
+
+            setState(() {
+              errorMessage = 'Hubo un error inesperado';
+              showError = true;
+            });
+        }
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final ColorScheme colors = context.colorScheme;
-    final Color textColor = colors.onPrimary;
-    final TextStyle fieldHeadingStyle = TextStyle(
-      color: colors.onPrimary,
-      fontWeight: FontWeight.w600,
-      fontSize: SignInScreenMixin.labelFontSize,
-    );
-
-    return Scaffold(
-      body: Container(
-        decoration: background,
-        child: Center(
-          child: SizedBox(
-            width: 600.0,
+    return Stack(
+      children: [
+        Scaffold(
+          resizeToAvoidBottomInset: false,
+          body: Center(
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const SizedBox(height: 200.0),
-                Text(
-                  'Inicio de sesión',
-                  style: TextStyle(
-                    fontSize: 35.0,
-                    color: textColor,
-                    fontWeight: SignInScreenMixin.bold,
-                  ),
+                const Padding(
+                  padding: SignInScreenMixin.rowPadding,
+                  child: SignInScreenMixin.titleWidget,
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 20.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'Inicia sesión con tu cuenta de ',
-                        style: TextStyle(
-                          color: textColor,
-                          fontSize: _subTitleFontSize,
-                        ),
-                      ),
-                      Text(
-                        'get tasks done',
-                        style: TextStyle(
-                          color: textColor,
-                          fontSize: _subTitleFontSize,
-                          fontWeight: SignInScreenMixin.bold,
-                        ),
-                      ),
-                    ],
+                const Padding(
+                  padding: SignInScreenMixin.doublePadding,
+                  child: Text(
+                    'Inicio de sesión',
+                    style:
+                        TextStyle(fontSize: SignInScreenMixin.subtitleFontSize),
                   ),
                 ),
                 SizedBox(
-                  width: 350.0,
+                  width: SignInScreenMixin.formWidth,
                   child: Column(
                     children: [
-                      Padding(
-                        padding: SignInScreenMixin.verticalPadding,
-                        child: Text(
-                          'Email',
-                          style: fieldHeadingStyle,
-                        ),
-                      ),
                       Form(
                         key: formKey,
                         child: Column(
                           children: [
+                            const Padding(
+                              padding: SignInScreenMixin.doublePadding,
+                              child: BackendUrlField(),
+                            ),
                             Padding(
-                              padding: SignInScreenMixin.verticalPadding,
-                              child: AccountFormField(
-                                validator: validateEmail,
-                                hintText: 'tu@correo.com',
+                              padding: SignInScreenMixin.doublePadding,
+                              child: CustomFormField(
+                                hintText: 'tu usuario',
+                                validator: validateUsername,
+                                label: 'Nombre de usuario',
                                 autofillHint: AutofillHints.username,
                               ),
                             ),
-                            Padding(
-                              padding: SignInScreenMixin.verticalPadding,
-                              child: Text(
-                                'Contraseña',
-                                style: fieldHeadingStyle,
-                              ),
-                            ),
-                            Padding(
-                              padding: SignInScreenMixin.verticalPadding,
-                              child: AccountFormField(
-                                validator: validatePassword,
-                                hintText: 'introduce tu contraseña',
-                                autofillHint: AutofillHints.password,
-                              ),
+                            CustomFormField(
+                              label: 'Contraseña',
+                              hintText: 'tu contraseña',
+                              validator: validatePassword,
+                              autofillHint: AutofillHints.password,
                             ),
                           ],
                         ),
                       ),
                       Padding(
-                        padding: SignInScreenMixin.verticalPadding,
-                        child: GradientButton(
-                          buttonText: 'Inicia sesión',
-                          height: SignInScreenMixin.buttonHeight,
-                          onPressed: (account != null) && (password != null)
-                              ? () => _submitLogin(context)
+                        padding: SignInScreenMixin.buttonPadding,
+                        child: LoadingSolidButton(
+                          text: 'Inicia sesión',
+                          size: SignInScreenMixin.buttonSize,
+                          textSize: SignInScreenMixin.buttonFontSize,
+                          onPressed: (username != null) && (password != null)
+                              ? () => _submitSignIn(context)
                               : null,
                         ),
                       ),
-                      Padding(
-                        padding: SignInScreenMixin.verticalPadding,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              '¿Todavía no tienes cuenta? ',
-                              style: TextStyle(
-                                color: textColor,
-                                fontSize: SignInScreenMixin.messageFontSize,
-                              ),
-                            ),
-                            TextButton(
-                              onPressed: () {},
-                              style: TextButton.styleFrom(
-                                padding: const EdgeInsets.all(5.0),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(5.0),
-                                ),
-                              ).merge(
-                                ButtonStyle(
-                                  overlayColor: MaterialStatePropertyAll(
-                                    context.hoverColor,
-                                  ),
-                                ),
-                              ),
-                              child: Text(
-                                'Regístrate',
-                                style: TextStyle(
-                                  color: textColor,
-                                  fontWeight: SignInScreenMixin.bold,
-                                  fontSize: SignInScreenMixin.messageFontSize,
-                                ),
-                              ),
-                            ),
-                          ],
+                      ShowUpText(
+                        visible: showError,
+                        text: errorMessage,
+                        textStyle: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: context.colorScheme.error,
+                          fontSize: SignInScreenMixin.errorFontSize,
                         ),
                       ),
-                      Padding(
-                        padding: SignInScreenMixin.verticalPadding,
-                        child: ClearSvgButton(
-                          onPressed: () {},
-                          fileName: 'google_logo',
-                          buttonText: 'Continuar con Google',
-                          height: SignInScreenMixin.buttonHeight,
-                        ),
-                      )
+                      Visibility(
+                        visible: showError,
+                        child: const SizedBox(height: paddingAmount),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text('¿Todavía no tienes cuenta? '),
+                          TextButton(
+                            onPressed: () => context.go('/sign_up'),
+                            style: TextButton.styleFrom(
+                              padding: const EdgeInsets.all(5.0),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(5.0),
+                              ),
+                            ),
+                            child: const Text('Regístrate'),
+                          ),
+                        ],
+                      ),
                     ],
                   ),
                 ),
@@ -190,7 +167,14 @@ class _SignInScreenState extends ConsumerState<SignInScreen>
             ),
           ),
         ),
-      ),
+        const Align(
+          alignment: Alignment.bottomCenter,
+          child: Padding(
+            padding: EdgeInsets.only(bottom: 30.0),
+            child: ThemeSegmentedButton(),
+          ),
+        ),
+      ],
     );
   }
 }

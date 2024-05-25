@@ -1,24 +1,24 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'session_token.dart';
+part of 'inbox_count.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$sessionTokenHash() => r'2a82fa3b26c5576af3bb95a8db2cd3871eafa804';
+String _$inboxCountHash() => r'60937a508ec26644a89e105adf2589a90a25645d';
 
-/// See also [SessionToken].
-@ProviderFor(SessionToken)
-final sessionTokenProvider = NotifierProvider<SessionToken, String?>.internal(
-  SessionToken.new,
-  name: r'sessionTokenProvider',
+/// See also [InboxCount].
+@ProviderFor(InboxCount)
+final inboxCountProvider = NotifierProvider<InboxCount, int>.internal(
+  InboxCount.new,
+  name: r'inboxCountProvider',
   debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$sessionTokenHash,
+      const bool.fromEnvironment('dart.vm.product') ? null : _$inboxCountHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef _$SessionToken = Notifier<String?>;
+typedef _$InboxCount = Notifier<int>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
