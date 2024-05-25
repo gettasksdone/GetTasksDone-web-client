@@ -14,16 +14,19 @@ class ContextCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: rowPadding,
-      child: SolidButton(
-        leftAligned: true,
-        onPressed: onPressed,
-        size: cardElementSize,
-        color: context.colorScheme.secondary,
-        withWidget: Padding(
-          padding: cardInnerPadding,
-          child: TextWithIcon(
-            text: text,
-            icon: Icons.push_pin,
+      child: Tooltip(
+        message: 'Editar contexto',
+        child: SolidButton(
+          leftAligned: true,
+          onPressed: onPressed,
+          size: cardElementSize,
+          color: context.colorScheme.secondary,
+          withWidget: Padding(
+            padding: cardInnerPadding,
+            child: TextWithIcon(
+              text: text,
+              icon: Icons.push_pin,
+            ),
           ),
         ),
       ),

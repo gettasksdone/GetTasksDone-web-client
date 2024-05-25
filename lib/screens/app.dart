@@ -30,7 +30,7 @@ class AppScreen extends ConsumerStatefulWidget {
 }
 
 class _AppScreenState extends ConsumerState<AppScreen> {
-  static const String _inboxKey = 'Tus tareas';
+  static const String _inboxKey = 'Bandeja de entrada';
   static final UserData _userData = UserData();
   static const Map<String, IconData> _icons = {
     _inboxKey: Icons.inbox,
@@ -156,11 +156,14 @@ class _AppScreenState extends ConsumerState<AppScreen> {
         padding: const EdgeInsets.only(bottom: 50.0),
         child: _views[_viewKey]!,
       ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: colors.primary,
-        foregroundColor: colors.onPrimary,
-        onPressed: () => _createInboxTask(context),
-        child: const Icon(Icons.add),
+      floatingActionButton: Tooltip(
+        message: 'Agregar tarea a la bandeja de entrada',
+        child: FloatingActionButton(
+          backgroundColor: colors.primary,
+          foregroundColor: colors.onPrimary,
+          onPressed: () => _createInboxTask(context),
+          child: const Icon(Icons.add),
+        ),
       ),
       menu: Padding(
         padding: padding,

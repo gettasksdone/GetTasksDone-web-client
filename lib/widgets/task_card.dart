@@ -34,67 +34,73 @@ class _TaskCardState extends ConsumerState<TaskCard> {
 
     return Padding(
       padding: rowPadding,
-      child: SolidButton(
-        leftAligned: true,
-        size: cardElementSize,
-        color: colors.secondary,
-        onPressed: widget.onPressed,
-        withWidget: Padding(
-          padding: cardInnerPadding,
-          child: Row(
-            children: [
-              Checkbox(
-                shape: const CircleBorder(),
-                checkColor: colors.onPrimary,
-                value: widget.task.state == Task.done,
-                side: BorderSide(
-                  width: 2.0,
-                  color: colors.onSecondary,
-                ),
-                onChanged: (bool? value) async {
-                  bool updateCount = false;
+      child: Tooltip(
+        message: 'Editar tarea',
+        child: SolidButton(
+          leftAligned: true,
+          size: cardElementSize,
+          color: colors.secondary,
+          onPressed: widget.onPressed,
+          withWidget: Padding(
+            padding: cardInnerPadding,
+            child: Row(
+              children: [
+                Tooltip(
+                  message: 'Completar tarea',
+                  child: Checkbox(
+                    shape: const CircleBorder(),
+                    checkColor: colors.onPrimary,
+                    value: widget.task.state == Task.done,
+                    side: BorderSide(
+                      width: 2.0,
+                      color: colors.onSecondary,
+                    ),
+                    onChanged: (bool? value) async {
+                      bool updateCount = false;
 
-                  if (value!) {
-                    updateCount = _userData.taskInInbox(widget.task);
+                      if (value!) {
+                        updateCount = _userData.taskInInbox(widget.task);
 
-                    widget.task.state = Task.done;
-                  } else {
-                    widget.task.state = Task.start;
+                        widget.task.state = Task.done;
+                      } else {
+                        widget.task.state = Task.start;
 
-                    updateCount = _userData.taskInInbox(widget.task);
-                  }
-
-                  await patchTask(
-                    ref,
-                    widget.task,
-                    null,
-                    () => setState(() {
-                      final InboxCount provider =
-                          ref.read(inboxCountProvider.notifier);
-
-                      if (updateCount) {
-                        if (value) {
-                          provider.substractOne();
-                        } else {
-                          provider.addOne();
-                        }
+                        updateCount = _userData.taskInInbox(widget.task);
                       }
 
-                      _userData.updateTask(ref, widget.task, null);
+                      await patchTask(
+                        ref,
+                        widget.task,
+                        null,
+                        () => setState(() {
+                          final InboxCount provider =
+                              ref.read(inboxCountProvider.notifier);
 
-                      widget.setParentState();
-                    }),
-                  );
-                },
-              ),
-              const SizedBox(width: paddingAmount),
-              Expanded(
-                child: TextWithIcon(
-                  icon: Icons.folder,
-                  text: widget.task.title!,
+                          if (updateCount) {
+                            if (value) {
+                              provider.substractOne();
+                            } else {
+                              provider.addOne();
+                            }
+                          }
+
+                          _userData.updateTask(ref, widget.task, null);
+
+                          widget.setParentState();
+                        }),
+                      );
+                    },
+                  ),
                 ),
-              ),
-            ],
+                const SizedBox(width: paddingAmount),
+                Expanded(
+                  child: TextWithIcon(
+                    icon: Icons.folder,
+                    text: widget.task.title!,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

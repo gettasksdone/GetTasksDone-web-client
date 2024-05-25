@@ -134,6 +134,7 @@ class _CompleteRegistryScreenState extends ConsumerState<CompleteRegistryScreen>
                     ),
                   ),
                   Form(
+                    key: formKey,
                     child: Column(
                       children: [
                         Padding(
@@ -180,11 +181,11 @@ class _CompleteRegistryScreenState extends ConsumerState<CompleteRegistryScreen>
                       text: 'Completar registro',
                       size: SignInScreenMixin.buttonSize,
                       textSize: SignInScreenMixin.buttonFontSize,
-                      onPressed: (_name != null) &&
-                              (_jobTitle != null) &&
-                              (_department != null)
-                          ? () => _submitUserData(context)
-                          : null,
+                      onPressed: () async {
+                        if (formKey.currentState!.validate()) {
+                          return await _submitUserData(context);
+                        }
+                      },
                     ),
                   ),
                   ShowUpText(

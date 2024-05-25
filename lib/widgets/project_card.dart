@@ -58,27 +58,33 @@ class _ProjectCardState extends State<ProjectCard> {
                   text: widget.project.name!,
                 ),
               ),
-              IconButton(
-                onPressed: widget.onEdit,
-                icon: Icon(
-                  Icons.edit,
-                  color: colors.onTertiary,
-                ),
-                style: IconButton.styleFrom(
-                  shape: roundedBorder,
-                  backgroundColor: colors.tertiary,
+              Tooltip(
+                message: 'Editar proyecto',
+                child: IconButton(
+                  onPressed: widget.onEdit,
+                  icon: Icon(
+                    Icons.edit,
+                    color: colors.onTertiary,
+                  ),
+                  style: IconButton.styleFrom(
+                    shape: roundedBorder,
+                    backgroundColor: colors.tertiary,
+                  ),
                 ),
               ),
               const SizedBox(width: paddingAmount),
-              IconButton(
-                onPressed: widget.onAddTask,
-                icon: Icon(
-                  Icons.add_outlined,
-                  color: colors.onPrimary,
-                ),
-                style: IconButton.styleFrom(
-                  shape: roundedBorder,
-                  backgroundColor: colors.primary,
+              Tooltip(
+                message: 'Crear nueva tarea en el proyecto',
+                child: IconButton(
+                  onPressed: widget.onAddTask,
+                  icon: Icon(
+                    Icons.add_outlined,
+                    color: colors.onPrimary,
+                  ),
+                  style: IconButton.styleFrom(
+                    shape: roundedBorder,
+                    backgroundColor: colors.primary,
+                  ),
                 ),
               ),
             ],

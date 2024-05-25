@@ -85,7 +85,7 @@ void showModal(
             titleWidget: Align(
               alignment: Alignment.bottomCenter,
               child: CustomFormField(
-                label: 'Nombre',
+                label: 'Nombre *',
                 hintText: 'nombre',
                 initialValue: project.name,
                 validator: (String? input) => notEmptyValidator(

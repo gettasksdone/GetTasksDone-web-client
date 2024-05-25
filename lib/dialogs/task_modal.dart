@@ -101,7 +101,7 @@ void showModal(
                   Flexible(
                     flex: 4,
                     child: CustomFormField(
-                      label: 'Nombre',
+                      label: 'Nombre *',
                       hintText: 'nombre',
                       initialValue: task.title,
                       validator: (String? input) => notEmptyValidator(
@@ -219,7 +219,7 @@ void showModal(
                         ),
                         const SizedBox(width: paddingAmount),
                         CustomDropdownMenu(
-                          label: 'Contexto',
+                          label: 'Contexto *',
                           width: dropdownWidth,
                           initialSelection: task.contextId,
                           onSelected: (int? id) {

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'dart:math';
 
 class CustomModal extends StatelessWidget {
-  final GlobalKey _formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKey;
   final Widget titleWidget;
   final Widget bodyWidget;
   final Size? size;
@@ -13,8 +13,9 @@ class CustomModal extends StatelessWidget {
     super.key,
     required this.titleWidget,
     required this.bodyWidget,
+    GlobalKey<FormState>? formKey,
     this.size,
-  });
+  }) : _formKey = formKey ?? GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {

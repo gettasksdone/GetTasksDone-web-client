@@ -64,7 +64,7 @@ void showModal(
             titleWidget: Align(
               alignment: Alignment.bottomCenter,
               child: CustomFormField(
-                label: 'Nombre',
+                label: 'Nombre *',
                 hintText: 'nombre',
                 initialValue: task.title,
                 validator: (String? input) => notEmptyValidator(
@@ -100,7 +100,7 @@ void showModal(
                   padding: rowPadding,
                   child: IntrinsicHeight(
                     child: CustomDropdownMenu(
-                      label: 'Contexto',
+                      label: 'Contexto *',
                       width: fullDropdownWidth,
                       initialSelection: task.contextId,
                       onSelected: (int? id) {

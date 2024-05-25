@@ -21,7 +21,7 @@ mixin SignInScreenMixin<T extends StatefulWidget> on State<T> {
     ),
   );
 
-  final GlobalKey formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   bool showError = false;
   String? errorMessage;
